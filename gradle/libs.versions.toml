@@ -25,6 +25,10 @@ redisson = "3.17.3"
 # Database Changelog
 liquibaseCore = "3.4.1"
 liquibaseHibernate5 = "4.9.1"
+#VaultAPI
+vaultapi = "1.7"
+#ProtocolLib
+protocollib = "4.7.0"
 
 
 [libraries]
@@ -56,6 +60,12 @@ redisson = { group = "org.redisson", name = "redisson", version.ref = "redisson"
 # Database Changelog
 liquibaseCore = { group = "org.liquibase", name = "liquibase-core", version.ref = "liquibaseCore" }
 liquibaseHibernate5 = { group = "org.liquibase.ext", name = "liquibase-hibernate5", version.ref = "liquibaseHibernate5" }
+#HikariCP
+hikariCP = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikaricp"}
+#Vault API
+vaultapi = { group = "com.github.Milkbowl", name = "VaultAPI", version.ref = "vaultapi"}
+#Protocol Lib
+protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version.ref = "protocollib"}
 
 [bundles]
 
@@ -63,7 +73,7 @@ cloudnet = ["cloudnetPerms", "cloudnetBridge", "cloudnetDriver"]
 sentry = ["sentry", "sentryJul"]
 adventure = ["adventureApi", "adventureMinimessage", "adventureSerializerPlain"]
 cloud = ["cloudPaper", "cloudAnnotions", "cloudMinecraftExtras"]
-hibernate = ["hibernate", "hibernateHikariCP", "mariadbJavaClient", "hibernateEnvers"]
+hibernate = ["hibernate", "hibernateHikariCP", "mariadbJavaClient", "hibernateEnvers", "hikariCP"]
 liquibase = ["liquibaseCore", "liquibaseHibernate5"]
 
 [plugins]

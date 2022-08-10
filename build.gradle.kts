@@ -5,8 +5,8 @@ plugins {
     // alias(libs.plugins.shadow)
 
     // Bukkit
-    // alias(libs.plugins.pluginYmlBukkit)
-    // alias(libs.plugins.runPaper)
+    alias(libs.plugins.pluginYmlBukkit)
+    alias(libs.plugins.runPaper)
 
     // LIQUIBASE
     // alias(libs.plugins.liquibase)
@@ -14,7 +14,7 @@ plugins {
     // id("org.sonarqube") version "3.4.0.2513"
 }
 
-group = "net.onelitefeather"
+group = "net.onelitefeather.stardust"
 version = "1.0.0-SNAPSHOT"
 
 repositories {
@@ -41,6 +41,8 @@ dependencies {
 
     // ChatComponents
     compileOnly(libs.bundles.adventure)
+
+    compileOnly(libs.vaultapi)
 
 
     // Database
@@ -81,17 +83,17 @@ tasks {
     }*/
 }
 
-/*bukkit {
-    main = "${rootProject.group}.ElytraRace"
+bukkit {
+    main = "${rootProject.group}.Stardust"
     apiVersion = "1.18"
-    name = ""
+    name = "Stardust"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
 
     authors = listOf("TheMeinerLP", "OneLiteFeather")
 
     depend = listOf("helper")
     softDepend = listOf("CloudNet-Bridge")
-}*/
+}
 
 /*liquibase {
     activities {
