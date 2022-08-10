@@ -1,157 +1,120 @@
-import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.Permission.Default
-import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
-
 plugins {
-    kotlin("jvm") version "1.8.10"
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("java")
+    `java-library`
+    // Shadow
+    // alias(libs.plugins.shadow)
 
+    // Bukkit
+    alias(libs.plugins.pluginYmlBukkit)
+    alias(libs.plugins.runPaper)
+
+    // LIQUIBASE
+    // alias(libs.plugins.liquibase)
     // SonarQube
-    id("org.sonarqube") version "4.0.0.2929"
-    jacoco
+    // id("org.sonarqube") version "3.4.0.2513"
 }
 
-val baseVersion = "1.0.0"
-group = "net.onelitefeather"
+group = "net.onelitefeather.stardust"
+version = "1.0.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
     maven("https://papermc.io/repo/repository/maven-public/")
-    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    maven("https://maven.enginehub.org/repo/")
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://oss.sonatype.org/content/groups/public/")
+    maven("https://libraries.minecraft.net")
+    maven("https://repo.cloudnetservice.eu/repository/releases/")
     maven("https://repo.dmulloy2.net/repository/public/")
+    maven("https://jitpack.io")
 }
+
 dependencies {
-
     // Paper
-    compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
-    bukkitLibrary("cloud.commandframework", "cloud-paper", "1.8.4")
-    bukkitLibrary("cloud.commandframework", "cloud-annotations", "1.8.4")
-    bukkitLibrary("cloud.commandframework", "cloud-minecraft-extras", "1.8.4")
-    bukkitLibrary("org.apache.commons:commons-lang3:3.12.0")
-    bukkitLibrary("me.lucko:commodore:2.2") {
-        isTransitive = false
-    }
-
-    compileOnly("net.luckperms:api:5.4")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
-
+    compileOnly(libs.paper)
     // Sentry
-    implementation("io.sentry:sentry:6.6.0")
-    implementation("io.sentry:sentry-jul:6.6.0")
+    implementation(libs.bundles.sentry)
+    // CloudNet
+    compileOnly(libs.bundles.cloudnet)
+    // Commands
+    implementation(libs.bundles.cloud)
+
+    // ChatComponents
+    compileOnly(libs.bundles.adventure)
+
+    compileOnly(libs.vaultapi)
+
 
     // Database
-    implementation("org.hibernate:hibernate-core:6.1.5.Final")
-    implementation("org.mariadb.jdbc:mariadb-java-client:3.0.6")
-    implementation("org.hibernate.orm:hibernate-hikaricp:6.1.5.Final")
+    compileOnly(libs.bundles.hibernate)
+    compileOnly(libs.bundles.liquibase)
+
+    // liquibaseRuntime("org.liquibase.ext:liquibase-hibernate5:4.9.1") // Changelog based db
+    // liquibaseRuntime("org.mariadb.jdbc:mariadb-java-client:3.0.4") // Changelog based db
+
+    // Liquibase
+    // liquibaseRuntime("org.liquibase:liquibase-core:3.10.3")
+    // liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:2.0.1")
+    // liquibaseRuntime("ch.qos.logback:logback-core:1.2.3")
+    // liquibaseRuntime("ch.qos.logback:logback-classic:1.2.3")
 
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
-
-kotlin {
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 tasks {
-
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = "17"
-        }
+    compileJava {
+        options.release.set(17)
+        options.encoding = "UTF-8"
     }
-
-    getByName("sonar") {
-        dependsOn(rootProject.tasks.test)
-    }
-
-    jacocoTestReport {
-        dependsOn(rootProject.tasks.test)
-        reports {
-            xml.required.set(true)
-        }
-    }
-
     test {
         useJUnitPlatform()
     }
-
-    shadowJar {
+    /*runServer {
+        minecraftVersion("1.18.2")
+    }*/
+    /*shadowJar {
         archiveFileName.set("${rootProject.name}.${archiveExtension.getOrElse("jar")}")
-    }
+    }*/
 }
 
 bukkit {
-    main = "${rootProject.group}.stardust.StardustPlugin"
-    apiVersion = "1.19"
+    main = "${rootProject.group}.Stardust"
+    apiVersion = "1.18"
     name = "Stardust"
-    load = PluginLoadOrder.POSTWORLD
+    load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
 
-    authors = listOf("UniqueGame", "OneLiteFeather")
-    softDepend = listOf("CloudNet-Bridge", "LuckPerms", "ProtocolLib")
+    authors = listOf("TheMeinerLP", "OneLiteFeather")
 
-    permissions {
-        listOf(
-            "stardust.command.gamemode",
-            "stardust.command.flight",
-            "stardust.command.flight.others",
-            "stardust.command.glow",
-            "stardust.command.heal",
-            "stardust.command.rename",
-            "stardust.command.repair",
-            "stardust.command.unsign",
-            "stardust.command.sign",
-            "stardust.command.sign.override",
-            "stardust.command.skull",
-            "stardust.command.vanish.nodrop",
-            "stardust.command.vanish.nocollect",
-            "stardust.command.vanish",
-            "stardust.command.vanish.others",
-            "stardust.command.godmode",
-            "stardust.command.heal.others",
-            "stardust.command.gamemode.others",
-            "stardust.commandcooldown.bypass",
-            "stardust.join.gamemode",
-            "stardust.bypass.damage.vanish",
-            "stardust.bypass.damage.invulnerable",
-            "stardust.vanish.silentopen.interact",
-            "stardust.vanish.silentopen",
-            "stardust.vanish.auto",
-            "stardust.bypass.vanish",
-            "stardust.command.frogbucket"
-        ).forEach { perm ->
-            register(perm) {
-                default = Default.OP
+    depend = listOf("helper")
+    softDepend = listOf("CloudNet-Bridge")
+}
+
+/*liquibase {
+    activities {
+        create("diffMain") {
+            (this.arguments as MutableMap<String, String>).apply {
+                this["changeLogFile"] = "src/main/resources/db/changelog/db.changelog-diff.xml"
+                this["url"] = "jdbc:mariadb://localhost:3306/elytrarace"
+                this["username"] = "root"
+                this["password"] = "%Schueler90"
+// set e.g. the Dev Database to perform diffs
+                this["referenceUrl"] = "jdbc:mariadb://localhost:3306/elytraracediff"
+                this["referenceUsername"] = "root"
+                this["referencePassword"] = "%Schueler90"
             }
         }
-        register("stardust.command.help") {
-            default = Default.TRUE
-        }
     }
-}
-
-version = if (System.getenv().containsKey("CI")) {
-    val releaseOrSnapshot =
-        if (System.getenv("CI_COMMIT_REF_NAME").equals("main", true) || System.getenv("CI_COMMIT_REF_NAME")
-                .startsWith("v")
-        ) {
-            ""
-        } else if (System.getenv("CI_COMMIT_REF_NAME").equals("test", true)) {
-            "-PREVIEW"
-        } else {
-            "-SNAPSHOT"
-        }
-    "$baseVersion$releaseOrSnapshot+${System.getenv("CI_COMMIT_SHORT_SHA")}"
-} else {
-    "$baseVersion-SNAPSHOT"
-}
-
-sonarqube {
+}*/
+/*sonarqube {
     properties {
-        property("sonar.projectKey", "onelitefeather_projects_stardust_AYRjNInxwVDHzVoeOyqT")
+        property("sonar.projectKey", "cliar_alwilda-loup_AYHtte8H7chqtZHGSV5T")
         property("sonar.qualitygate.wait", true)
     }
 }
-
+*/
