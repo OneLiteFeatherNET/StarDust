@@ -1,0 +1,16 @@
+settings:
+  debug: true
+  afk-kick-time: 600
+  auto-afk-time: 300
+  crazy-horses: false
+mysql:
+  enabled: true
+  hostname: localhost
+  database: essentials
+  username: root
+  password: ''
+  port: 3306
+command-cooldowns:
+  skull:
+    timeunit: DAYS
+    time: 3
