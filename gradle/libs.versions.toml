@@ -29,6 +29,8 @@ liquibaseHibernate5 = "4.9.1"
 vaultapi = "1.7"
 #ProtocolLib
 protocollib = "4.7.0"
+#Feather Library
+featherlibrary = "1.0.0-SNAPSHOT"
 
 
 [libraries]
@@ -46,6 +48,7 @@ sentryJul = { group = "io.sentry", name = "sentry-jul", version.ref = "sentry" }
 cloudnetPerms = { group = "de.dytanic.cloudnet", name = "cloudnet-cloudperms", version.ref = "cloudnet" }
 cloudnetBridge = { group = "de.dytanic.cloudnet", name = "cloudnet-bridge", version.ref = "cloudnet" }
 cloudnetDriver = { group = "de.dytanic.cloudnet", name = "cloudnet-driver", version.ref = "cloudnet" }
+cloudnetWrapper = { group = "de.dytanic.cloudnet", name = "cloudnet-wrapper-jvm", version.ref = "cloudnet"}
 # Cloud
 cloudPaper = { group = "cloud.commandframework", name = "cloud-paper", version.ref = "cloud" }
 cloudAnnotions = { group = "cloud.commandframework", name = "cloud-annotations", version.ref = "cloud" }
@@ -72,7 +75,7 @@ protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version.
 cloudnet = ["cloudnetPerms", "cloudnetBridge", "cloudnetDriver"]
 sentry = ["sentry", "sentryJul"]
 adventure = ["adventureApi", "adventureMinimessage", "adventureSerializerPlain"]
-cloud = ["cloudPaper", "cloudAnnotions", "cloudMinecraftExtras"]
+cloud = ["cloudPaper", "cloudAnnotions", "cloudMinecraftExtras", "cloudnetWrapper"]
 hibernate = ["hibernate", "hibernateHikariCP", "mariadbJavaClient", "hibernateEnvers", "hikariCP"]
 liquibase = ["liquibaseCore", "liquibaseHibernate5"]
 

@@ -18,6 +18,7 @@ group = "net.onelitefeather.stardust"
 version = "1.0.0-SNAPSHOT"
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://maven.enginehub.org/repo/")
@@ -43,7 +44,7 @@ dependencies {
     compileOnly(libs.bundles.adventure)
 
     compileOnly(libs.vaultapi)
-
+    compileOnly(libs.protocollib)
 
     // Database
     compileOnly(libs.bundles.hibernate)
@@ -89,7 +90,7 @@ bukkit {
     name = "Stardust"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
 
-    authors = listOf("TheMeinerLP", "OneLiteFeather")
+    authors = listOf("OdinAllfather", "OneLiteFeather")
 
     depend = listOf("helper")
     softDepend = listOf("CloudNet-Bridge")
