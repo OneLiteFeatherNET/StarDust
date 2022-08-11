@@ -1,15 +1,16 @@
-database:
-  jdbcUrl: 'jdbc:mariadb://localhost:3307/stardust?useSSL=false'
-  username: 'root'
-  password: '%Schueler90'
-  driver: 'org.mariadb.jdbc.Driver'
-  dialect: 'org.hibernate.dialect.MariaDBDialect'
-
 settings:
+  debug: true
   afk-kick-time: 600
   auto-afk-time: 300
-  use-cooldown-bypass: true
+  crazy-horses: false
+mysql:
+  enabled: true
+  hostname: localhost
+  database: essentials
+  username: root
+  password: ''
+  port: 3306
 command-cooldowns:
   skull:
     timeunit: DAYS
-    time: 1
+    time: 3
