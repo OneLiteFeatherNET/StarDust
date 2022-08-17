@@ -262,6 +262,8 @@ public class FeatherEssentials extends JavaPlugin {
 
         this.annotationParser.parse(new UserCommand(this));
         this.annotationParser.parse(new VanishCommand(this));
+
+        this.annotationParser.parse(new TpCommand(this));
     }
 
     public SessionFactory buildSessionFactory(Map<String, Object> hibernateProperties) {

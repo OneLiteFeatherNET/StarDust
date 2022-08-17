@@ -39,6 +39,9 @@ dependencies {
     compileOnly(libs.bundles.cloudnet)
     // Commands
     implementation(libs.bundles.cloud)
+    implementation(libs.commodore) {
+        isTransitive = false
+    }
 
     // ChatComponents
     compileOnly(libs.bundles.adventure)
@@ -76,23 +79,22 @@ tasks {
     test {
         useJUnitPlatform()
     }
-    /*runServer {
+    runServer {
         minecraftVersion("1.18.2")
-    }*/
+    }
     /*shadowJar {
         archiveFileName.set("${rootProject.name}.${archiveExtension.getOrElse("jar")}")
     }*/
 }
 
 bukkit {
-    main = "${rootProject.group}.Stardust"
+    main = "${rootProject.group}.FeatherEssentials"
     apiVersion = "1.18"
     name = "Stardust"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
 
     authors = listOf("OdinAllfather", "OneLiteFeather")
 
-    depend = listOf("helper")
     softDepend = listOf("CloudNet-Bridge")
 }
 
