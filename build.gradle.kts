@@ -2,7 +2,7 @@ plugins {
     id("java")
     `java-library`
     // Shadow
-    // alias(libs.plugins.shadow)
+    alias(libs.plugins.shadow)
 
     // Bukkit
     alias(libs.plugins.pluginYmlBukkit)
@@ -46,12 +46,12 @@ dependencies {
     // ChatComponents
     compileOnly(libs.bundles.adventure)
 
-    compileOnly(libs.vaultapi)
-    compileOnly(libs.protocollib)
+    implementation(libs.vaultapi)
+    implementation(libs.protocollib)
 
     // Database
-    compileOnly(libs.bundles.hibernate)
-    compileOnly(libs.bundles.liquibase)
+    implementation(libs.bundles.hibernate)
+    implementation(libs.bundles.liquibase)
 
     // liquibaseRuntime("org.liquibase.ext:liquibase-hibernate5:4.9.1") // Changelog based db
     // liquibaseRuntime("org.mariadb.jdbc:mariadb-java-client:3.0.4") // Changelog based db
@@ -82,9 +82,9 @@ tasks {
     runServer {
         minecraftVersion("1.18.2")
     }
-    /*shadowJar {
+    shadowJar {
         archiveFileName.set("${rootProject.name}.${archiveExtension.getOrElse("jar")}")
-    }*/
+    }
 }
 
 bukkit {
