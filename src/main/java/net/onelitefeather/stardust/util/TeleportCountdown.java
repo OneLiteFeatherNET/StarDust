@@ -62,12 +62,12 @@ public class TeleportCountdown implements Runnable{
         }
 
         if (this.player.getHealth() < this.health && this.player.getLastDamageCause() != null) {
-            //stop(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("teleport-countdown.damage")));
+            stop(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("teleport-countdown.damage")));
             return;
         }
 
         if (hasMoved(player)) {
-            //stop(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("teleport-countdown.moved")));
+            stop(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("teleport-countdown.moved")));
             return;
         }
 

@@ -30,8 +30,6 @@ cmake-build-*/
 *.iws
 out/
 run/
-run/eula.txt
-run/server.properties
 .idea_modules/
 atlassian-ide-plugin.xml
 .idea/replstate.xml
@@ -47,4 +45,3 @@ fabric.properties
 gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache
-run/
