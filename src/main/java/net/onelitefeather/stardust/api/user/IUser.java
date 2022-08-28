@@ -17,17 +17,6 @@ public interface IUser {
 
     void setUniqueId(UUID uniqueId);
 
-    List<UUID> getIgnoredPlayers();
-
-    void setIgnoredPlayers(List<UUID> ignoredPlayers);
-
-    boolean isIgnoring(IUser other);
-
-    boolean isIgnoring(UUID uuid);
-
-    void ignorePlayer(UUID uuid);
-
-    void unIgnorePlayer(UUID uuid);
 
     String getName();
 
@@ -36,10 +25,6 @@ public interface IUser {
     void setDisplayName(String displayName);
 
     String getDisplayName();
-
-    void setTeleportIgnoring(boolean teleportIgnoring);
-
-    boolean isTeleportIgnoring();
 
     void setFlying(boolean flying);
 
@@ -50,18 +35,6 @@ public interface IUser {
     boolean isVanished();
 
     Player getBase();
-
-    void setBackLocation(Location backLocation);
-
-    Location getBackLocation();
-
-    void setFirstJoin(long firstJoin);
-
-    long getFirstJoin();
-
-    void setLastSeen(long lastSeen);
-
-    long getLastSeen();
 
     boolean toggleVanish();
 

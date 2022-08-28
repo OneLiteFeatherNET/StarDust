@@ -54,7 +54,6 @@ public record PlayerConnectionListener(FeatherEssentials featherEssentials) impl
 
         if (user != null) {
             vanished = user.isVanished();
-            user.setLastSeen(System.currentTimeMillis());
             this.featherEssentials.getUserManager().updateUser(user, true);
         }
 

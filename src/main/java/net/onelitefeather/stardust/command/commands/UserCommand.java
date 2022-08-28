@@ -76,11 +76,8 @@ public record UserCommand(FeatherEssentials featherEssentials) {
             commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.user.info.invulnerable", prefix, (invulnerable ? enabled : disabled))));
             commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.user.info.online", prefix, (online ? enabled : disabled))));
 
-            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.user.info.firstJoin", prefix, Constants.DATE_FORMAT.format(new Date(user.getFirstJoin())))));
             if (player != null) {
                 commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.user.info.display-name", prefix, this.featherEssentials.getVaultHook().getPlayerDisplayName(player))));
-            } else {
-                commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.user.info.lastSeen", prefix, this.featherEssentials.getRemainingTime(user.getLastSeen()))));
             }
         }
     }

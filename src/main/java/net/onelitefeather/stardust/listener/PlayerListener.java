@@ -65,16 +65,6 @@ public record PlayerListener(FeatherEssentials featherEssentials) implements Lis
         if (event.isCancelled()) return;
 
         Player player = event.getPlayer();
-        event.viewers().forEach(audience -> {
-            if (audience instanceof Player viewer) {
-                IUser viewerUser = this.featherEssentials.getUserManager().getUser(viewer.getUniqueId());
-                if (viewerUser != null) {
-                    if (viewerUser.isIgnoring(player.getUniqueId())) {
-                        event.viewers().remove(viewer);
-                    }
-                }
-            }
-        });
 
         event.renderer((source, sourceDisplayName, message, viewer) -> Component.text()
                 .append(sourceDisplayName)
@@ -84,24 +74,12 @@ public record PlayerListener(FeatherEssentials featherEssentials) implements Lis
     }
 
     @EventHandler
-    public void onPlayerTeleport(PlayerTeleportEvent event) {
-        Player player = event.getPlayer();
-        IUser user = this.featherEssentials.getUserManager().getUser(player.getUniqueId());
-        if (!event.isCancelled()) {
-            if (user != null) {
-                user.setBackLocation(event.getFrom());
-            }
-        }
-    }
-
-    @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
 
         Player player = event.getEntity();
         IUser user = this.featherEssentials.getUserManager().getUser(player.getUniqueId());
 
         if (user != null) {
-            user.setBackLocation(player.getLocation());
             if (user.isVanished()) {
                 event.getDrops().clear();
                 event.deathMessage(Component.text(""));

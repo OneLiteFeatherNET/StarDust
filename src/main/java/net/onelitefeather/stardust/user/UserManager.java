@@ -78,17 +78,12 @@ public class UserManager {
         String displayName = LegacyComponentSerializer.legacyAmpersand().serialize(player.displayName());
 
         if(!isUserCreated(uuid)) {
-            long currentTimeMillis = System.currentTimeMillis();
             User user = new User();
             user.setUniqueId(uuid);
             user.setName(name);
             user.setVanished(false);
             user.setFlying(false);
-            user.setTeleportIgnoring(false);
-            user.setLastSeen(currentTimeMillis);
-            user.setFirstJoin(currentTimeMillis);
             user.setDisplayName(displayName);
-            user.setIgnoredPlayers(List.of());
             if(!this.users.contains(user))
                 this.users.add(user);
 
