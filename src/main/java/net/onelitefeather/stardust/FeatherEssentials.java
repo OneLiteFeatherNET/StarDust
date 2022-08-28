@@ -95,6 +95,7 @@ public class FeatherEssentials extends JavaPlugin {
         hibernateProperties.put(Environment.LOG_SESSION_METRICS, false);
         hibernateProperties.put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
         hibernateProperties.put(Environment.URL, "jdbc:mysql://" + config.getString("mysql.hostname") + ":" + config.getString("mysql.port") + "/" + config.getString("mysql.database"));
+        hibernateProperties.put("hibernate.integration.envers.enabled", false);
         this.sessionFactory = buildSessionFactory(hibernateProperties);
 
         this.commandCooldownManager = new CommandCooldownManager(this);
@@ -247,7 +248,6 @@ public class FeatherEssentials extends JavaPlugin {
         this.annotationParser.parse(new SetSpawnCommand(this, this.spawnManager));
         this.annotationParser.parse(new SpawnCommand(this, this.spawnManager));
 
-        this.annotationParser.parse(new IgnoreCommand(this));
         this.annotationParser.parse(new GodmodeCommand(this));
 
         this.annotationParser.parse(new HealCommand(this));

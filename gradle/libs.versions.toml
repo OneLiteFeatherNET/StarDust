@@ -18,7 +18,7 @@ adventure = "4.10.1"
 cloud = "1.6.2"
 commodore = "1.13"
 # Database
-hibernate = "6.1.0.Final"
+hibernate = "6.1.2.Final"
 hikaricp = "5.0.1"
 mariadbJavaClient = "3.0.5"
 redisson = "3.17.3"
@@ -55,9 +55,8 @@ cloudAnnotions = { group = "cloud.commandframework", name = "cloud-annotations",
 cloudMinecraftExtras = { group = "cloud.commandframework", name = "cloud-minecraft-extras", version.ref = "cloud" }
 commodore = { group = "me.lucko", name = "commodore", version.ref = "commodore" }
 # Database
-hibernate = { group = "org.hibernate", name = "hibernate-core", version.ref = "hibernate" }
-hibernateEnvers = { group = "org.hibernate", name = "hibernate-envers", version.ref = "hibernate" }
-hibernateHikariCP = { group = "org.hibernate", name = "hibernate-hikaricp", version.ref = "hibernate" }
+hibernate = { group = "org.hibernate.orm", name = "hibernate-core", version.ref = "hibernate" }
+hibernateHikariCP = { group = "org.hibernate.orm", name = "hibernate-hikaricp", version.ref = "hibernate" }
 mariadbJavaClient = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version.ref = "mariadbJavaClient" }
 redisson = { group = "org.redisson", name = "redisson", version.ref = "redisson" }
 # Database Changelog
@@ -76,7 +75,7 @@ cloudnet = ["cloudnetPerms", "cloudnetBridge", "cloudnetDriver"]
 sentry = ["sentry", "sentryJul"]
 adventure = ["adventureApi", "adventureMinimessage", "adventureSerializerPlain"]
 cloud = ["cloudPaper", "cloudAnnotions", "cloudMinecraftExtras", "cloudnetWrapper"]
-hibernate = ["hibernate", "hibernateHikariCP", "mariadbJavaClient", "hibernateEnvers", "hikariCP"]
+hibernate = ["hibernate", "hibernateHikariCP", "mariadbJavaClient", "hikariCP"]
 liquibase = ["liquibaseCore", "liquibaseHibernate5"]
 
 [plugins]
