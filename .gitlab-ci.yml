@@ -4,6 +4,6 @@ include:
     file: spigot/S3-ci-cd.yml
 
 variables:
-  JAR_FILE: "BuildEssentials.jar"
+  JAR_FILE: "Stardust.jar"
   BUCKET: "cloudnet"
   TEMPLATE: "default"
