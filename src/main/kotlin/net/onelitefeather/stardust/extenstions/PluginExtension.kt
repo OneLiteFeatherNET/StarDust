@@ -1,0 +1,79 @@
+package net.onelitefeather.stardust.extenstions
+
+import cloud.commandframework.annotations.AnnotationParser
+import cloud.commandframework.arguments.parser.ParserParameters
+import cloud.commandframework.arguments.parser.StandardParameters
+import cloud.commandframework.bukkit.CloudBukkitCapabilities
+import cloud.commandframework.execution.CommandExecutionCoordinator
+import cloud.commandframework.meta.CommandMeta
+import cloud.commandframework.minecraft.extras.MinecraftHelp
+import cloud.commandframework.paper.PaperCommandManager
+import io.sentry.Sentry
+import net.kyori.adventure.text.format.NamedTextColor
+import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.service.LuckPermsService
+import org.bukkit.command.CommandSender
+import java.util.function.Function
+import java.util.logging.Level
+
+fun StardustPlugin.initLuckPermsSupport() {
+    if(server.pluginManager.isPluginEnabled("LuckPerms")) {
+        luckPermsService = LuckPermsService(this)
+        luckPermsService.init()
+    }
+}
+
+fun StardustPlugin.buildCommandSystem() {
+    try {
+        paperCommandManager = PaperCommandManager(
+            this,
+            CommandExecutionCoordinator.simpleCoordinator(),
+            Function.identity(),
+            Function.identity()
+        )
+    } catch (e: Exception) {
+        logger.log(Level.WARNING, "Failed to build command system", e)
+        Sentry.captureException(e)
+        server.pluginManager.disablePlugin(this)
+        return
+    }
+
+    if (paperCommandManager.hasCapability(CloudBukkitCapabilities.BRIGADIER)) {
+        paperCommandManager.registerBrigadier()
+        logger.info("Brigadier support enabled")
+    }
+
+    if (paperCommandManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+        paperCommandManager.registerAsynchronousCompletions()
+        logger.info("Asynchronous completions enabled")
+    }
+
+
+    val commandMetaFunction =
+        Function<ParserParameters, CommandMeta> { p: ParserParameters ->
+            CommandMeta.simple().with(
+                CommandMeta.DESCRIPTION,
+                p.get(StandardParameters.DESCRIPTION, "No description")
+            ).build()
+        }
+
+    annotationParser = AnnotationParser(
+        paperCommandManager,
+        CommandSender::class.java, commandMetaFunction
+    )
+}
+
+fun StardustPlugin.buildHelpSystem() {
+    minecraftHelp = MinecraftHelp.createNative(
+        "/pandorascluster help",
+        paperCommandManager
+    )
+
+    minecraftHelp.helpColors = MinecraftHelp.HelpColors.of(
+        NamedTextColor.DARK_GREEN,
+        NamedTextColor.GREEN,
+        NamedTextColor.BLUE,
+        NamedTextColor.DARK_BLUE,
+        NamedTextColor.AQUA
+    )
+}

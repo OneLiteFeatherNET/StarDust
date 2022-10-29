@@ -1,0 +1,61 @@
+package net.onelitefeather.stardust.listener
+
+import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.api.IUser
+import org.bukkit.entity.Entity
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
+import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDamageByBlockEvent
+import org.bukkit.event.entity.EntityTargetEvent
+import org.bukkit.event.entity.FoodLevelChangeEvent
+import org.bukkit.permissions.Permissible
+
+class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listener {
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    fun onEntityDamageByBlock(event: EntityDamageByBlockEvent) {
+
+        val target = event.entity
+        val attacker = event.damager
+        val targetUser = stardustPlugin.userService.getUser(target.uniqueId)
+
+        if (attacker is Permissible) {
+            event.isCancelled = if (targetUser != null && targetUser.isVanished()) {
+                !attacker.hasPermission("featheressentials.bypass.damage.vanish")
+            } else if (targetUser != null && target.isInvulnerable) {
+                !attacker.hasPermission("featheressentials.bypass.damage.invulnerable")
+            } else {
+                false
+            }
+        }
+    }
+
+    @EventHandler
+    fun onTarget(event: EntityTargetEvent) {
+
+        var user: IUser? = null
+        var entity: Entity? = null
+
+        if (event.entity is Player) {
+            user = stardustPlugin.userService.getUser(event.entity.uniqueId)
+            entity = event.entity
+        } else if (event.target is Player) {
+            user = stardustPlugin.userService.getUser((event.target as Player).uniqueId)
+            entity = event.target
+        }
+
+        if (user != null && user.isVanished() || entity != null && entity.isInvulnerable) {
+            event.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun onFoodLevelChange(event: FoodLevelChangeEvent) {
+        if (event.entity is Player) {
+            val user = stardustPlugin.userService.getUser(event.entity.uniqueId)
+            event.isCancelled = user != null && (user.isVanished() || event.entity.isInvulnerable)
+        }
+    }
+}
