@@ -105,4 +105,8 @@ class CommandCooldownService(private val stardustPlugin: StardustPlugin) {
             else -> time
         }
     }
+
+    fun hasCommandCooldown(commandLabel: String): Boolean {
+        return false
+    }
 }
