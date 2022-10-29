@@ -5,16 +5,16 @@ import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.annotations.specifier.Greedy;
-import net.onelitefeather.stardust.FeatherEssentials;
+import net.onelitefeather.stardust.StardustPlugin;
 import org.bukkit.command.CommandSender;
 
-public record HelpCommand(FeatherEssentials featherEssentials) {
+public record HelpCommand(StardustPlugin stardustPlugin) {
 
     @CommandDescription("Shows the help menu")
     @CommandMethod("featheressentials help [query]")
     @CommandPermission("featheressentials.command.help")
     private void helpCommand(CommandSender sender, final @Argument("query") @Greedy String query) {
-        this.featherEssentials.getMinecraftHelp().queryCommands(query == null ? "" : query, sender);
+        this.stardustPlugin.getMinecraftHelp().queryCommands(query == null ? "" : query, sender);
     }
 
 

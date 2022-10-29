@@ -7,7 +7,7 @@ import cloud.commandframework.annotations.CommandPermission;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.onelitefeather.stardust.FeatherEssentials;
+import net.onelitefeather.stardust.StardustPlugin;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public record RepairCommand(FeatherEssentials featherEssentials) {
+public record RepairCommand(StardustPlugin stardustPlugin) {
 
     @CommandMethod("repair [all]")
     @CommandPermission("featheressentials.command.repair")
@@ -31,7 +31,7 @@ public record RepairCommand(FeatherEssentials featherEssentials) {
     public void repairItem(@NotNull CommandSender commandSender, @Argument(value = "all") Boolean repairAll) {
 
         if (!(commandSender instanceof Player player)) {
-            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("plugin.only-player-command")));
+            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("plugin.only-player-command")));
             return;
         }
 
@@ -41,7 +41,7 @@ public record RepairCommand(FeatherEssentials featherEssentials) {
                 if (repaired.size() >= 1) {
                     player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 3.0F, 2.0F);
                     commandSender.sendMessage("§6Repaired: §c" + String.join("§6,§c", repaired));
-                    commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.repair.all.success", this.featherEssentials.getPrefix())));
+                    commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.repair.all.success", this.stardustPlugin.getPrefix())));
                 }
             } else {
                 repairItemInHand(player);
@@ -56,12 +56,12 @@ public record RepairCommand(FeatherEssentials featherEssentials) {
 
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         if (itemStack.getType() == Material.AIR || itemStack.getType().isBlock()) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("plugin.no-item-in-hand", this.featherEssentials.getPrefix())));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("plugin.no-item-in-hand", this.stardustPlugin.getPrefix())));
             return;
         }
 
         if (!(itemStack.getItemMeta() instanceof Damageable damageable)) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.repair.invalid-item", this.featherEssentials.getPrefix())));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.repair.invalid-item", this.stardustPlugin.getPrefix())));
             return;
         }
 
@@ -70,7 +70,7 @@ public record RepairCommand(FeatherEssentials featherEssentials) {
             itemStack.setItemMeta(damageable);
             player.updateInventory();
             player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            player.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.repair.success", this.featherEssentials.getPrefix())));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.repair.success", this.stardustPlugin.getPrefix())));
         }
     }
 

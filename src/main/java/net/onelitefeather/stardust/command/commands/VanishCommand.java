@@ -7,7 +7,7 @@ import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.annotations.suggestions.Suggestions;
 import cloud.commandframework.context.CommandContext;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.onelitefeather.stardust.FeatherEssentials;
+import net.onelitefeather.stardust.StardustPlugin;
 import net.onelitefeather.stardust.api.user.IUser;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public record VanishCommand(FeatherEssentials featherEssentials) {
+public record VanishCommand(StardustPlugin stardustPlugin) {
 
     @CommandMethod("vanish|v [player]")
     @CommandPermission("featheressentials.command.vanish")
@@ -35,26 +35,26 @@ public record VanishCommand(FeatherEssentials featherEssentials) {
         }
 
         if(target == null) {
-            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("plugin.player-not-found", this.featherEssentials.getPrefix(), targetName)));
+            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("plugin.player-not-found", this.stardustPlugin.getPrefix(), targetName)));
             return;
         }
 
         if(!target.equals(commandSender)) {
             if (!commandSender.hasPermission("featheressentials.command.vanish.others")) {
-                commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("plugin.not-enough-permissions", this.featherEssentials.getPrefix())));
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("plugin.not-enough-permissions", this.stardustPlugin.getPrefix())));
                 return;
             }
         }
 
-        IUser user = this.featherEssentials.getUserManager().getUser(target.getUniqueId());
+        IUser user = this.stardustPlugin.getUserService().getUser(target.getUniqueId());
         if (user != null) {
             boolean state = user.toggleVanish();
-            String enable = this.featherEssentials.getMessage("commands.vanish.enable", this.featherEssentials.getPrefix());
-            String disable = this.featherEssentials.getMessage("commands.vanish.disable", this.featherEssentials.getPrefix());
+            String enable = this.stardustPlugin.getMessage("commands.vanish.enable", this.stardustPlugin.getPrefix());
+            String disable = this.stardustPlugin.getMessage("commands.vanish.disable", this.stardustPlugin.getPrefix());
 
-            String displayName = this.featherEssentials.getVaultHook().getPlayerDisplayName(target);
-            String targetEnable = this.featherEssentials.getMessage("commands.vanish.target.enable", this.featherEssentials.getPrefix(), displayName);
-            String targetDisable = this.featherEssentials.getMessage("commands.vanish.target.disable", this.featherEssentials.getPrefix(), displayName);
+            String displayName = this.stardustPlugin.getVaultHook().getPlayerDisplayName(target);
+            String targetEnable = this.stardustPlugin.getMessage("commands.vanish.target.enable", this.stardustPlugin.getPrefix(), displayName);
+            String targetDisable = this.stardustPlugin.getMessage("commands.vanish.target.disable", this.stardustPlugin.getPrefix(), displayName);
 
             if (!commandSender.equals(target)) {
                 commandSender.sendMessage(MiniMessage.miniMessage().deserialize(state ? targetEnable : targetDisable));
@@ -66,7 +66,7 @@ public record VanishCommand(FeatherEssentials featherEssentials) {
 
     @Suggestions(value = "players")
     public List<String> getPlayers(CommandContext<CommandSender> context, String input) {
-        List<String> strings = this.featherEssentials.getVisiblePlayers(context.getSender()).stream().map(HumanEntity::getName).toList();
+        List<String> strings = this.stardustPlugin.getVisiblePlayers(context.getSender()).stream().map(HumanEntity::getName).toList();
         return StringUtil.copyPartialMatches(input, strings, new ArrayList<>(strings.size()));
     }
 }
