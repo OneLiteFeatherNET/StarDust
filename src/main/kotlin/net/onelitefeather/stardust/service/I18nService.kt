@@ -1,5 +1,8 @@
 package net.onelitefeather.stardust.service
 
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.util.UTF8ResourceBundleControl
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.util.NOT_AVAILABLE_CONFIG_FALLBACK
@@ -17,6 +20,10 @@ class I18nService(val stardustPlugin: StardustPlugin) {
 
     fun getMessage(key: String, vararg variables: Any): String {
         return if (defaultMessages.containsKey(key)) MessageFormat.format(defaultMessages.getString(key), variables) else NOT_AVAILABLE_CONFIG_FALLBACK.format(key)
+    }
+
+    fun translateLegacyString(message: Component): String {
+        return MiniMessage.miniMessage().serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(LegacyComponentSerializer.legacyAmpersand().serialize(message)))
     }
 
     fun getRemainingTime(time: Long): String {
