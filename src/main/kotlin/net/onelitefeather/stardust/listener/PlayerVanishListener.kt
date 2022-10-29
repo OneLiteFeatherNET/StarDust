@@ -1,5 +1,7 @@
 package net.onelitefeather.stardust.listener
 
+import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
+import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.api.IUser
 import org.bukkit.entity.Entity
@@ -7,9 +9,8 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.entity.EntityDamageByBlockEvent
-import org.bukkit.event.entity.EntityTargetEvent
-import org.bukkit.event.entity.FoodLevelChangeEvent
+import org.bukkit.event.entity.*
+import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.permissions.Permissible
 
 class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listener {
@@ -56,6 +57,40 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
         if (event.entity is Player) {
             val user = stardustPlugin.userService.getUser(event.entity.uniqueId)
             event.isCancelled = user != null && (user.isVanished() || event.entity.isInvulnerable)
+        }
+    }
+
+    @EventHandler
+    fun onPickUp(event: EntityPickupItemEvent) {
+        val livingEntity = event.entity
+        val user = stardustPlugin.userService.getUser(livingEntity.uniqueId) ?: return
+        event.isCancelled = livingEntity is Player && user.isVanished()
+    }
+
+    @EventHandler
+    fun onDrop(event: PlayerDropItemEvent) {
+        val player = event.player
+        val user = stardustPlugin.userService.getUser(player.uniqueId)
+        if (user != null && user.isVanished()) event.isCancelled = true
+    }
+
+    @EventHandler
+    fun onPlayerPickupExp(event: PlayerPickupExperienceEvent) {
+        event.isCancelled = stardustPlugin.userService.getUser(event.player.uniqueId)?.isVanished() == true
+    }
+
+    @EventHandler
+    fun onPlayerDeath(event: PlayerDeathEvent) {
+
+        val player = event.entity
+        val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
+        if (user.isVanished()) {
+            event.drops.clear()
+            event.deathMessage(Component.text(""))
+            event.keepInventory = true
+            event.keepLevel = true
+            event.setShouldDropExperience(false)
+            event.setShouldPlayDeathSound(false)
         }
     }
 }
