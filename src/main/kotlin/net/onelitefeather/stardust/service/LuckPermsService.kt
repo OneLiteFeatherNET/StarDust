@@ -1,6 +1,5 @@
 package net.onelitefeather.stardust.service
 
-import io.sentry.Sentry
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.luckperms.api.LuckPerms
@@ -14,22 +13,17 @@ import java.util.logging.Level
 class LuckPermsService(val stardustPlugin: StardustPlugin) {
 
     lateinit var luckPerms: LuckPerms
+
     fun init() {
-        try {
-            val server = stardustPlugin.server
-            if (server.pluginManager.isPluginEnabled("LuckPerms")) {
-                val provider = server.servicesManager.getRegistration(LuckPerms::class.java)
-                if (provider != null) {
-                    luckPerms = provider.provider
-                    stardustPlugin.logger.log(Level.INFO, "Using ${provider.plugin.name} as Permission provider.")
-                }
+        val server = stardustPlugin.server
+        if (server.pluginManager.isPluginEnabled("LuckPerms")) {
+            val provider = server.servicesManager.getRegistration(LuckPerms::class.java)
+            if (provider != null) {
+                luckPerms = provider.provider
+                stardustPlugin.logger.log(Level.INFO, "Using ${provider.plugin.name} as Permission provider.")
             }
-        } catch (e: Exception) {
-            Sentry.captureException(e)
         }
     }
-
-    fun isEnabled(): Boolean = this::luckPerms.isInitialized
 
     fun getPlayerDisplayName(player: Player): Component {
         return MiniMessage.miniMessage().deserialize(getPlayerGroupPrefix(player).plus(" ${player.name}"))
@@ -46,7 +40,6 @@ class LuckPermsService(val stardustPlugin: StardustPlugin) {
     }
 
     fun getGroupPriority(player: Player): Int {
-        if (!isEnabled()) return 0
         return getPrimaryGroup(player).weight.orElse(0)
     }
 
@@ -55,20 +48,6 @@ class LuckPermsService(val stardustPlugin: StardustPlugin) {
     fun getPlayerGroupPrefix(player: Player): String {
         val metaData = luckPerms.getPlayerAdapter(Player::class.java).getMetaData(player)
         return metaData.prefix
-            ?: luckPerms.groupManager.getGroup("default")?.cachedData?.getMetaData(QueryOptions.nonContextual())?.prefix
-            ?: ""
-    }
-
-    fun getPlayerGroupSuffix(player: Player): String {
-        val metaData = luckPerms.getPlayerAdapter(Player::class.java).getMetaData(player)
-        return metaData.suffix
-            ?: luckPerms.groupManager.getGroup("default")?.cachedData?.getMetaData(QueryOptions.nonContextual())?.suffix
-            ?: ""
-    }
-
-    fun getGroupSortId(group: Group): Int {
-        return luckPerms.groupManager.loadedGroups.sortedByDescending {
-            getGroupPriority(it.name)
-        }.map { it.name }.indexOfFirst { it.equals(group.name, true) }
+            ?: luckPerms.groupManager.getGroup("default")?.cachedData?.getMetaData(QueryOptions.nonContextual())?.prefix!!
     }
 }

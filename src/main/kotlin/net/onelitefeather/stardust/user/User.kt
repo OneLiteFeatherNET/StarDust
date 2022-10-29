@@ -4,76 +4,95 @@ import jakarta.persistence.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
+import net.onelitefeather.stardust.api.IUser
 import net.onelitefeather.stardust.extenstions.miniMessage
 import org.bukkit.Bukkit
-import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
-import org.bukkit.persistence.PersistentDataType
 import org.hibernate.Hibernate
-import java.util.*
+import java.util.UUID
 
 @Entity
 @Table
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long?,
+    @Column val uuid: String?,
+    @Column val lastKnownName: String?,
+    @Column val vanished: Boolean = false,
+    @Column val flying: Boolean = false
+) : IUser {
 
-    @Column
-    val uuid: String = UUID.randomUUID().toString(),
+    override fun getId(): Long {
+        return id ?: -1
+    }
 
-    @Column
-    val name: String = "",
+    override fun getUniqueId(): UUID {
+        return if (uuid != null) UUID.fromString(uuid) else UUID.randomUUID()
+    }
 
-    @OneToOne
-    val properties: UserProperties = UserProperties(),
+    override fun getName(): String? {
+        return lastKnownName
+    }
 
+    override fun setName(name: String): IUser {
+        return this.copy(lastKnownName = name)
+    }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "ignoredUser")
-    val ignoredUsers: List<User> = emptyList(),
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    val ignoredUser: User? = null
-) {
-    constructor() : this(null)
-
-
-    fun setDisplayName(displayName: String) {
+    override fun setDisplayName(displayName: String) {
         val base = getBase() ?: return
         base.displayName(miniMessage {
             MiniMessage.miniMessage().serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(displayName))
         })
     }
 
-    fun getUniqueId(): UUID = UUID.fromString(uuid)
-
-    fun getDisplayName(): String {
-        val base = getBase() ?: return name
-        return base.coloredDisplayName()
+    override fun getDisplayName(): Component {
+        val base = getBase() ?: return Component.empty()
+        return base.displayName()
     }
 
-    fun getBase(): Player? = Bukkit.getPlayer(getUniqueId())
+    override fun setFlying(flying: Boolean): IUser {
+        return this.copy(flying = flying)
+    }
 
-    fun kick(message: Component): Boolean {
+    override fun isFlying(): Boolean {
+        return flying
+    }
+
+    override fun setVanished(vanished: Boolean): IUser {
+
+        val base = getBase()
+        if (base != null) {
+            base.isSleepingIgnored = vanished
+        }
+
+        return this.copy(vanished = vanished)
+    }
+
+    override fun isVanished(): Boolean {
+        return vanished
+    }
+
+    override fun getBase(): Player? {
+        return Bukkit.getPlayer(getUniqueId())
+    }
+
+    override fun kick(message: Component): Boolean {
         val player = getBase() ?: return false
         player.kick(message)
         return true
     }
 
-    fun confirmChatMessage(namespacedKey: NamespacedKey, value: Boolean) {
+    override fun checkCanFly() {
         val player = getBase() ?: return
-        val container = player.persistentDataContainer
-        container[namespacedKey, PersistentDataType.INTEGER] = if (value) 1 else 0
-    }
-
-    fun hasChatConfirmation(namespacedKey: NamespacedKey): Boolean {
-        val player = getBase() ?: return false
-        val container = player.persistentDataContainer
-        if (!container.has(namespacedKey)) return false
-        val value = container[namespacedKey, PersistentDataType.INTEGER] ?: return false
-        return value == 1
+        if (player.hasPermission("featheressentials.join.flight") && isFlying()) {
+            if (!player.allowFlight) player.allowFlight = true
+        } else {
+            if (player.allowFlight) {
+                setFlying(false)
+                player.allowFlight = false
+            }
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -88,7 +107,6 @@ data class User(
 
     @Override
     override fun toString(): String {
-        return this::class.simpleName + "(id = $id , uuid = $uuid , lastKnownName = $name )"
+        return this::class.simpleName + "(id = $id , uuid = $uuid , lastKnownName = $lastKnownName , vanished = $vanished , flying = $flying )"
     }
-
 }

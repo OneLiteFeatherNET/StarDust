@@ -11,7 +11,6 @@ import cloud.commandframework.paper.PaperCommandManager
 import io.sentry.Sentry
 import net.kyori.adventure.text.format.NamedTextColor
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.command.commands.*
 import net.onelitefeather.stardust.service.LuckPermsService
 import org.bukkit.command.CommandSender
 import java.util.function.Function
@@ -22,21 +21,6 @@ fun StardustPlugin.initLuckPermsSupport() {
         luckPermsService = LuckPermsService(this)
         luckPermsService.init()
     }
-}
-
-fun StardustPlugin.registerCommands() {
-    annotationParser.parse(FlightCommand(this))
-    annotationParser.parse(GameModeCommand(this))
-    annotationParser.parse(GlowCommand(this))
-    annotationParser.parse(GodmodeCommand(this))
-    annotationParser.parse(HealCommand(this))
-    annotationParser.parse(HelpCommand(this))
-    annotationParser.parse(RenameCommand(this))
-    annotationParser.parse(RepairCommand(this))
-    annotationParser.parse(SignCommand(this))
-    annotationParser.parse(SkullCommand(this))
-    annotationParser.parse(VanishCommand(this))
-    annotationParser.parse(syncFrogService)
 }
 
 fun StardustPlugin.buildCommandSystem() {
@@ -81,15 +65,15 @@ fun StardustPlugin.buildCommandSystem() {
 
 fun StardustPlugin.buildHelpSystem() {
     minecraftHelp = MinecraftHelp.createNative(
-        "/stardust help",
+        "/pandorascluster help",
         paperCommandManager
     )
 
     minecraftHelp.helpColors = MinecraftHelp.HelpColors.of(
-        NamedTextColor.GOLD,
-        NamedTextColor.YELLOW,
-        NamedTextColor.GOLD,
-        NamedTextColor.GRAY,
-        NamedTextColor.GOLD
+        NamedTextColor.DARK_GREEN,
+        NamedTextColor.GREEN,
+        NamedTextColor.BLUE,
+        NamedTextColor.DARK_BLUE,
+        NamedTextColor.AQUA
     )
 }

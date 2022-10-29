@@ -1,20 +1,15 @@
 package net.onelitefeather.stardust.listener
 
-import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
-import io.sentry.Sentry
-import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
-import net.onelitefeather.stardust.extenstions.toSentryUser
-import net.onelitefeather.stardust.user.User
-import net.onelitefeather.stardust.user.UserPropertyType
+import net.onelitefeather.stardust.api.IUser
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.entity.*
-import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.entity.EntityDamageByBlockEvent
+import org.bukkit.event.entity.EntityTargetEvent
+import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.permissions.Permissible
 
 class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listener {
@@ -25,11 +20,12 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
         val target = event.entity
         val attacker = event.damager
         val targetUser = stardustPlugin.userService.getUser(target.uniqueId)
+
         if (attacker is Permissible) {
-            event.isCancelled = if (targetUser != null && targetUser.properties.isVanished()) {
-                !attacker.hasPermission("stardust.bypass.damage.vanish")
+            event.isCancelled = if (targetUser != null && targetUser.isVanished()) {
+                !attacker.hasPermission("featheressentials.bypass.damage.vanish")
             } else if (targetUser != null && target.isInvulnerable) {
-                !attacker.hasPermission("stardust.bypass.damage.invulnerable")
+                !attacker.hasPermission("featheressentials.bypass.damage.invulnerable")
             } else {
                 false
             }
@@ -39,7 +35,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
     @EventHandler
     fun onTarget(event: EntityTargetEvent) {
 
-        var user: User? = null
+        var user: IUser? = null
         var entity: Entity? = null
 
         if (event.entity is Player) {
@@ -50,7 +46,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
             entity = event.target
         }
 
-        if (user != null && user.properties.isVanished() || entity != null && entity.isInvulnerable) {
+        if (user != null && user.isVanished() || entity != null && entity.isInvulnerable) {
             event.isCancelled = true
         }
     }
@@ -58,88 +54,8 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
     @EventHandler
     fun onFoodLevelChange(event: FoodLevelChangeEvent) {
         if (event.entity is Player) {
-            val player = event.entity as Player
-            try {
-                val user = stardustPlugin.userService.getUser(player.uniqueId)
-                event.isCancelled = user != null && (user.properties.isVanished() || player.isInvulnerable)
-            } catch (e: Exception) {
-                Sentry.captureException(e) {
-                    it.user = player.toSentryUser()
-                    player.addClient(it)
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    fun onPickUp(event: EntityPickupItemEvent) {
-        if (event.entity is Player) {
-            val player = event.entity as Player
-            try {
-                val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
-                event.isCancelled =
-                    user.properties.isVanished() && user.properties.getProperty(UserPropertyType.VANISH_DISABLE_ITEM_COLLECT)
-                        .getValue<Boolean>() == true
-
-            } catch (e: Exception) {
-                Sentry.captureException(e) {
-                    it.user = player.toSentryUser()
-                    player.addClient(it)
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    fun onDrop(event: PlayerDropItemEvent) {
-        val player = event.player
-        try {
-            val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
-            event.isCancelled =
-                user.properties.isVanished() && user.properties.getProperty(UserPropertyType.VANISH_DISABLE_ITEM_DROP)
-                    .getValue<Boolean>() == true
-        } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
-        }
-    }
-
-    @EventHandler
-    fun onPlayerPickupExp(event: PlayerPickupExperienceEvent) {
-        val player = event.player
-        val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
-        try {
-            event.isCancelled =
-                user.properties.isVanished() && user.properties.getProperty(UserPropertyType.VANISH_DISABLE_ITEM_COLLECT)
-                    .getValue<Boolean>() == true
-        } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
-        }
-    }
-
-    @EventHandler
-    fun onPlayerDeath(event: PlayerDeathEvent) {
-        val player = event.entity
-        try {
-            val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
-            if (user.properties.isVanished()) {
-                event.drops.clear()
-                event.deathMessage(Component.text(""))
-                event.keepInventory = true
-                event.keepLevel = true
-                event.setShouldDropExperience(false)
-                event.setShouldPlayDeathSound(false)
-            }
-        } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
+            val user = stardustPlugin.userService.getUser(event.entity.uniqueId)
+            event.isCancelled = user != null && (user.isVanished() || event.entity.isInvulnerable)
         }
     }
 }

@@ -5,85 +5,78 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
-import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
 import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.extenstions.toSentryUser
-import net.onelitefeather.stardust.user.UserPropertyType
 import org.bukkit.GameMode
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
-import java.lang.Exception
 
 class FlightCommand(val stardustPlugin: StardustPlugin) {
 
     @CommandMethod("flight|fly [player]")
-    @CommandPermission("stardust.command.flight")
-    @CommandDescription("Allows a player to flight.")
-    fun handleFlightCommand(commandSender: CommandSender, @Greedy @Argument(value = "player") target: Player?) {
+    @CommandPermission("featheressentials.command.flight")
+    @CommandDescription("Allows a Player to flight.")
+    fun handleFlightCommand(
+        commandSender: CommandSender,
+        @Greedy @Argument(value = "player", suggestions = "players") targetName: String?
+    ) {
 
-        if (commandSender is Player && target == null) {
-            handleFlight(commandSender, commandSender)
+        val playerName = targetName ?: commandSender.name
+        val targetPlayer = commandSender.server.getPlayer(playerName)
+
+        if (targetPlayer == null) {
+            commandSender.sendMessage(miniMessage {
+                stardustPlugin.getMessage(
+                    "plugin.player-not-found",
+                    this.stardustPlugin.getPrefix(),
+                    playerName
+                )
+            })
             return
         }
 
-        if (target != null) {
-            handleFlight(commandSender, target)
+        val user = this.stardustPlugin.userService.getUser(target.getUniqueId())
+        val displayName = this.stardustPlugin.getVaultHook().getPlayerDisplayName(target)
+
+        if (GameMode.CREATIVE == targetPlayer.gameMode || GameMode.SPECTATOR == targetPlayer.gameMode) {
+            commandSender.sendMessage(
+                miniMessage {
+                    this.stardustPlugin.getMessage(
+                        "commands.flight.already-flying",
+                        this.stardustPlugin.getPrefix(),
+                        user.getDisplayName()
+                    )
+                }
+            )
+            return
         }
-    }
 
-    private fun handleFlight(commandSender: CommandSender, target: Player) {
+        val enabled = this.stardustPlugin.getMessage(
+            "commands.flight.enable",
+            this.stardustPlugin.getPrefix(),
+            displayName
+        )
+        val disabled = this.stardustPlugin.getMessage(
+            "commands.flight.disable",
+            this.stardustPlugin.getPrefix(),
+            displayName
+        )
 
-        try {
-            val user = stardustPlugin.userService.getUser(target.uniqueId)!!
+        if (commandSender != targetPlayer && !commandSender.hasPermission("featheressentials.command.flight.others")) {
+            commandSender.sendMessage(miniMessage {
+                this.stardustPlugin.getMessage(
+                    "plugin.not-enough-permissions",
+                    this.stardustPlugin.getPrefix()
+                )
+            })
+            return
+        }
 
-            val enabledMessage = stardustPlugin.i18nService.getMessage(
-                "commands.flight.enable",
-                *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName())
-            )
+        targetPlayer.allowFlight = !targetPlayer.allowFlight
+        user.setFlying(targetPlayer.allowFlight)
+        commandSender.sendMessage(miniMessage { if (targetPlayer.allowFlight) enabled else disabled })
 
-            val disabledMessage = stardustPlugin.i18nService.getMessage(
-                "commands.flight.disable",
-                *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName())
-            )
-
-            if (commandSender != target && !commandSender.hasPermission("stardust.command.flight.others")) {
-                commandSender.sendMessage(miniMessage {
-                    this.stardustPlugin.i18nService.getMessage(
-                        "plugin.not-enough-permissions",
-                        *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                    )
-                })
-                return
-            }
-
-            if (target.gameMode == GameMode.CREATIVE) {
-                commandSender.sendMessage(miniMessage {
-                    stardustPlugin.i18nService.getMessage(
-                        "commands.flight.already-in-creative",
-                        *arrayOf(
-                            stardustPlugin.i18nService.getPluginPrefix(),
-                            target.coloredDisplayName()
-                        )
-                    )
-                })
-                return
-            }
-
-            target.allowFlight = !target.allowFlight
-            stardustPlugin.userService.setUserProperty(user, UserPropertyType.FLYING, target.allowFlight)
-            commandSender.sendMessage(miniMessage { if (target.allowFlight) enabledMessage else disabledMessage })
-
-            if (commandSender != target) {
-                target.sendMessage(miniMessage { if (target.allowFlight) enabledMessage else disabledMessage })
-            }
-        } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = target.toSentryUser()
-                target.addClient(it)
-            }
+        if (commandSender != targetPlayer) {
+            targetPlayer.sendMessage(miniMessage { if (targetPlayer.allowFlight) enabled else disabled })
         }
     }
 }
