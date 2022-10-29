@@ -1,6 +1,5 @@
 plugins {
-    id("java")
-    `java-library`
+    kotlin("jvm") version "1.7.10"
     // Shadow
     alias(libs.plugins.shadow)
 
@@ -31,23 +30,20 @@ repositories {
 }
 
 dependencies {
+
     // Paper
     compileOnly(libs.paper)
+    compileOnly(libs.luckperms)
+    compileOnly(libs.protocollib)
+
     // Sentry
     implementation(libs.bundles.sentry)
-    // CloudNet
-    compileOnly(libs.bundles.cloudnet)
+
     // Commands
     implementation(libs.bundles.cloud)
     implementation(libs.commodore) {
         isTransitive = false
     }
-
-    // ChatComponents
-    compileOnly(libs.bundles.adventure)
-
-    implementation(libs.vaultapi)
-    implementation(libs.protocollib)
 
     // Database
     implementation(libs.bundles.hibernate)
@@ -66,21 +62,23 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 tasks {
-    compileJava {
-        options.release.set(17)
-        options.encoding = "UTF-8"
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
     }
     test {
         useJUnitPlatform()
     }
     runServer {
-        minecraftVersion("1.18.2")
+        minecraftVersion("1.19.2")
     }
     shadowJar {
         archiveFileName.set("${rootProject.name}.${archiveExtension.getOrElse("jar")}")
@@ -88,12 +86,12 @@ tasks {
 }
 
 bukkit {
-    main = "${rootProject.group}.FeatherEssentials"
-    apiVersion = "1.18"
+    main = "${rootProject.group}.Stardust"
+    apiVersion = "1.19"
     name = "Stardust"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
 
-    authors = listOf("OdinAllfather", "OneLiteFeather")
+    authors = listOf("UniqueGame", "OneLiteFeather")
 
     softDepend = listOf("CloudNet-Bridge")
 }
