@@ -9,7 +9,7 @@ import cloud.commandframework.annotations.specifier.Range;
 import cloud.commandframework.annotations.suggestions.Suggestions;
 import cloud.commandframework.context.CommandContext;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.onelitefeather.stardust.FeatherEssentials;
+import net.onelitefeather.stardust.StardustPlugin;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -27,11 +27,11 @@ import java.util.List;
 
 public class SpawnMobCommand {
 
-    private final FeatherEssentials featherEssentials;
+    private final StardustPlugin stardustPlugin;
     private final List<EntityType> entityTypes;
 
-    public SpawnMobCommand(FeatherEssentials featherEssentials) {
-        this.featherEssentials = featherEssentials;
+    public SpawnMobCommand(StardustPlugin stardustPlugin) {
+        this.stardustPlugin = stardustPlugin;
         this.entityTypes = Arrays.stream(EntityType.values()).filter(entityType -> entityType.isAlive() && entityType.isSpawnable()).toList();
     }
 
@@ -44,7 +44,7 @@ public class SpawnMobCommand {
 
         if (!entityType.contains(",")) {
             spawn(location, EntityType.valueOf(entityType), amount);
-            player.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.spawnmob.success", this.featherEssentials.getPrefix(), entityType, amount)));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.spawnmob.success", this.stardustPlugin.getPrefix(), entityType, amount)));
         } else {
 
             String[] strings = entityType.split(",");
@@ -66,7 +66,7 @@ public class SpawnMobCommand {
                 }
             }
 
-            player.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.spawnmob.success", this.featherEssentials.getPrefix(), strings[0], 1)));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.spawnmob.success", this.stardustPlugin.getPrefix(), strings[0], 1)));
         }
     }
 

@@ -8,7 +8,7 @@ import cloud.commandframework.annotations.suggestions.Suggestions;
 import cloud.commandframework.context.CommandContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.onelitefeather.stardust.FeatherEssentials;
+import net.onelitefeather.stardust.StardustPlugin;
 import net.onelitefeather.stardust.position.SpawnManager;
 import net.onelitefeather.stardust.position.SpawnPoint;
 import net.onelitefeather.stardust.util.TeleportCountdown;
@@ -20,7 +20,7 @@ import org.bukkit.util.StringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public record SpawnCommand(FeatherEssentials featherEssentials, SpawnManager spawnManager) {
+public record SpawnCommand(StardustPlugin stardustPlugin, SpawnManager spawnManager) {
 
     @CommandMethod("spawn <name>")
     @CommandDescription("Teleports you to the Spawnpoint")
@@ -29,7 +29,7 @@ public record SpawnCommand(FeatherEssentials featherEssentials, SpawnManager spa
 
         SpawnPoint spawnPoint = name == null ? this.spawnManager.getSpawnPoint("spawn") : this.spawnManager.getSpawnPoint(name);
         if (spawnPoint == null) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.spawn.not-found", this.featherEssentials.getPrefix(), name)));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.spawn.not-found", this.stardustPlugin.getPrefix(), name)));
             return;
         }
 
@@ -37,15 +37,15 @@ public record SpawnCommand(FeatherEssentials featherEssentials, SpawnManager spa
         if (location != null) {
 
             if (!spawnPoint.hasPermission(player)) {
-                player.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.spawn.not-enough-permission", this.featherEssentials.getPrefix(), name)));
+                player.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.spawn.not-enough-permission", this.stardustPlugin.getPrefix(), name)));
                 return;
             }
 
-            Component message = MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.spawn.teleported", this.featherEssentials.getPrefix(), name));
+            Component message = MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.spawn.teleported", this.stardustPlugin.getPrefix(), name));
             if (player.hasPermission("featheressentials.teleport.countdown.bypass")) {
                 player.teleport(location);
             } else {
-                new TeleportCountdown(this.featherEssentials, 3, player, player.getLocation(), location, message);
+                new TeleportCountdown(this.stardustPlugin, 3, player, player.getLocation(), location, message);
             }
 
             player.sendMessage(MiniMessage.miniMessage().deserialize(String.format("You´re successfully teleported to spawn %s", spawnPoint.getName())));

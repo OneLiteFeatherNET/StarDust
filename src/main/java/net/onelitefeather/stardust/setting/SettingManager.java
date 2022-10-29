@@ -1,6 +1,6 @@
 package net.onelitefeather.stardust.setting;
 
-import net.onelitefeather.stardust.FeatherEssentials;
+import net.onelitefeather.stardust.StardustPlugin;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.ArrayList;
@@ -8,12 +8,12 @@ import java.util.List;
 
 public class SettingManager {
 
-    private final FeatherEssentials featherEssentials;
+    private final StardustPlugin stardustPlugin;
 
     private final List<EssentialsSetting<?>> essentialsSettingList;
 
-    public SettingManager(FeatherEssentials featherEssentials) {
-        this.featherEssentials = featherEssentials;
+    public SettingManager(StardustPlugin stardustPlugin) {
+        this.stardustPlugin = stardustPlugin;
         this.essentialsSettingList = new ArrayList<>();
         this.essentialsSettingList.add(new EssentialsSetting<>("debug", "settings.debug", true));
         this.essentialsSettingList.add(new EssentialsSetting<>("auto_afk_time", "settings.auto-afk-time", 300L));
@@ -33,7 +33,7 @@ public class SettingManager {
     }
 
     public <T> T getSetting(String settingName, Class<T> target, T fallback) {
-        return getSetting((YamlConfiguration) this.featherEssentials.getConfig(), settingName, target, fallback);
+        return getSetting((YamlConfiguration) this.stardustPlugin.getConfig(), settingName, target, fallback);
     }
 
 

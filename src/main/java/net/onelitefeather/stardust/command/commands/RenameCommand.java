@@ -8,7 +8,7 @@ import cloud.commandframework.annotations.specifier.Quoted;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.onelitefeather.stardust.FeatherEssentials;
+import net.onelitefeather.stardust.StardustPlugin;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-public record RenameCommand(FeatherEssentials featherEssentials) {
+public record RenameCommand(StardustPlugin stardustPlugin) {
 
     @CommandMethod("itemrename|rename <text>")
     @CommandPermission("featheressentials.command.rename")
@@ -24,13 +24,13 @@ public record RenameCommand(FeatherEssentials featherEssentials) {
     public void onCommand(@NotNull CommandSender commandSender, @Argument(value = "text") @Quoted String text) {
 
         if (!(commandSender instanceof Player player)) {
-            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("plugin.only-player-command")));
+            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("plugin.only-player-command")));
             return;
         }
 
         ItemStack itemStack = player.getInventory().getItemInMainHand();
         if (itemStack.getType() == Material.AIR) {
-            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.rename.invalid-item", this.featherEssentials.getPrefix())));
+            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.rename.invalid-item", this.stardustPlugin.getPrefix())));
             return;
         }
 
@@ -39,7 +39,7 @@ public record RenameCommand(FeatherEssentials featherEssentials) {
         itemMeta.displayName(displayName);
         itemStack.setItemMeta(itemMeta);
         player.updateInventory();
-        commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.rename.success", this.featherEssentials.getPrefix(), LegacyComponentSerializer.legacyAmpersand().serialize(displayName))));
+        commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.rename.success", this.stardustPlugin.getPrefix(), LegacyComponentSerializer.legacyAmpersand().serialize(displayName))));
     }
 }
 

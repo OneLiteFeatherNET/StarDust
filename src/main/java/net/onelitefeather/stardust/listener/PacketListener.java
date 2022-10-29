@@ -10,7 +10,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
-import net.onelitefeather.stardust.FeatherEssentials;
+import net.onelitefeather.stardust.StardustPlugin;
 import net.onelitefeather.stardust.api.user.IUser;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,11 +22,11 @@ import java.util.UUID;
 
 public class PacketListener {
 
-    private final FeatherEssentials featherEssentials;
+    private final StardustPlugin stardustPlugin;
     private final ProtocolManager protocolManager;
 
-    public PacketListener(FeatherEssentials featherEssentials) {
-        this.featherEssentials = featherEssentials;
+    public PacketListener(StardustPlugin stardustPlugin) {
+        this.stardustPlugin = stardustPlugin;
         this.protocolManager = ProtocolLibrary.getProtocolManager();
         handle();
     }
@@ -34,7 +34,7 @@ public class PacketListener {
     public void handle() {
 
         List<UUID> loginQueue = new ArrayList<>();
-        protocolManager.addPacketListener(new PacketAdapter(this.featherEssentials, ListenerPriority.HIGHEST, PacketType.Play.Server.LOGIN) {
+        protocolManager.addPacketListener(new PacketAdapter(this.stardustPlugin, ListenerPriority.HIGHEST, PacketType.Play.Server.LOGIN) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 if (!loginQueue.contains(event.getPlayer().getUniqueId())) {
@@ -43,12 +43,12 @@ public class PacketListener {
             }
         });
 
-        protocolManager.addPacketListener(new PacketAdapter(this.featherEssentials, ListenerPriority.HIGHEST, PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
+        protocolManager.addPacketListener(new PacketAdapter(this.stardustPlugin, ListenerPriority.HIGHEST, PacketType.Play.Server.NAMED_ENTITY_SPAWN) {
             @Override
             public void onPacketSending(PacketEvent event) {
 
                 Player player = event.getPlayer();
-                IUser user = featherEssentials.getUserManager().getUser(player.getUniqueId());
+                IUser user = stardustPlugin.getUserService().getUser(player.getUniqueId());
                 if (user != null) {
                     if (user.isVanished()) {
                         if (player.hasPermission("featheressentials.command.vanish")) {
@@ -60,8 +60,8 @@ public class PacketListener {
                     }
                 }
 
-                featherEssentials.getServer().getOnlinePlayers().forEach(players -> {
-                    IUser onlineUser = featherEssentials.getUserManager().getUser(players.getUniqueId());
+                stardustPlugin.getServer().getOnlinePlayers().forEach(players -> {
+                    IUser onlineUser = stardustPlugin.getUserService().getUser(players.getUniqueId());
                     if (onlineUser != null) {
                         if (onlineUser.isVanished()) {
                             onlineUser.hidePlayer();
@@ -71,7 +71,7 @@ public class PacketListener {
             }
         });
 
-        protocolManager.addPacketListener(new PacketAdapter(this.featherEssentials, ListenerPriority.HIGHEST, PacketType.Play.Server.PLAYER_INFO) {
+        protocolManager.addPacketListener(new PacketAdapter(this.stardustPlugin, ListenerPriority.HIGHEST, PacketType.Play.Server.PLAYER_INFO) {
             @Override
             public void onPacketSending(PacketEvent event) {
 
@@ -94,7 +94,7 @@ public class PacketListener {
     }
 
     public void unregister() {
-        this.protocolManager.removePacketListeners(this.featherEssentials);
+        this.protocolManager.removePacketListeners(this.stardustPlugin);
     }
 
     protected void hideVanishedPlayers(PacketEvent event, List<PlayerInfoData> playerInfoDataList) {

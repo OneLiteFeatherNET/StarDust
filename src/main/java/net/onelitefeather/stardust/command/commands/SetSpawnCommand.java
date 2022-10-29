@@ -7,7 +7,7 @@ import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.annotations.suggestions.Suggestions;
 import cloud.commandframework.context.CommandContext;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.onelitefeather.stardust.FeatherEssentials;
+import net.onelitefeather.stardust.StardustPlugin;
 import net.onelitefeather.stardust.position.SpawnManager;
 import net.onelitefeather.stardust.position.SpawnPoint;
 import net.onelitefeather.stardust.position.WrappedLocation;
@@ -18,16 +18,16 @@ import org.bukkit.util.StringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public record SetSpawnCommand(FeatherEssentials featherEssentials, SpawnManager spawnManager) {
+public record SetSpawnCommand(StardustPlugin stardustPlugin, SpawnManager spawnManager) {
 
     @CommandMethod("setspawn <name> <defaultSpawn> [permission]")
     @CommandDescription("Set the World spawnpoint or create a custom spawnpoint")
     @CommandPermission("featheressentials.command.setspawn.set")
     public void handleSetSpawn(Player player, @Argument(value = "name") String name, @Argument(value = "permission") String permission, @Argument(value = "defaultSpawn") boolean defaultSpawn) {
         if (this.spawnManager.setSpawnPoint(name, WrappedLocation.fromLocation(player.getLocation()), permission, defaultSpawn)) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.setspawn.spawn-set-success", this.featherEssentials.getPrefix(), name)));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.setspawn.spawn-set-success", this.stardustPlugin.getPrefix(), name)));
         } else {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.setspawn.spawn-set-failure", this.featherEssentials.getPrefix(), name)));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.setspawn.spawn-set-failure", this.stardustPlugin.getPrefix(), name)));
         }
     }
 
@@ -36,10 +36,10 @@ public record SetSpawnCommand(FeatherEssentials featherEssentials, SpawnManager 
     @CommandPermission("featheressentials.command.setspawn.remove")
     public void handleRemoveSpawn(Player player, @Argument(value = "name", suggestions = "spawnpoints") String name) {
 
-        if (this.featherEssentials.getSpawnManager().removeSpawnPoint(name)) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.setspawn.spawn-remove-success", this.featherEssentials.getPrefix(), name)));
+        if (this.stardustPlugin.getSpawnManager().removeSpawnPoint(name)) {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.setspawn.spawn-remove-success", this.stardustPlugin.getPrefix(), name)));
         } else {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.setspawn.spawn-remove-failure", this.featherEssentials.getPrefix(), name)));
+            player.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.setspawn.spawn-remove-failure", this.stardustPlugin.getPrefix(), name)));
         }
     }
 

@@ -6,7 +6,7 @@ import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.annotations.specifier.Quoted;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.onelitefeather.stardust.FeatherEssentials;
+import net.onelitefeather.stardust.StardustPlugin;
 import net.onelitefeather.stardust.manager.SignManager;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public record SignCommand(FeatherEssentials featherEssentials) {
+public record SignCommand(StardustPlugin stardustPlugin) {
 
     @CommandMethod("sign <text>")
     @CommandPermission("featheressentials.command.sign")
@@ -27,18 +27,18 @@ public record SignCommand(FeatherEssentials featherEssentials) {
 
             ItemStack itemStack = player.getInventory().getItemInMainHand();
             if (itemStack.getType() == Material.AIR) {
-                commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.sign.no-item-in-hand", this.featherEssentials.getPrefix())));
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.sign.no-item-in-hand", this.stardustPlugin.getPrefix())));
                 return;
             }
 
-            SignManager signManager = new SignManager(this.featherEssentials, itemStack);
+            SignManager signManager = new SignManager(this.stardustPlugin, itemStack);
             if (signManager.isSigned() && !commandSender.hasPermission("featheressentials.command.sign.override")) {
-                commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.sign.already-signed", this.featherEssentials.getPrefix())));
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.sign.already-signed", this.stardustPlugin.getPrefix())));
                 return;
             }
 
             if (player.getInventory().firstEmpty() == -1) {
-                commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("plugin.inventory-full", this.featherEssentials.getPrefix())));
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("plugin.inventory-full", this.stardustPlugin.getPrefix())));
                 return;
             }
 
@@ -57,7 +57,7 @@ public record SignCommand(FeatherEssentials featherEssentials) {
                 player.getInventory().setItemInMainHand(signManager.sign(player.getUniqueId(), player.getName(), ChatColor.translateAlternateColorCodes('&', text)));
             }
 
-            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.sign.signed", this.featherEssentials.getPrefix())));
+            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.sign.signed", this.stardustPlugin.getPrefix())));
         }
     }
 }

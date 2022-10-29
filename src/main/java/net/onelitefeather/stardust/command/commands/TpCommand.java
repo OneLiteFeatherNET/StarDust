@@ -11,7 +11,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.onelitefeather.stardust.FeatherEssentials;
+import net.onelitefeather.stardust.StardustPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -21,20 +21,20 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public record TpCommand(FeatherEssentials featherEssentials) {
+public record TpCommand(StardustPlugin stardustPlugin) {
 
     @CommandMethod("tphere <player>")
     @CommandPermission("featheressentials.command.tphere")
     @CommandDescription("Teleport a player to your location")
     public void onTpHere(@NotNull CommandSender commandSender, @Argument(value = "player", suggestions = "players") String targetName) {
         if (!(commandSender instanceof Player player)) {
-            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("plugin.only-player-command")));
+            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("plugin.only-player-command")));
             return;
         }
 
         Player target = commandSender.getServer().getPlayer(targetName);
         if (target == null) {
-            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("plugin.player-not-found", this.featherEssentials.getPrefix(), targetName)));
+            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("plugin.player-not-found", this.stardustPlugin.getPrefix(), targetName)));
             return;
         }
         target.teleport(player);
@@ -45,20 +45,20 @@ public record TpCommand(FeatherEssentials featherEssentials) {
     @CommandDescription("Ask a player to teleport to his/her location")
     public void onTpa(@NotNull CommandSender commandSender, @Argument(value = "player", suggestions = "players") String targetName) {
         if (!(commandSender instanceof Player player)) {
-            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("plugin.only-player-command")));
+            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("plugin.only-player-command")));
             return;
         }
 
         Player target = commandSender.getServer().getPlayer(targetName);
         if (target == null) {
-            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("plugin.player-not-found", this.featherEssentials.getPrefix(), targetName)));
+            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("plugin.player-not-found", this.stardustPlugin.getPrefix(), targetName)));
             return;
         }
 
-        Component accept = MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.teleport.tpa.accept"));
-        Component deny = MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.teleport.tpa.deny"));
+        Component accept = MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.teleport.tpa.accept"));
+        Component deny = MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.teleport.tpa.deny"));
 
-        TextComponent message = (TextComponent) MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.teleport.tpa", this.featherEssentials.getPrefix(), player.getName()));
+        TextComponent message = (TextComponent) MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.teleport.tpa", this.stardustPlugin.getPrefix(), player.getName()));
         target.sendMessage(message.append(accept)
                 .clickEvent(ClickEvent.runCommand("tpa accept " + player.getName())).hoverEvent(HoverEvent.showText(accept))
                 .append(deny)
@@ -84,7 +84,7 @@ public record TpCommand(FeatherEssentials featherEssentials) {
 
     @Suggestions(value = "players")
     public List<String> getPlayers(CommandContext<CommandSender> context, String input) {
-        List<String> strings = this.featherEssentials.getVisiblePlayers(context.getSender()).stream().map(HumanEntity::getName).toList();
+        List<String> strings = this.stardustPlugin.getVisiblePlayers(context.getSender()).stream().map(HumanEntity::getName).toList();
         return StringUtil.copyPartialMatches(input, strings, new ArrayList<>(strings.size()));
     }
 

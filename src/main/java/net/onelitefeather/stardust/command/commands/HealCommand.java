@@ -7,7 +7,7 @@ import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.annotations.suggestions.Suggestions;
 import cloud.commandframework.context.CommandContext;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.onelitefeather.stardust.FeatherEssentials;
+import net.onelitefeather.stardust.StardustPlugin;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.command.CommandSender;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public record HealCommand(FeatherEssentials featherEssentials) {
+public record HealCommand(StardustPlugin stardustPlugin) {
 
     @CommandMethod("heal [player]")
     @CommandPermission("featheressentials.command.heal")
@@ -36,13 +36,13 @@ public record HealCommand(FeatherEssentials featherEssentials) {
         }
 
         if(target == null) {
-            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("plugin.player-not-found")));
+            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("plugin.player-not-found")));
             return;
         }
 
         if(!target.equals(commandSender)) {
             if (!commandSender.hasPermission("featheressentials.command.heal.others")) {
-                commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("plugin.not-enough-permissions", this.featherEssentials.getPrefix())));
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("plugin.not-enough-permissions", this.stardustPlugin.getPrefix())));
                 return;
             }
         }
@@ -58,15 +58,15 @@ public record HealCommand(FeatherEssentials featherEssentials) {
         target.setSaturation(20);
 
         if (!commandSender.equals(target)) {
-            target.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.heal.target-success", this.featherEssentials.getPrefix(), target.getHealth())));
+            target.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.heal.target-success", this.stardustPlugin.getPrefix(), target.getHealth())));
         }
 
-        commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.featherEssentials.getMessage("commands.heal.sender-success", this.featherEssentials.getPrefix(), this.featherEssentials.getVaultHook().getPlayerDisplayName(target), target.getHealth())));
+        commandSender.sendMessage(MiniMessage.miniMessage().deserialize(this.stardustPlugin.getMessage("commands.heal.sender-success", this.stardustPlugin.getPrefix(), this.stardustPlugin.getVaultHook().getPlayerDisplayName(target), target.getHealth())));
     }
 
     @Suggestions(value = "players")
     public List<String> getPlayers(CommandContext<CommandSender> context, String input) {
-        List<String> strings = this.featherEssentials.getVisiblePlayers(context.getSender()).stream().map(HumanEntity::getName).toList();
+        List<String> strings = this.stardustPlugin.getVisiblePlayers(context.getSender()).stream().map(HumanEntity::getName).toList();
         return StringUtil.copyPartialMatches(input, strings, new ArrayList<>(strings.size()));
     }
 }

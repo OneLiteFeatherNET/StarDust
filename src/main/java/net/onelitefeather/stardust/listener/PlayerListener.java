@@ -4,7 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.onelitefeather.stardust.FeatherEssentials;
+import net.onelitefeather.stardust.StardustPlugin;
 import net.onelitefeather.stardust.api.user.IUser;
 import net.onelitefeather.stardust.command.CommandCooldown;
 import org.bukkit.Bukkit;
@@ -19,12 +19,11 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public record PlayerListener(FeatherEssentials featherEssentials) implements Listener {
+public record PlayerListener(StardustPlugin stardustPlugin) implements Listener {
 
     @EventHandler
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
@@ -39,22 +38,22 @@ public record PlayerListener(FeatherEssentials featherEssentials) implements Lis
 
         Player player = event.getPlayer();
         if (Arrays.copyOfRange(strings, 1, strings.length).length > 0) {
-            if (this.featherEssentials.getCommandCooldownManager().hasCommandCooldown(commandLabel)) {
+            if (this.stardustPlugin.getCommandCooldownManager().hasCommandCooldown(commandLabel)) {
 
-                CommandCooldown commandCooldown = this.featherEssentials.getCommandCooldownManager().getCommandCooldown(player.getUniqueId(), commandLabel);
+                CommandCooldown commandCooldown = this.stardustPlugin.getCommandCooldownManager().getCommandCooldown(player.getUniqueId(), commandLabel);
                 if (!player.hasPermission("featheressentials.commandcooldown.bypass")) {
 
                     if (commandCooldown != null) {
-                        if (!this.featherEssentials.getCommandCooldownManager().isCommandCooldownOver(player.getUniqueId(), commandLabel)) {
-                            player.sendMessage(this.featherEssentials.getMessage("plugin.command-cooldowned", this.featherEssentials.getPrefix(), this.featherEssentials.getRemainingTime(commandCooldown.getExecutedAt())));
+                        if (!this.stardustPlugin.getCommandCooldownManager().isCommandCooldownOver(player.getUniqueId(), commandLabel)) {
+                            player.sendMessage(this.stardustPlugin.getMessage("plugin.command-cooldowned", this.stardustPlugin.getPrefix(), this.stardustPlugin.getRemainingTime(commandCooldown.getExecutedAt())));
                             event.setCancelled(true);
                             return;
                         }
                     }
 
-                    TimeUnit timeUnit = TimeUnit.valueOf(this.featherEssentials.getConfig().getString("command-cooldowns." + commandLabel + ".timeunit"));
-                    long time = this.featherEssentials.getConfig().getLong("command-cooldowns." + commandLabel + ".time");
-                    this.featherEssentials.getCommandCooldownManager().addCommandCooldown(player.getUniqueId(), commandLabel, timeUnit, time, player.hasPermission("essentials.commandcooldown.bypass"));
+                    TimeUnit timeUnit = TimeUnit.valueOf(this.stardustPlugin.getConfig().getString("command-cooldowns." + commandLabel + ".timeunit"));
+                    long time = this.stardustPlugin.getConfig().getLong("command-cooldowns." + commandLabel + ".time");
+                    this.stardustPlugin.getCommandCooldownManager().addCommandCooldown(player.getUniqueId(), commandLabel, timeUnit, time, player.hasPermission("essentials.commandcooldown.bypass"));
                 }
             }
         }
@@ -77,7 +76,7 @@ public record PlayerListener(FeatherEssentials featherEssentials) implements Lis
     public void onPlayerDeath(PlayerDeathEvent event) {
 
         Player player = event.getEntity();
-        IUser user = this.featherEssentials.getUserManager().getUser(player.getUniqueId());
+        IUser user = this.stardustPlugin.getUserService().getUser(player.getUniqueId());
 
         if (user != null) {
             if (user.isVanished()) {
@@ -95,7 +94,7 @@ public record PlayerListener(FeatherEssentials featherEssentials) implements Lis
     public void onPlayerPickupExp(PlayerPickupExperienceEvent event) {
 
         Player player = event.getPlayer();
-        IUser user = this.featherEssentials.getUserManager().getUser(player.getUniqueId());
+        IUser user = this.stardustPlugin.getUserService().getUser(player.getUniqueId());
 
         if (user != null) {
             if (user.isVanished()) {
@@ -107,7 +106,7 @@ public record PlayerListener(FeatherEssentials featherEssentials) implements Lis
     @EventHandler
     public void onPickUp(EntityPickupItemEvent event) {
         LivingEntity livingEntity = event.getEntity();
-        IUser user = this.featherEssentials.getUserManager().getUser(livingEntity.getUniqueId());
+        IUser user = this.stardustPlugin.getUserService().getUser(livingEntity.getUniqueId());
         if (livingEntity instanceof Player && user != null && user.isVanished())
             event.setCancelled(true);
     }
@@ -115,7 +114,7 @@ public record PlayerListener(FeatherEssentials featherEssentials) implements Lis
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        IUser user = this.featherEssentials.getUserManager().getUser(player.getUniqueId());
+        IUser user = this.stardustPlugin.getUserService().getUser(player.getUniqueId());
         if (user != null && user.isVanished())
             event.setCancelled(true);
     }
