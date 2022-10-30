@@ -25,9 +25,12 @@ class StardustPlugin : JavaPlugin() {
     lateinit var commandCooldownService: CommandCooldownService
     lateinit var luckPermsService: LuckPermsService
 
+    lateinit var packetListener: PacketListener
+
     override fun onEnable() {
 
         saveDefaultConfig()
+        signedNameSpacedKey = NamespacedKey(this, "signed")
 
         i18nService = I18nService(this)
         databaseService = DatabaseService(
@@ -46,6 +49,11 @@ class StardustPlugin : JavaPlugin() {
         userService = UserService(this)
         userService.startUserTask()
 
+        if(server.pluginManager.isPluginEnabled("ProtocolLib")) {
+            packetListener = PacketListener(this)
+            packetListener.register()
+        }
+
         server.pluginManager.registerEvents(CommandCooldownListener(this), this)
         server.pluginManager.registerEvents(InventoryClickListener(this), this)
         server.pluginManager.registerEvents(PlayerChatListener(this), this)
@@ -63,6 +71,10 @@ class StardustPlugin : JavaPlugin() {
 
         if (this::databaseService.isInitialized) {
             databaseService.shutdown()
+        }
+
+        if (this::packetListener.isInitialized) {
+            packetListener.unregister()
         }
     }
 }
