@@ -24,7 +24,7 @@ class CommandCooldownListener(private val stardustPlugin: StardustPlugin) : List
             val commandCooldown =
                 stardustPlugin.commandCooldownService.getCommandCooldown(player.uniqueId, commandLabel)
 
-            if (!player.hasPermission("featheressentials.commandcooldown.bypass")) {
+            if (!player.hasPermission("stardust.commandcooldown.bypass")) {
                 if (commandCooldown != null && !stardustPlugin.commandCooldownService.isCooldownOver(
                         player.uniqueId,
                         commandLabel
