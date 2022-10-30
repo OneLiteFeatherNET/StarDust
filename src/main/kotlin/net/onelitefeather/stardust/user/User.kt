@@ -17,8 +17,8 @@ data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
-    @Column val uuid: String?,
-    @Column val lastKnownName: String?,
+    @Column val uuid: String = UUID.randomUUID().toString(),
+    @Column val lastKnownName: String = "",
     @Column val vanished: Boolean = false,
     @Column val flying: Boolean = false
 ) : IUser {
@@ -28,10 +28,10 @@ data class User(
     }
 
     override fun getUniqueId(): UUID {
-        return if (uuid != null) UUID.fromString(uuid) else UUID.randomUUID()
+        return UUID.fromString(uuid)
     }
 
-    override fun getName(): String? {
+    override fun getName(): String {
         return lastKnownName
     }
 
@@ -46,9 +46,9 @@ data class User(
         })
     }
 
-    override fun getDisplayName(): Component {
-        val base = getBase() ?: return Component.empty()
-        return base.displayName()
+    override fun getDisplayName(): String {
+        val base = getBase() ?: return lastKnownName
+        return LegacyComponentSerializer.legacyAmpersand().serialize(base.displayName())
     }
 
     override fun setFlying(flying: Boolean): IUser {
@@ -85,7 +85,7 @@ data class User(
 
     override fun checkCanFly() {
         val player = getBase() ?: return
-        if (player.hasPermission("featheressentials.join.flight") && isFlying()) {
+        if (player.hasPermission("stardust.join.flight") && isFlying()) {
             if (!player.allowFlight) player.allowFlight = true
         } else {
             if (player.allowFlight) {
