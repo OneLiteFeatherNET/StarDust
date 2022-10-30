@@ -33,7 +33,7 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
         }
 
         user.checkCanFly()
-        if (!player.hasPermission("featheressentials.join.gamemode")) {
+        if (!player.hasPermission("stardust.join.gamemode")) {
             player.gameMode = player.server.defaultGameMode
         }
 
