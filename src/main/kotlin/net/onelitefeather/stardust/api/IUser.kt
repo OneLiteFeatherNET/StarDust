@@ -11,13 +11,13 @@ interface IUser {
 
     fun getUniqueId(): UUID
 
-    fun getName(): String?
+    fun getName(): String
 
     fun setName(name: String): IUser
 
     fun setDisplayName(displayName: String)
 
-    fun getDisplayName(): Component?
+    fun getDisplayName(): String
 
     fun setFlying(flying: Boolean): IUser
 
