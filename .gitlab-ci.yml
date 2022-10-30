@@ -5,7 +5,7 @@ include:
 
 variables:
   JAR_FILE: "Stardust.jar"
-  BUCKET: "cloudnet"
+  BUCKET: "olf-dev"
   TEMPLATE: "default"
 
 deploy:
