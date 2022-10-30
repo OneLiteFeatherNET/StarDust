@@ -24,9 +24,9 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
 
         if (attacker is Permissible) {
             event.isCancelled = if (targetUser != null && targetUser.isVanished()) {
-                !attacker.hasPermission("featheressentials.bypass.damage.vanish")
+                !attacker.hasPermission("stardust.bypass.damage.vanish")
             } else if (targetUser != null && target.isInvulnerable) {
-                !attacker.hasPermission("featheressentials.bypass.damage.invulnerable")
+                !attacker.hasPermission("stardust.bypass.damage.invulnerable")
             } else {
                 false
             }
