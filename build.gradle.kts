@@ -1,11 +1,9 @@
 plugins {
     kotlin("jvm") version "1.7.10"
-    // Shadow
-    alias(libs.plugins.shadow)
+    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
+    id("xyz.jpenilla.run-paper") version "1.0.6"
 
-    // Bukkit
-    alias(libs.plugins.pluginYmlBukkit)
-    alias(libs.plugins.runPaper)
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 
     // LIQUIBASE
     // alias(libs.plugins.liquibase)
