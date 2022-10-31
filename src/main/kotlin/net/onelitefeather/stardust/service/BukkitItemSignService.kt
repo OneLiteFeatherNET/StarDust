@@ -2,15 +2,17 @@ package net.onelitefeather.stardust.service
 
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.api.ItemSignService
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
 
-class SignService(private val stardustPlugin: StardustPlugin, private var itemStack: ItemStack) {
+class BukkitItemSignService(private val stardustPlugin: StardustPlugin, private var itemStack: ItemStack):
+    ItemSignService<ItemStack, Player> {
 
-    fun sign(lore: List<Component>, player: Player): ItemStack {
+    override fun sign(lore: List<Component>, player: Player): ItemStack {
         if (!isSigned()) setSigned(true)
         if (player.gameMode != GameMode.CREATIVE) {
             if (itemStack.amount > 1) {
@@ -26,7 +28,7 @@ class SignService(private val stardustPlugin: StardustPlugin, private var itemSt
         return itemStack
     }
 
-    fun isSigned(): Boolean {
+    override fun isSigned(): Boolean {
         val itemMeta = itemStack.itemMeta ?: return false
         val container = itemMeta.persistentDataContainer
         if (!container.has(stardustPlugin.signedNameSpacedKey, PersistentDataType.INTEGER)) return false
@@ -34,8 +36,7 @@ class SignService(private val stardustPlugin: StardustPlugin, private var itemSt
         return integer != null && integer == 1
     }
 
-
-    fun setSigned(signed: Boolean) {
+    override fun setSigned(signed: Boolean) {
         val itemMeta = itemStack.itemMeta ?: return
         itemMeta.persistentDataContainer[stardustPlugin.signedNameSpacedKey, PersistentDataType.INTEGER] =
             if (signed) 1 else 0
