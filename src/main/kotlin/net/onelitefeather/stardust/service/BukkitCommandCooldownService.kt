@@ -2,6 +2,7 @@ package net.onelitefeather.stardust.service
 
 import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.api.CommandCooldownService
 import net.onelitefeather.stardust.command.CommandCooldown
 import org.hibernate.HibernateException
 import org.hibernate.Transaction
@@ -9,9 +10,9 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
-class CommandCooldownService(private val stardustPlugin: StardustPlugin) {
+class BukkitCommandCooldownService(private val stardustPlugin: StardustPlugin): CommandCooldownService {
 
-    fun getCommandCooldown(commandSender: UUID, command: String): CommandCooldown? {
+    override fun getCommandCooldown(commandSender: UUID, command: String): CommandCooldown? {
         try {
             stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
 
@@ -36,7 +37,7 @@ class CommandCooldownService(private val stardustPlugin: StardustPlugin) {
         return null
     }
 
-    fun addCommandCooldown(commandSender: UUID, command: String, timeUnit: TimeUnit, time: Long) {
+    override fun addCommandCooldown(commandSender: UUID, command: String, timeUnit: TimeUnit, time: Long) {
 
         var transaction: Transaction? = null
         try {
@@ -75,7 +76,7 @@ class CommandCooldownService(private val stardustPlugin: StardustPlugin) {
         }
     }
 
-    fun removeCommandCooldown(commandSender: UUID, command: String) {
+    override fun removeCommandCooldown(commandSender: UUID, command: String) {
         var transaction: Transaction? = null
         try {
             stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
@@ -93,20 +94,11 @@ class CommandCooldownService(private val stardustPlugin: StardustPlugin) {
         }
     }
 
-    fun exists(commandSender: UUID, command: String): Boolean = getCommandCooldown(commandSender, command) != null
+    override fun exists(commandSender: UUID, command: String): Boolean = getCommandCooldown(commandSender, command) != null
 
-    fun isCooldownOver(commandSender: UUID, command: String): Boolean = getCommandCooldown(commandSender, command)?.isOver() == true
+    override fun isCooldownOver(commandSender: UUID, command: String): Boolean = getCommandCooldown(commandSender, command)?.isOver() == true
 
-    fun getCooldownTime(timeUnit: TimeUnit, time: Long): Long {
-        return when (timeUnit) {
-            TimeUnit.DAYS -> 1000 * 60 * 60 * 24 * time
-            TimeUnit.HOURS -> 1000 * 60 * 60 * time
-            TimeUnit.MINUTES -> 1000 * 60 * time
-            else -> time
-        }
-    }
-
-    fun hasCommandCooldown(commandLabel: String): Boolean {
+    override fun hasCommandCooldown(commandLabel: String): Boolean {
         return false
     }
 }
