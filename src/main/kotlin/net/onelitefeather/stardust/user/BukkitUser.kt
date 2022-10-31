@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import net.onelitefeather.stardust.api.IUser
+import net.onelitefeather.stardust.api.user.User
 import net.onelitefeather.stardust.extenstions.miniMessage
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -13,7 +13,7 @@ import java.util.UUID
 
 @Entity
 @Table
-data class User(
+data class BukkitUser(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
@@ -21,7 +21,7 @@ data class User(
     @Column val lastKnownName: String = "",
     @Column val vanished: Boolean = false,
     @Column val flying: Boolean = false
-) : IUser {
+) : User {
 
     override fun getId(): Long {
         return id ?: -1
@@ -35,7 +35,7 @@ data class User(
         return lastKnownName
     }
 
-    override fun setName(name: String): IUser {
+    override fun setName(name: String): User {
         return this.copy(lastKnownName = name)
     }
 
@@ -51,7 +51,7 @@ data class User(
         return LegacyComponentSerializer.legacyAmpersand().serialize(base.displayName())
     }
 
-    override fun setFlying(flying: Boolean): IUser {
+    override fun setFlying(flying: Boolean): User {
         return this.copy(flying = flying)
     }
 
@@ -59,7 +59,7 @@ data class User(
         return flying
     }
 
-    override fun setVanished(vanished: Boolean): IUser {
+    override fun setVanished(vanished: Boolean): User {
 
         val base = getBase()
         if (base != null) {
@@ -98,7 +98,7 @@ data class User(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-        other as User
+        other as BukkitUser
 
         return id != null && id == other.id
     }
