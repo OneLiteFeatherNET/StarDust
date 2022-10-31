@@ -2,9 +2,10 @@ package net.onelitefeather.stardust.service
 
 import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.api.IUser
+import net.onelitefeather.stardust.api.UserService
+import net.onelitefeather.stardust.api.user.User
 import net.onelitefeather.stardust.tasks.UserTask
-import net.onelitefeather.stardust.user.User
+import net.onelitefeather.stardust.user.BukkitUser
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import org.hibernate.HibernateException
@@ -13,26 +14,26 @@ import java.util.UUID
 import java.util.function.Consumer
 import java.util.logging.Level
 
-class UserService(val stardustPlugin: StardustPlugin) {
+class BukkitUserService(val stardustPlugin: StardustPlugin) : UserService<Player> {
 
     lateinit var userTask: UserTask
     lateinit var bukkitUserTask: BukkitTask
 
-    fun startUserTask() {
+    override fun startUserTask() {
         userTask = UserTask(stardustPlugin)
         bukkitUserTask = stardustPlugin.server.scheduler.runTaskTimerAsynchronously(stardustPlugin, userTask, 0L, 20L)
     }
 
-    fun stopUserTask() {
+    override fun stopUserTask() {
         if (this::bukkitUserTask.isInitialized) {
             bukkitUserTask.cancel()
         }
     }
 
-    fun getUsers(): List<IUser> {
+    override fun getUsers(): List<User> {
         try {
             stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
-                val query = session.createQuery("SELECT u FROM User u", User::class.java)
+                val query = session.createQuery("SELECT u FROM User u", BukkitUser::class.java)
                 return query.list()
             }
         } catch (e: HibernateException) {
@@ -43,10 +44,10 @@ class UserService(val stardustPlugin: StardustPlugin) {
         return emptyList()
     }
 
-    fun getUser(uuid: UUID): IUser? {
+    override fun getUser(uuid: UUID): User? {
         try {
             stardustPlugin.databaseService.sessionFactory.openSession().use {
-                val query = it.createQuery("SELECT u FROM User u WHERE u.uuid = :uuid", User::class.java)
+                val query = it.createQuery("SELECT u FROM User u WHERE u.uuid = :uuid", BukkitUser::class.java)
                 query.setParameter("uuid", uuid.toString())
                 return query.uniqueResult()
             }
@@ -58,10 +59,10 @@ class UserService(val stardustPlugin: StardustPlugin) {
         return null
     }
 
-    fun getUser(name: String): IUser? {
+    override fun getUser(name: String): User? {
         try {
             stardustPlugin.databaseService.sessionFactory.openSession().use {
-                val query = it.createQuery("SELECT u FROM User u WHERE u.lastKnownName = :name", User::class.java)
+                val query = it.createQuery("SELECT u FROM User u WHERE u.lastKnownName = :name", BukkitUser::class.java)
                 query.setParameter("name", name)
                 return query.uniqueResult()
             }
@@ -73,25 +74,25 @@ class UserService(val stardustPlugin: StardustPlugin) {
         return null
     }
 
-    fun registerUser(player: Player, consumer: Consumer<IUser>) {
+    override fun registerUser(player: Player, consumer: Consumer<User>) {
 
         val uuid = player.uniqueId
         val name = player.name
 
         if (!isUserCreated(uuid)) {
-            val user = User(null, uuid.toString(), name, vanished = false, flying = false)
-            updateUser(user)
-            consumer.accept(user)
+            val bukkitUser = BukkitUser(null, uuid.toString(), name, vanished = false, flying = false)
+            updateUser(bukkitUser)
+            consumer.accept(bukkitUser)
         }
     }
 
-    fun isUserCreated(uuid: UUID): Boolean = getUser(uuid) != null
+    override fun isUserCreated(uuid: UUID): Boolean = getUser(uuid) != null
 
-    fun updateUser(user: IUser) {
+    override fun updateUser(user: User) {
         var transaction: Transaction? = null
         try {
             stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
-                if (user is User) {
+                if (user is BukkitUser) {
                     transaction = session.beginTransaction()
                     val existUser = isUserCreated(user.getUniqueId())
                     if (!existUser) session.persist(user) else session.merge(user)
@@ -105,7 +106,7 @@ class UserService(val stardustPlugin: StardustPlugin) {
         }
     }
 
-    fun deleteUser(uuid: UUID, consumer: Consumer<Boolean>) {
+    override fun deleteUser(uuid: UUID, consumer: Consumer<Boolean>) {
 
         val cachedUser = getUser(uuid)
         var success: Boolean
@@ -126,7 +127,7 @@ class UserService(val stardustPlugin: StardustPlugin) {
         consumer.accept(success)
     }
 
-    fun toggleVanish(user: IUser): Boolean {
+    fun toggleVanish(user: User): Boolean {
 
         val base = user.getBase() ?: return false
         if (!user.isVanished()) {
