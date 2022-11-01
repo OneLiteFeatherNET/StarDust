@@ -3,6 +3,8 @@ package net.onelitefeather.stardust
 import cloud.commandframework.annotations.AnnotationParser
 import cloud.commandframework.minecraft.extras.MinecraftHelp
 import cloud.commandframework.paper.PaperCommandManager
+import net.onelitefeather.stardust.api.CommandCooldownService
+import net.onelitefeather.stardust.api.UserService
 import net.onelitefeather.stardust.extenstions.buildCommandSystem
 import net.onelitefeather.stardust.extenstions.buildHelpSystem
 import net.onelitefeather.stardust.extenstions.initLuckPermsSupport
@@ -10,6 +12,7 @@ import net.onelitefeather.stardust.listener.*
 import net.onelitefeather.stardust.service.*
 import org.bukkit.NamespacedKey
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
 class StardustPlugin : JavaPlugin() {
@@ -21,7 +24,7 @@ class StardustPlugin : JavaPlugin() {
     lateinit var i18nService: I18nService
     lateinit var signedNameSpacedKey: NamespacedKey
     lateinit var databaseService: DatabaseService
-    lateinit var userService: UserService
+    lateinit var userService: UserService<Player>
     lateinit var commandCooldownService: CommandCooldownService
     lateinit var luckPermsService: LuckPermsService
 
@@ -40,13 +43,13 @@ class StardustPlugin : JavaPlugin() {
         )
 
         databaseService.init()
-        commandCooldownService = CommandCooldownService(this)
+        commandCooldownService = BukkitCommandCooldownService(this)
 
         initLuckPermsSupport()
         buildCommandSystem()
         buildHelpSystem()
 
-        userService = UserService(this)
+        userService = BukkitUserService(this)
         userService.startUserTask()
 
         if(server.pluginManager.isPluginEnabled("ProtocolLib")) {
