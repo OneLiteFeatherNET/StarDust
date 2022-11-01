@@ -4,10 +4,9 @@ import net.kyori.adventure.text.Component
 
 interface ItemSignService<I, P> {
 
-    fun sign(baseItemStack: I, lore: List<Component>, player: P): I
+    fun sign(lore: List<Component>, player: P): I
 
-    fun removeSignature(baseItemStack: I, player: P): I
+    fun isSigned(): Boolean
 
-    fun hasSigned(itemStack: I, player: P): Boolean
-
+    fun setSigned(signed: Boolean)
 }
