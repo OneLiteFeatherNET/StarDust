@@ -3,7 +3,7 @@ package net.onelitefeather.stardust.listener
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.api.IUser
+import net.onelitefeather.stardust.api.user.User
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -36,7 +36,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
     @EventHandler
     fun onTarget(event: EntityTargetEvent) {
 
-        var user: IUser? = null
+        var user: User? = null
         var entity: Entity? = null
 
         if (event.entity is Player) {
