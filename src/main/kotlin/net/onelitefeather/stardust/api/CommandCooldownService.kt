@@ -1,8 +1,7 @@
 package net.onelitefeather.stardust.api
 
 import net.onelitefeather.stardust.command.CommandCooldown
-import net.onelitefeather.stardust.command.CooldownData
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 interface CommandCooldownService {
@@ -19,19 +18,12 @@ interface CommandCooldownService {
 
     fun hasCommandCooldown(commandLabel: String): Boolean
 
-    fun getCooldownDataList(): List<CooldownData>
-
-    fun getCooldownData(commandName: String): CooldownData?
-
     fun getCooldownTime(timeUnit: TimeUnit, time: Long): Long {
-        return System.currentTimeMillis() + when (timeUnit) {
+        return when (timeUnit) {
             TimeUnit.DAYS -> 1000 * 60 * 60 * 24 * time
             TimeUnit.HOURS -> 1000 * 60 * 60 * time
             TimeUnit.MINUTES -> 1000 * 60 * time
-            TimeUnit.SECONDS -> 1000 * time
-            else -> throw IllegalStateException(
-                "The TimeUnit " + timeUnit.name.lowercase() + " is not allowed here"
-            )
+            else -> time
         }
     }
 }
