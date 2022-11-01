@@ -8,7 +8,7 @@ import cloud.commandframework.annotations.specifier.Quoted
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.service.SignService
+import net.onelitefeather.stardust.service.BukkitItemSignService
 import net.onelitefeather.stardust.util.DATE_FORMAT
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -31,7 +31,7 @@ class SignCommand(private val stardustPlugin: StardustPlugin) {
             return
         }
 
-        val signService = SignService(stardustPlugin, itemStack)
+        val signService = BukkitItemSignService(stardustPlugin, itemStack)
         if (signService.isSigned() && !player.hasPermission("stardust.command.sign.override")) {
             player.sendMessage(miniMessage {
                 stardustPlugin.i18nService.getMessage(
