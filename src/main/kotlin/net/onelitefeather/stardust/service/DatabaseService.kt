@@ -1,7 +1,7 @@
 package net.onelitefeather.stardust.service
 
 import net.onelitefeather.stardust.command.CommandCooldown
-import net.onelitefeather.stardust.user.User
+import net.onelitefeather.stardust.user.BukkitUser
 import org.hibernate.SessionFactory
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder
 import org.hibernate.cfg.Configuration
@@ -33,7 +33,7 @@ class DatabaseService(val jdbcUrl: String, val username: String, val password: S
 
         configuration.properties = properties
 
-        configuration.addAnnotatedClass(User::class.java)
+        configuration.addAnnotatedClass(BukkitUser::class.java)
         configuration.addAnnotatedClass(CommandCooldown::class.java)
 
         val registry = StandardServiceRegistryBuilder().applySettings(configuration.properties).build()
