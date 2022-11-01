@@ -8,7 +8,7 @@ import cloud.commandframework.annotations.parsers.Parser
 import cloud.commandframework.annotations.suggestions.Suggestions
 import cloud.commandframework.context.CommandContext
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.api.IUser
+import net.onelitefeather.stardust.api.user.User
 import net.onelitefeather.stardust.extenstions.miniMessage
 import net.onelitefeather.stardust.util.DUMMY_USER
 import org.bukkit.command.CommandSender
@@ -23,7 +23,7 @@ class UserInfoCommand(private val stardustPlugin: StardustPlugin) {
     @CommandDescription("Get information about a User")
     fun handleCommand(
         commandSender: CommandSender,
-        @Argument(value = "user", parserName = "user") user: IUser
+        @Argument(value = "user", parserName = "user") user: User
     ) {
 
         val enabled = this.stardustPlugin.i18nService.getMessage("plugin.boolean-yes")
@@ -90,7 +90,7 @@ class UserInfoCommand(private val stardustPlugin: StardustPlugin) {
             .filter { StringUtil.startsWithIgnoreCase(it.getName(), input.lowercase()) }.map { it.getName() }
 
     @Parser(name = "user", suggestions = "users")
-    fun parseUsers(commandContext: CommandContext<CommandSender>, input: Queue<String>): IUser {
+    fun parseUsers(commandContext: CommandContext<CommandSender>, input: Queue<String>): User {
         val uuid = stardustPlugin.server.getPlayerUniqueId(input.remove()) ?: return DUMMY_USER
         return stardustPlugin.userService.getUser(uuid) ?: DUMMY_USER
     }
