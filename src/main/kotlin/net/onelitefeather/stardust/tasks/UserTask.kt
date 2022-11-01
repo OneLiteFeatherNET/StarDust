@@ -7,6 +7,7 @@ import org.bukkit.entity.Player
 class UserTask(val stardustPlugin: StardustPlugin) : Runnable {
 
     override fun run() {
+        // Rework later
         stardustPlugin.server.onlinePlayers.forEach { player: Player ->
             val user = stardustPlugin.userService.getUser(player.uniqueId)
             if (user != null && user.isVanished()) {
