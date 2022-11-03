@@ -11,6 +11,7 @@ import cloud.commandframework.paper.PaperCommandManager
 import io.sentry.Sentry
 import net.kyori.adventure.text.format.NamedTextColor
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.command.commands.*
 import net.onelitefeather.stardust.service.LuckPermsService
 import org.bukkit.command.CommandSender
 import java.util.function.Function
@@ -21,6 +22,21 @@ fun StardustPlugin.initLuckPermsSupport() {
         luckPermsService = LuckPermsService(this)
         luckPermsService.init()
     }
+}
+
+fun StardustPlugin.registerCommands() {
+    annotationParser.parse(FlightCommand(this))
+    annotationParser.parse(GameModeCommand(this))
+    annotationParser.parse(GlowCommand(this))
+    annotationParser.parse(HealCommand(this))
+    annotationParser.parse(InvseeCommand(this))
+    annotationParser.parse(RenameCommand(this))
+    annotationParser.parse(RepairCommand(this))
+    annotationParser.parse(SignCommand(this))
+    annotationParser.parse(SkullCommand(this))
+    annotationParser.parse(SpawnMobCommand(this))
+    annotationParser.parse(UserInfoCommand(this))
+    annotationParser.parse(VanishCommand(this))
 }
 
 fun StardustPlugin.buildCommandSystem() {
