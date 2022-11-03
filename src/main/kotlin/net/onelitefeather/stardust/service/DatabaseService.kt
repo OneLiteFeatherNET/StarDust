@@ -1,14 +1,18 @@
 package net.onelitefeather.stardust.service
 
 import net.onelitefeather.stardust.command.CommandCooldown
-import net.onelitefeather.stardust.user.BukkitUser
+import net.onelitefeather.stardust.user.User
+import net.onelitefeather.stardust.user.UserProperty
 import org.hibernate.SessionFactory
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder
 import org.hibernate.cfg.Configuration
 import org.hibernate.cfg.Environment
+import org.hibernate.dialect.MariaDBDialect
+import org.hibernate.hikaricp.internal.HikariCPConnectionProvider
+import org.hibernate.tool.schema.Action
 import java.util.Properties
 
-class DatabaseService(val jdbcUrl: String, val username: String, val password: String) {
+class DatabaseService(val jdbcUrl: String, val username: String, val password: String, val driver: String) {
 
     lateinit var sessionFactory: SessionFactory
 
@@ -21,19 +25,18 @@ class DatabaseService(val jdbcUrl: String, val username: String, val password: S
         val configuration = Configuration()
         val properties = Properties()
 
-        properties[Environment.DIALECT] = "org.hibernate.dialect.MariaDBDialect"
-        properties[Environment.HBM2DDL_AUTO] = "update"
-        properties[Environment.DRIVER] = "com.mysql.cj.jdbc.Driver"
+        properties[Environment.URL] = jdbcUrl
+        properties[Environment.DRIVER] = driver
         properties[Environment.USER] = username
         properties[Environment.PASS] = password
-        properties[Environment.SHOW_SQL] = false
-        properties[Environment.LOG_SESSION_METRICS] = false
-        properties["hibernate.connection.provider_class"] = "org.hibernate.hikaricp.internal.HikariCPConnectionProvider"
-        properties[Environment.URL] = jdbcUrl
+        properties[Environment.CONNECTION_PROVIDER] = HikariCPConnectionProvider::class.java
+        properties[Environment.DIALECT] = MariaDBDialect()
+        properties[Environment.HBM2DDL_AUTO] = Action.UPDATE.name.lowercase()
 
         configuration.properties = properties
 
-        configuration.addAnnotatedClass(BukkitUser::class.java)
+        configuration.addAnnotatedClass(User::class.java)
+        configuration.addAnnotatedClass(UserProperty::class.java)
         configuration.addAnnotatedClass(CommandCooldown::class.java)
 
         val registry = StandardServiceRegistryBuilder().applySettings(configuration.properties).build()
@@ -41,7 +44,7 @@ class DatabaseService(val jdbcUrl: String, val username: String, val password: S
     }
 
     fun shutdown() {
-        if(this::sessionFactory.isInitialized) {
+        if (this::sessionFactory.isInitialized) {
             sessionFactory.close()
         }
 
