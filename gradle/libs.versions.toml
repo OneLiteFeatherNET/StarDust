@@ -16,7 +16,7 @@ adventure = "4.10.1"
 cloud = "1.7.1"
 commodore = "2.2"
 # Database
-hibernate = "6.1.2.Final"
+hibernate = "6.1.5.Final"
 hikaricp = "5.0.1"
 mariadbJavaClient = "3.0.5"
 redisson = "3.17.3"
