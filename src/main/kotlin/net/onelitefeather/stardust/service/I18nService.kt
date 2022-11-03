@@ -19,10 +19,8 @@ class I18nService(val stardustPlugin: StardustPlugin) {
     }
 
     fun getMessage(key: String, vararg variables: Any): String {
-        return if (defaultMessages.containsKey(key)) MessageFormat.format(
-            defaultMessages.getString(key),
-            variables
-        ) else NOT_AVAILABLE_CONFIG_FALLBACK.format(key)
+        return if (defaultMessages.containsKey(key)) MessageFormat(defaultMessages.getString(key)).format(variables)
+        else NOT_AVAILABLE_CONFIG_FALLBACK.format(key)
     }
 
     fun translateLegacyString(message: Component): String {
@@ -38,7 +36,7 @@ class I18nService(val stardustPlugin: StardustPlugin) {
         val minutes = diff / (1000 * 60) % 60
         val hours = diff / (1000 * 60 * 60) % 24
         val days = diff / (1000 * 60 * 60 * 24) % 365
-        val remainingTime: String = if (diff > 60 * 60 * 24) {
+        val remainingTime = if (diff > 60 * 60 * 24) {
             getMessage("remaining-time.days", days, hours, minutes, seconds)
         } else if (diff > 60 * 60) {
             getMessage("remaining-time.hours", hours, minutes, seconds)
