@@ -11,7 +11,7 @@ plugins {
     // id("org.sonarqube") version "3.4.0.2513"
 }
 
-group = "net.onelitefeather.stardust"
+group = "net.onelitefeather"
 version = "1.0.0-SNAPSHOT"
 
 repositories {
@@ -44,8 +44,9 @@ dependencies {
     }
 
     // Database
-    implementation(libs.bundles.hibernate)
-    implementation(libs.bundles.liquibase)
+    implementation("org.hibernate:hibernate-core:6.1.5.Final")
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.0.6")
+    implementation("org.hibernate.orm:hibernate-hikaricp:6.1.5.Final")
 
     // liquibaseRuntime("org.liquibase.ext:liquibase-hibernate5:4.9.1") // Changelog based db
     // liquibaseRuntime("org.mariadb.jdbc:mariadb-java-client:3.0.4") // Changelog based db
@@ -84,7 +85,7 @@ tasks {
 }
 
 bukkit {
-    main = "${rootProject.group}.Stardust"
+    main = "${rootProject.group}.stardust.StardustPlugin"
     apiVersion = "1.19"
     name = "Stardust"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
