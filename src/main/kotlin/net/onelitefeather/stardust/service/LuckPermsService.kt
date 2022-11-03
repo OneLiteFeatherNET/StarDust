@@ -25,6 +25,8 @@ class LuckPermsService(val stardustPlugin: StardustPlugin) {
         }
     }
 
+    fun isEnabled(): Boolean = this::luckPerms.isInitialized
+
     fun getPlayerDisplayName(player: Player): Component {
         return MiniMessage.miniMessage().deserialize(getPlayerGroupPrefix(player).plus(" ${player.name}"))
     }
