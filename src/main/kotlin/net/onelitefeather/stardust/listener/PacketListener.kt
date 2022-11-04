@@ -31,6 +31,6 @@ class PacketListener(private val stardustPlugin: StardustPlugin) {
 
     fun hideVanishedPlayers(playerInfoDataList: List<PlayerInfoData>): List<PlayerInfoData> =
         playerInfoDataList.filter { playerInfoData ->
-            stardustPlugin.userService.getUser(playerInfoData.profile.uuid)?.isVanished() == true
+            stardustPlugin.userService.getUser(playerInfoData.profile.uuid)?.properties?.isVanished() == true
         }
 }
