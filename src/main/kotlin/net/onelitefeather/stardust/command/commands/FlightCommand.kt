@@ -7,6 +7,7 @@ import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.extenstions.miniMessage
+import net.onelitefeather.stardust.user.UserPropertyType
 import org.bukkit.GameMode
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -30,7 +31,7 @@ class FlightCommand(val stardustPlugin: StardustPlugin) {
 
     private fun handleFlight(commandSender: CommandSender, target: Player) {
 
-        val user = stardustPlugin.userService.getUser(target.uniqueId)
+        val user = stardustPlugin.userService.getUser(target.uniqueId)!!
 
         val enabled = stardustPlugin.i18nService.getMessage(
             "commands.flight.enable",
@@ -58,14 +59,17 @@ class FlightCommand(val stardustPlugin: StardustPlugin) {
             return
         }
 
-        if (GameMode.CREATIVE == target.gameMode || GameMode.SPECTATOR == target.gameMode) {
-            target.allowFlight = !target.allowFlight
-            user?.setFlying(target.allowFlight)
-            commandSender.sendMessage(miniMessage { if (target.allowFlight) enabled else disabled })
+        if(target.gameMode == GameMode.CREATIVE) {
+            commandSender.sendMessage(miniMessage { "Player ${target.name} is in creative mode" })
+            return
+        }
 
-            if (commandSender != target) {
-                target.sendMessage(miniMessage { if (target.allowFlight) enabled else disabled })
-            }
+        target.allowFlight = !target.allowFlight
+        stardustPlugin.userService.setUserProperty(user, UserPropertyType.FLYING, target.allowFlight)
+        commandSender.sendMessage(miniMessage { if (target.allowFlight) enabled else disabled })
+
+        if (commandSender != target) {
+            target.sendMessage(miniMessage { if (target.allowFlight) enabled else disabled })
         }
     }
 }
