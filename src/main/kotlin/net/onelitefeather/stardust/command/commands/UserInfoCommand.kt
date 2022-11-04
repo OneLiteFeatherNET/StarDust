@@ -8,8 +8,8 @@ import cloud.commandframework.annotations.parsers.Parser
 import cloud.commandframework.annotations.suggestions.Suggestions
 import cloud.commandframework.context.CommandContext
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.api.user.User
 import net.onelitefeather.stardust.extenstions.miniMessage
+import net.onelitefeather.stardust.user.User
 import net.onelitefeather.stardust.util.DUMMY_USER
 import org.bukkit.command.CommandSender
 import org.bukkit.util.StringUtil
@@ -23,7 +23,7 @@ class UserInfoCommand(private val stardustPlugin: StardustPlugin) {
     @CommandDescription("Get information about a User")
     fun handleCommand(
         commandSender: CommandSender,
-        @Argument(value = "user", parserName = "user") user: User
+        @Argument(value = "player", parserName = "user") user: User
     ) {
 
         val enabled = this.stardustPlugin.i18nService.getMessage("plugin.boolean-yes")
@@ -44,21 +44,21 @@ class UserInfoCommand(private val stardustPlugin: StardustPlugin) {
         commandSender.sendMessage(miniMessage {
             stardustPlugin.i18nService.getMessage(
                 "commands.user.info.name",
-                *arrayOf(prefix, user.getName())
+                *arrayOf(prefix, user.name)
             )
         })
 
         commandSender.sendMessage(miniMessage {
             stardustPlugin.i18nService.getMessage(
                 "commands.user.info.flying",
-                *arrayOf(prefix, if (user.isFlying()) enabled else disabled)
+                *arrayOf(prefix, if (user.properties.isFlying()) enabled else disabled)
             )
         })
 
         commandSender.sendMessage(miniMessage {
             stardustPlugin.i18nService.getMessage(
                 "commands.user.info.vanished",
-                *arrayOf(prefix, if (user.isVanished()) enabled else disabled)
+                *arrayOf(prefix, if (user.properties.isVanished()) enabled else disabled)
             )
         })
 
@@ -87,7 +87,7 @@ class UserInfoCommand(private val stardustPlugin: StardustPlugin) {
     @Suggestions("users")
     fun userSuggestions(commandContext: CommandContext<CommandSender>, input: String) =
         stardustPlugin.userService.getUsers()
-            .filter { StringUtil.startsWithIgnoreCase(it.getName(), input.lowercase()) }.map { it.getName() }
+            .filter { StringUtil.startsWithIgnoreCase(it.name, input.lowercase()) }.map { it.name }
 
     @Parser(name = "user", suggestions = "users")
     fun parseUsers(commandContext: CommandContext<CommandSender>, input: Queue<String>): User {
