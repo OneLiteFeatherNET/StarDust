@@ -38,7 +38,7 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) {
         val user = stardustPlugin.userService.getUser(target.uniqueId)
         if (user != null) {
 
-            val state = stardustPlugin.userService.toggleVanish(user)
+            val state = stardustPlugin.userService.playerVanishService.toggle(target)
             val targetEnable = stardustPlugin.i18nService.getMessage(
                 "commands.vanish.enable",
                 *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), user.getDisplayName())
