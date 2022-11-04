@@ -4,15 +4,14 @@ import cloud.commandframework.annotations.AnnotationParser
 import cloud.commandframework.minecraft.extras.MinecraftHelp
 import cloud.commandframework.paper.PaperCommandManager
 import net.onelitefeather.stardust.api.CommandCooldownService
-import net.onelitefeather.stardust.api.UserService
 import net.onelitefeather.stardust.extenstions.buildCommandSystem
 import net.onelitefeather.stardust.extenstions.buildHelpSystem
 import net.onelitefeather.stardust.extenstions.initLuckPermsSupport
+import net.onelitefeather.stardust.extenstions.registerCommands
 import net.onelitefeather.stardust.listener.*
 import net.onelitefeather.stardust.service.*
 import org.bukkit.NamespacedKey
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
 class StardustPlugin : JavaPlugin() {
@@ -24,7 +23,7 @@ class StardustPlugin : JavaPlugin() {
     lateinit var i18nService: I18nService
     lateinit var signedNameSpacedKey: NamespacedKey
     lateinit var databaseService: DatabaseService
-    lateinit var userService: UserService<Player>
+    lateinit var userService: UserService
     lateinit var commandCooldownService: CommandCooldownService
     lateinit var luckPermsService: LuckPermsService
 
@@ -35,21 +34,28 @@ class StardustPlugin : JavaPlugin() {
         saveDefaultConfig()
         signedNameSpacedKey = NamespacedKey(this, "signed")
 
-        i18nService = I18nService(this)
-        databaseService = DatabaseService(
-            config.getString("database.jdbcUrl", "Invalid url")!!,
-            config.getString("database.username", "Unknown username")!!,
-            config.getString("database.password", "IReallyKnowWhatIAmDoingISwear")!!
-        )
 
-        databaseService.init()
-        commandCooldownService = BukkitCommandCooldownService(this)
+        luckPermsService = LuckPermsService(this)
+
+        i18nService = I18nService(this)
+
+        val jdbcUrl = config.getString("database.jdbcUrl")
+        val databaseDriver = config.getString("database.driver")
+        val username = config.getString("database.username")
+        val password = config.getString("database.password") ?: "IReallyKnowWhatIAmDoingISwear"
+
+        if(jdbcUrl != null && databaseDriver != null && username != null) {
+            databaseService = DatabaseService(jdbcUrl, username, password, databaseDriver)
+            databaseService.init()
+            commandCooldownService = BukkitCommandCooldownService(this)
+        }
 
         initLuckPermsSupport()
         buildCommandSystem()
         buildHelpSystem()
+        registerCommands()
 
-        userService = BukkitUserService(this)
+        userService = UserService(this)
         userService.startUserTask()
 
         if(server.pluginManager.isPluginEnabled("ProtocolLib")) {
