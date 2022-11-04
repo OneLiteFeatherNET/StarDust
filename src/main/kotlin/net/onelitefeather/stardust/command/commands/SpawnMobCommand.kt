@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
+import org.bukkit.entity.Tameable
 import org.bukkit.util.StringUtil
 
 class SpawnMobCommand(private val stardustPlugin: StardustPlugin) {
@@ -28,13 +29,13 @@ class SpawnMobCommand(private val stardustPlugin: StardustPlugin) {
     @CommandDescription("Spawn a Mob with the given Type.")
     fun handleCommand(
         player: Player,
-        @Argument(value = "entity_types") @Quoted entityType: String,
+        @Argument(value = "type", suggestions = "entity_types") @Quoted entityType: String,
         @Range(min = "1", max = "25") @Argument(value = "amount") amount: Int
     ) {
 
         val location = player.location
         if (!entityType.contains(",")) {
-            spawn(location, EntityType.valueOf(entityType), amount)
+            spawn(location, EntityType.valueOf(entityType.uppercase()), amount)
             player.sendMessage(miniMessage {
                 stardustPlugin.i18nService.getMessage(
                     "commands.spawnmob.success",
@@ -62,6 +63,7 @@ class SpawnMobCommand(private val stardustPlugin: StardustPlugin) {
                 if (next < strings.size) {
                     val nextType = EntityType.valueOf(strings[next].uppercase())
                     if (spawnedMob != null) {
+                        tameMob(spawnedMob)
                         spawnedMount = location.world.spawnEntity(location, nextType)
                         spawnedMob.addPassenger(spawnedMount)
                         spawnedMob = spawnedMount
@@ -77,6 +79,12 @@ class SpawnMobCommand(private val stardustPlugin: StardustPlugin) {
                     )
                 )
             })
+        }
+    }
+
+    private fun tameMob(entity: Entity) {
+        if(entity is Tameable) {
+            entity.isTamed = true
         }
     }
 
