@@ -8,17 +8,19 @@ import org.hibernate.Hibernate
 data class CommandCooldown(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long?,
+    val id: Long? = null,
 
     @Column
-    val commandSender: String,
+    val commandSender: String = "",
 
     @Column
-    val command: String,
+    val command: String = "",
 
     @Column
     val executedAt: Long = -1
 ) {
+
+    constructor() : this(null)
 
     fun isOver(): Boolean = System.currentTimeMillis() >= executedAt
 
