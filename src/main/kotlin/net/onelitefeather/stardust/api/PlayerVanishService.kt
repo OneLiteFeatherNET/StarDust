@@ -13,5 +13,4 @@ interface PlayerVanishService<P> {
     fun isVanished(player: P): Boolean
 
     fun setVanished(user: User, vanished: Boolean)
-    fun onPlayerJoin(player: P)
 }
