@@ -10,7 +10,7 @@ class UserTask(val stardustPlugin: StardustPlugin) : Runnable {
         // Rework later
         stardustPlugin.server.onlinePlayers.forEach { player: Player ->
             val user = stardustPlugin.userService.getUser(player.uniqueId)
-            if (user != null && user.isVanished()) {
+            if (user != null && user.properties.isVanished()) {
                 player.sendActionBar(
                     MiniMessage.miniMessage().deserialize(stardustPlugin.i18nService.getMessage("plugin.vanish-actionbar"))
                 )
