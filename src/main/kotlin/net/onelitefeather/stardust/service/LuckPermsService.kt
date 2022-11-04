@@ -42,6 +42,7 @@ class LuckPermsService(val stardustPlugin: StardustPlugin) {
     }
 
     fun getGroupPriority(player: Player): Int {
+        if(!isEnabled()) return 0
         return getPrimaryGroup(player).weight.orElse(0)
     }
 
