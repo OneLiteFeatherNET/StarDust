@@ -6,7 +6,12 @@ import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.extenstions.coloredDisplayName
 import net.onelitefeather.stardust.extenstions.miniMessage
+import net.onelitefeather.stardust.util.DEFAULT_ENTITY_HAS_VISUAL_FIRE
+import net.onelitefeather.stardust.util.DEFAULT_PLAYER_FIRE_TICKS
+import net.onelitefeather.stardust.util.DEFAULT_PLAYER_FOOD_LEVEL
+import net.onelitefeather.stardust.util.DEFAULT_PLAYER_SATURATION_LEVEL
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeInstance
 import org.bukkit.command.CommandSender
@@ -31,8 +36,7 @@ class HealCommand(private val stardustPlugin: StardustPlugin) {
         if (target != commandSender && !commandSender.hasPermission("stardust.command.heal.others")) {
             commandSender.sendMessage(miniMessage {
                 stardustPlugin.i18nService.getMessage(
-                    "plugin.not-enough-permissions",
-                    *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+                    "plugin.not-enough-permissions", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
                 )
             })
 
@@ -44,15 +48,15 @@ class HealCommand(private val stardustPlugin: StardustPlugin) {
             target.health = healthAttribute.value
         }
 
-        target.fireTicks = 0
-        target.isVisualFire = false
-        target.foodLevel = 20
-        target.saturation = 20.0F
+        target.fireTicks = DEFAULT_PLAYER_FIRE_TICKS
+        target.isVisualFire = DEFAULT_ENTITY_HAS_VISUAL_FIRE
+        target.foodLevel = DEFAULT_PLAYER_FOOD_LEVEL
+        target.saturation = DEFAULT_PLAYER_SATURATION_LEVEL
 
         val message = this.stardustPlugin.i18nService.getMessage(
             "commands.heal.success",
             stardustPlugin.i18nService.getPluginPrefix(),
-            stardustPlugin.i18nService.translateLegacyString(target.displayName()),
+            target.coloredDisplayName(),
             target.health
         )
 
