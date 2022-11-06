@@ -81,7 +81,7 @@ fun StardustPlugin.buildCommandSystem() {
 
 fun StardustPlugin.buildHelpSystem() {
     minecraftHelp = MinecraftHelp.createNative(
-        "/pandorascluster help",
+        "/stardust help",
         paperCommandManager
     )
 
