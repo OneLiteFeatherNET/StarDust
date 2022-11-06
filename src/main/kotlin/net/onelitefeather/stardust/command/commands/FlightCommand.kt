@@ -6,6 +6,7 @@ import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.extenstions.coloredDisplayName
 import net.onelitefeather.stardust.extenstions.miniMessage
 import net.onelitefeather.stardust.user.UserPropertyType
 import org.bukkit.GameMode
@@ -33,20 +34,14 @@ class FlightCommand(val stardustPlugin: StardustPlugin) {
 
         val user = stardustPlugin.userService.getUser(target.uniqueId)!!
 
-        val enabled = stardustPlugin.i18nService.getMessage(
+        val enabledMessage = stardustPlugin.i18nService.getMessage(
             "commands.flight.enable",
-            *arrayOf(
-                stardustPlugin.i18nService.getPluginPrefix(),
-                stardustPlugin.i18nService.translateLegacyString(target.displayName())
-            )
+            *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName())
         )
 
-        val disabled = stardustPlugin.i18nService.getMessage(
+        val disabledMessage = stardustPlugin.i18nService.getMessage(
             "commands.flight.disable",
-            *arrayOf(
-                stardustPlugin.i18nService.getPluginPrefix(),
-                stardustPlugin.i18nService.translateLegacyString(target.displayName())
-            )
+            *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName())
         )
 
         if (commandSender != target && !commandSender.hasPermission("stardust.command.flight.others")) {
@@ -59,17 +54,25 @@ class FlightCommand(val stardustPlugin: StardustPlugin) {
             return
         }
 
-        if(target.gameMode == GameMode.CREATIVE) {
-            commandSender.sendMessage(miniMessage { "Player ${target.name} is in creative mode" })
+        if (target.gameMode == GameMode.CREATIVE) {
+            commandSender.sendMessage(miniMessage {
+                stardustPlugin.i18nService.getMessage(
+                    "commands.flight.already-in-creative",
+                    *arrayOf(
+                        stardustPlugin.i18nService.getPluginPrefix(),
+                        target.coloredDisplayName()
+                    )
+                )
+            })
             return
         }
 
         target.allowFlight = !target.allowFlight
         stardustPlugin.userService.setUserProperty(user, UserPropertyType.FLYING, target.allowFlight)
-        commandSender.sendMessage(miniMessage { if (target.allowFlight) enabled else disabled })
+        commandSender.sendMessage(miniMessage { if (target.allowFlight) enabledMessage else disabledMessage })
 
         if (commandSender != target) {
-            target.sendMessage(miniMessage { if (target.allowFlight) enabled else disabled })
+            target.sendMessage(miniMessage { if (target.allowFlight) enabledMessage else disabledMessage })
         }
     }
 }
