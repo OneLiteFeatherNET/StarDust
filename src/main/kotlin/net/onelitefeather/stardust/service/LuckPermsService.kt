@@ -1,5 +1,6 @@
 package net.onelitefeather.stardust.service
 
+import io.sentry.Sentry
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.luckperms.api.LuckPerms
@@ -15,13 +16,17 @@ class LuckPermsService(val stardustPlugin: StardustPlugin) {
     lateinit var luckPerms: LuckPerms
 
     fun init() {
-        val server = stardustPlugin.server
-        if (server.pluginManager.isPluginEnabled("LuckPerms")) {
-            val provider = server.servicesManager.getRegistration(LuckPerms::class.java)
-            if (provider != null) {
-                luckPerms = provider.provider
-                stardustPlugin.logger.log(Level.INFO, "Using ${provider.plugin.name} as Permission provider.")
+        try {
+            val server = stardustPlugin.server
+            if (server.pluginManager.isPluginEnabled("LuckPerms")) {
+                val provider = server.servicesManager.getRegistration(LuckPerms::class.java)
+                if (provider != null) {
+                    luckPerms = provider.provider
+                    stardustPlugin.logger.log(Level.INFO, "Using ${provider.plugin.name} as Permission provider.")
+                }
             }
+        } catch (e: Exception) {
+            Sentry.captureException(e)
         }
     }
 

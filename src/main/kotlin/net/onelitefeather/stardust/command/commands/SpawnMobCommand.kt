@@ -8,8 +8,11 @@ import cloud.commandframework.annotations.specifier.Quoted
 import cloud.commandframework.annotations.specifier.Range
 import cloud.commandframework.annotations.suggestions.Suggestions
 import cloud.commandframework.context.CommandContext
+import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.extenstions.addClient
 import net.onelitefeather.stardust.extenstions.miniMessage
+import net.onelitefeather.stardust.extenstions.toSentryUser
 import org.bukkit.Location
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Entity
@@ -33,52 +36,59 @@ class SpawnMobCommand(private val stardustPlugin: StardustPlugin) {
         @Range(min = "1", max = "25") @Argument(value = "amount") amount: Int
     ) {
 
-        val location = player.location
-        if (!entityType.contains(",")) {
-            spawn(location, EntityType.valueOf(entityType.uppercase()), amount)
-            player.sendMessage(miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "commands.spawnmob.success",
-                    *arrayOf(
-                        stardustPlugin.i18nService.getPluginPrefix(),
-                        entityType,
-                        amount
+        try {
+            val location = player.location
+            if (!entityType.contains(",")) {
+                spawn(location, EntityType.valueOf(entityType.uppercase()), amount)
+                player.sendMessage(miniMessage {
+                    stardustPlugin.i18nService.getMessage(
+                        "commands.spawnmob.success",
+                        *arrayOf(
+                            stardustPlugin.i18nService.getPluginPrefix(),
+                            entityType,
+                            amount
+                        )
                     )
-                )
-            })
-        } else {
+                })
+            } else {
 
-            val strings = entityType.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
-            var spawnedMob: Entity? = null
-            var spawnedMount: Entity
+                val strings = entityType.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
+                var spawnedMob: Entity? = null
+                var spawnedMount: Entity
 
-            for (i in strings.indices) {
-                if (i == 0) {
-                    spawnedMob = location.world.spawnEntity(
-                        location,
-                        EntityType.valueOf(strings[0].uppercase())
-                    )
-                }
-                val next = i + 1
-                if (next < strings.size) {
-                    val nextType = EntityType.valueOf(strings[next].uppercase())
-                    if (spawnedMob != null) {
-                        tameMob(spawnedMob)
-                        spawnedMount = location.world.spawnEntity(location, nextType)
-                        spawnedMob.addPassenger(spawnedMount)
-                        spawnedMob = spawnedMount
+                for (i in strings.indices) {
+                    if (i == 0) {
+                        spawnedMob = location.world.spawnEntity(
+                            location,
+                            EntityType.valueOf(strings[0].uppercase())
+                        )
+                    }
+                    val next = i + 1
+                    if (next < strings.size) {
+                        val nextType = EntityType.valueOf(strings[next].uppercase())
+                        if (spawnedMob != null) {
+                            tameMob(spawnedMob)
+                            spawnedMount = location.world.spawnEntity(location, nextType)
+                            spawnedMob.addPassenger(spawnedMount)
+                            spawnedMob = spawnedMount
+                        }
                     }
                 }
-            }
 
-            player.sendMessage(miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "commands.spawnmob.success", *arrayOf(
-                        stardustPlugin.i18nService.getPluginPrefix(),
-                        strings[0], 1
+                player.sendMessage(miniMessage {
+                    stardustPlugin.i18nService.getMessage(
+                        "commands.spawnmob.success", *arrayOf(
+                            stardustPlugin.i18nService.getPluginPrefix(),
+                            strings[0], 1
+                        )
                     )
-                )
-            })
+                })
+            }
+        } catch (e: Exception) {
+            Sentry.captureException(e) {
+                it.user = player.toSentryUser()
+                player.addClient(it)
+            }
         }
     }
 

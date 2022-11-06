@@ -5,13 +5,17 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
+import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.extenstions.addClient
 import net.onelitefeather.stardust.extenstions.coloredDisplayName
 import net.onelitefeather.stardust.extenstions.miniMessage
+import net.onelitefeather.stardust.extenstions.toSentryUser
 import net.onelitefeather.stardust.user.UserPropertyType
 import org.bukkit.GameMode
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import java.lang.Exception
 
 class FlightCommand(val stardustPlugin: StardustPlugin) {
 
@@ -32,47 +36,54 @@ class FlightCommand(val stardustPlugin: StardustPlugin) {
 
     private fun handleFlight(commandSender: CommandSender, target: Player) {
 
-        val user = stardustPlugin.userService.getUser(target.uniqueId)!!
+        try {
+            val user = stardustPlugin.userService.getUser(target.uniqueId)!!
 
-        val enabledMessage = stardustPlugin.i18nService.getMessage(
-            "commands.flight.enable",
-            *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName())
-        )
+            val enabledMessage = stardustPlugin.i18nService.getMessage(
+                "commands.flight.enable",
+                *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName())
+            )
 
-        val disabledMessage = stardustPlugin.i18nService.getMessage(
-            "commands.flight.disable",
-            *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName())
-        )
+            val disabledMessage = stardustPlugin.i18nService.getMessage(
+                "commands.flight.disable",
+                *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName())
+            )
 
-        if (commandSender != target && !commandSender.hasPermission("stardust.command.flight.others")) {
-            commandSender.sendMessage(miniMessage {
-                this.stardustPlugin.i18nService.getMessage(
-                    "plugin.not-enough-permissions",
-                    *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                )
-            })
-            return
-        }
-
-        if (target.gameMode == GameMode.CREATIVE) {
-            commandSender.sendMessage(miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "commands.flight.already-in-creative",
-                    *arrayOf(
-                        stardustPlugin.i18nService.getPluginPrefix(),
-                        target.coloredDisplayName()
+            if (commandSender != target && !commandSender.hasPermission("stardust.command.flight.others")) {
+                commandSender.sendMessage(miniMessage {
+                    this.stardustPlugin.i18nService.getMessage(
+                        "plugin.not-enough-permissions",
+                        *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
                     )
-                )
-            })
-            return
-        }
+                })
+                return
+            }
 
-        target.allowFlight = !target.allowFlight
-        stardustPlugin.userService.setUserProperty(user, UserPropertyType.FLYING, target.allowFlight)
-        commandSender.sendMessage(miniMessage { if (target.allowFlight) enabledMessage else disabledMessage })
+            if (target.gameMode == GameMode.CREATIVE) {
+                commandSender.sendMessage(miniMessage {
+                    stardustPlugin.i18nService.getMessage(
+                        "commands.flight.already-in-creative",
+                        *arrayOf(
+                            stardustPlugin.i18nService.getPluginPrefix(),
+                            target.coloredDisplayName()
+                        )
+                    )
+                })
+                return
+            }
 
-        if (commandSender != target) {
-            target.sendMessage(miniMessage { if (target.allowFlight) enabledMessage else disabledMessage })
+            target.allowFlight = !target.allowFlight
+            stardustPlugin.userService.setUserProperty(user, UserPropertyType.FLYING, target.allowFlight)
+            commandSender.sendMessage(miniMessage { if (target.allowFlight) enabledMessage else disabledMessage })
+
+            if (commandSender != target) {
+                target.sendMessage(miniMessage { if (target.allowFlight) enabledMessage else disabledMessage })
+            }
+        } catch (e: Exception) {
+            Sentry.captureException(e) {
+                it.user = target.toSentryUser()
+                target.addClient(it)
+            }
         }
     }
 }

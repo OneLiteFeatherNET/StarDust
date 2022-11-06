@@ -7,11 +7,15 @@ import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.parsers.Parser
 import cloud.commandframework.annotations.suggestions.Suggestions
 import cloud.commandframework.context.CommandContext
+import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.extenstions.addClient
 import net.onelitefeather.stardust.extenstions.miniMessage
+import net.onelitefeather.stardust.extenstions.toSentryUser
 import net.onelitefeather.stardust.user.User
 import net.onelitefeather.stardust.util.DUMMY_USER
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
 import java.util.Queue
 
@@ -26,62 +30,71 @@ class UserInfoCommand(private val stardustPlugin: StardustPlugin) {
         @Argument(value = "player", parserName = "user") user: User
     ) {
 
-        val enabled = this.stardustPlugin.i18nService.getMessage("plugin.boolean-yes")
-        val disabled = this.stardustPlugin.i18nService.getMessage("plugin.boolean-no")
-        val prefix = this.stardustPlugin.i18nService.getPluginPrefix()
+        try {
+            val enabled = this.stardustPlugin.i18nService.getMessage("plugin.boolean-yes")
+            val disabled = this.stardustPlugin.i18nService.getMessage("plugin.boolean-no")
+            val prefix = this.stardustPlugin.i18nService.getPluginPrefix()
 
-        val bukkitPlayer = user.getBase()
-        val online = bukkitPlayer != null
-        val invulnerable = bukkitPlayer != null && bukkitPlayer.isInvulnerable
+            val bukkitPlayer = user.getBase()
+            val online = bukkitPlayer != null
+            val invulnerable = bukkitPlayer != null && bukkitPlayer.isInvulnerable
 
-        commandSender.sendMessage(miniMessage {
-            stardustPlugin.i18nService.getMessage(
-                "commands.user.info.uuid",
-                *arrayOf(prefix, user.getUniqueId().toString())
-            )
-        })
+            commandSender.sendMessage(miniMessage {
+                stardustPlugin.i18nService.getMessage(
+                    "commands.user.info.uuid",
+                    *arrayOf(prefix, user.getUniqueId().toString())
+                )
+            })
 
-        commandSender.sendMessage(miniMessage {
-            stardustPlugin.i18nService.getMessage(
-                "commands.user.info.name",
-                *arrayOf(prefix, user.name)
-            )
-        })
+            commandSender.sendMessage(miniMessage {
+                stardustPlugin.i18nService.getMessage(
+                    "commands.user.info.name",
+                    *arrayOf(prefix, user.name)
+                )
+            })
 
-        commandSender.sendMessage(miniMessage {
-            stardustPlugin.i18nService.getMessage(
-                "commands.user.info.flying",
-                *arrayOf(prefix, if (user.properties.isFlying()) enabled else disabled)
-            )
-        })
+            commandSender.sendMessage(miniMessage {
+                stardustPlugin.i18nService.getMessage(
+                    "commands.user.info.flying",
+                    *arrayOf(prefix, if (user.properties.isFlying()) enabled else disabled)
+                )
+            })
 
-        commandSender.sendMessage(miniMessage {
-            stardustPlugin.i18nService.getMessage(
-                "commands.user.info.vanished",
-                *arrayOf(prefix, if (user.properties.isVanished()) enabled else disabled)
-            )
-        })
+            commandSender.sendMessage(miniMessage {
+                stardustPlugin.i18nService.getMessage(
+                    "commands.user.info.vanished",
+                    *arrayOf(prefix, if (user.properties.isVanished()) enabled else disabled)
+                )
+            })
 
-        commandSender.sendMessage(miniMessage {
-            stardustPlugin.i18nService.getMessage(
-                "commands.user.info.invulnerable",
-                *arrayOf(prefix, if (invulnerable) enabled else disabled)
-            )
-        })
+            commandSender.sendMessage(miniMessage {
+                stardustPlugin.i18nService.getMessage(
+                    "commands.user.info.invulnerable",
+                    *arrayOf(prefix, if (invulnerable) enabled else disabled)
+                )
+            })
 
-        commandSender.sendMessage(miniMessage {
-            stardustPlugin.i18nService.getMessage(
-                "commands.user.info.online",
-                *arrayOf(prefix, if (online) enabled else disabled)
-            )
-        })
+            commandSender.sendMessage(miniMessage {
+                stardustPlugin.i18nService.getMessage(
+                    "commands.user.info.online",
+                    *arrayOf(prefix, if (online) enabled else disabled)
+                )
+            })
 
-        commandSender.sendMessage(miniMessage {
-            stardustPlugin.i18nService.getMessage(
-                "commands.user.info.display-name",
-                *arrayOf(prefix, user.getDisplayName())
-            )
-        })
+            commandSender.sendMessage(miniMessage {
+                stardustPlugin.i18nService.getMessage(
+                    "commands.user.info.display-name",
+                    *arrayOf(prefix, user.getDisplayName())
+                )
+            })
+        } catch (e: Exception) {
+            Sentry.captureException(e) {
+                if(commandSender is Player) {
+                    it.user = commandSender.toSentryUser()
+                    commandSender.addClient(it)
+                }
+            }
+        }
     }
 
     @Suggestions("users")

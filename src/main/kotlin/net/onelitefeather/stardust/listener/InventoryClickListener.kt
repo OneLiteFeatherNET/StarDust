@@ -1,6 +1,9 @@
 package net.onelitefeather.stardust.listener
 
+import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.extenstions.addClient
+import net.onelitefeather.stardust.extenstions.toSentryUser
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -12,21 +15,27 @@ class InventoryClickListener(private val stardustPlugin: StardustPlugin) : Liste
     @EventHandler
     fun handleInventoryClick(event: InventoryClickEvent) {
 
-        if (event.slotType == InventoryType.SlotType.OUTSIDE) return
-
         val humanEntity = event.whoClicked
         if (humanEntity !is Player) return
 
-        val inventory = event.clickedInventory ?: return
-        if (inventory.holder == null) return
+        try {
+            if (event.slotType == InventoryType.SlotType.OUTSIDE) return
+            val inventory = event.clickedInventory ?: return
+            if (inventory.holder == null) return
 
-        val groupPriority: Int = stardustPlugin.luckPermsService.getGroupPriority(humanEntity)
+            val groupPriority: Int = stardustPlugin.luckPermsService.getGroupPriority(humanEntity)
 
-        if (inventory == humanEntity.inventory) return
-        event.isCancelled = if (inventory.holder is Player) {
-            this.stardustPlugin.luckPermsService.getGroupPriority(inventory.holder as Player) > groupPriority
-        } else {
-            false
+            if (inventory == humanEntity.inventory) return
+            event.isCancelled = if (inventory.holder is Player) {
+                this.stardustPlugin.luckPermsService.getGroupPriority(inventory.holder as Player) > groupPriority
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            Sentry.captureException(e) {
+                it.user = humanEntity.toSentryUser()
+                humanEntity.addClient(it)
+            }
         }
     }
 }

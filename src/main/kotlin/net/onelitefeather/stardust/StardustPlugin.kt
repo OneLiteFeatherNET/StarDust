@@ -3,6 +3,8 @@ package net.onelitefeather.stardust
 import cloud.commandframework.annotations.AnnotationParser
 import cloud.commandframework.minecraft.extras.MinecraftHelp
 import cloud.commandframework.paper.PaperCommandManager
+import io.sentry.Sentry
+import io.sentry.protocol.Device
 import net.onelitefeather.stardust.api.CommandCooldownService
 import net.onelitefeather.stardust.extenstions.buildCommandSystem
 import net.onelitefeather.stardust.extenstions.buildHelpSystem
@@ -28,48 +30,71 @@ class StardustPlugin : JavaPlugin() {
     lateinit var luckPermsService: LuckPermsService
 
     lateinit var packetListener: PacketListener
+    lateinit var context: StardustPlugin
 
     override fun onEnable() {
 
-        saveDefaultConfig()
-        signedNameSpacedKey = NamespacedKey(this, "signed")
-
-
-        luckPermsService = LuckPermsService(this)
-
-        i18nService = I18nService(this)
-
-        val jdbcUrl = config.getString("database.jdbcUrl")
-        val databaseDriver = config.getString("database.driver")
-        val username = config.getString("database.username")
-        val password = config.getString("database.password") ?: "IReallyKnowWhatIAmDoingISwear"
-
-        if(jdbcUrl != null && databaseDriver != null && username != null) {
-            databaseService = DatabaseService(jdbcUrl, username, password, databaseDriver)
-            databaseService.init()
-            commandCooldownService = BukkitCommandCooldownService(this)
+        Sentry.init {
+            it.release = description.version
+            it.environment = if (description.version.contains("-SNAPSHOT", true)) "development" else "production"
+            it.tracesSampleRate = 1.0
+            it.dsn = "https://81a5e07ea4b54399a4cfd0b9710e0310@sentry.themeinerlp.dev/3"
+        }
+        Sentry.configureScope {
+            Device().apply {
+                name = server.name
+                model = server.version
+                modelId = server.bukkitVersion
+            }.also { device ->
+                it.setContexts("device", device)
+            }
         }
 
-        initLuckPermsSupport()
-        buildCommandSystem()
-        buildHelpSystem()
-        registerCommands()
+        Sentry.startSession()
 
-        userService = UserService(this)
-        userService.startUserTask()
+        try {
+            context = this
 
-        if(server.pluginManager.isPluginEnabled("ProtocolLib")) {
-            packetListener = PacketListener(this)
-            packetListener.register()
+            saveDefaultConfig()
+            signedNameSpacedKey = NamespacedKey(this, "signed")
+            luckPermsService = LuckPermsService(this)
+
+            i18nService = I18nService(this)
+
+            val jdbcUrl = config.getString("database.jdbcUrl")
+            val databaseDriver = config.getString("database.driver")
+            val username = config.getString("database.username")
+            val password = config.getString("database.password") ?: "IReallyKnowWhatIAmDoingISwear"
+
+            if(jdbcUrl != null && databaseDriver != null && username != null) {
+                databaseService = DatabaseService(jdbcUrl, username, password, databaseDriver)
+                databaseService.init()
+                commandCooldownService = BukkitCommandCooldownService(this)
+            }
+
+            initLuckPermsSupport()
+            buildCommandSystem()
+            buildHelpSystem()
+            registerCommands()
+
+            userService = UserService(this)
+            userService.startUserTask()
+
+            if(server.pluginManager.isPluginEnabled("ProtocolLib")) {
+                packetListener = PacketListener(this)
+                packetListener.register()
+            }
+
+            server.pluginManager.registerEvents(CommandCooldownListener(this), this)
+            server.pluginManager.registerEvents(InventoryClickListener(this), this)
+            server.pluginManager.registerEvents(PlayerChatListener(this), this)
+            server.pluginManager.registerEvents(PlayerConnectionListener(this), this)
+            server.pluginManager.registerEvents(PlayerVanishListener(this), this)
+
+            signedNameSpacedKey = NamespacedKey(this, "signed")
+        } catch (e: Exception) {
+            Sentry.captureException(e)
         }
-
-        server.pluginManager.registerEvents(CommandCooldownListener(this), this)
-        server.pluginManager.registerEvents(InventoryClickListener(this), this)
-        server.pluginManager.registerEvents(PlayerChatListener(this), this)
-        server.pluginManager.registerEvents(PlayerConnectionListener(this), this)
-        server.pluginManager.registerEvents(PlayerVanishListener(this), this)
-
-        signedNameSpacedKey = NamespacedKey(this, "signed")
     }
 
     override fun onDisable() {
