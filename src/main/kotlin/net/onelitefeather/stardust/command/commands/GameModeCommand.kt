@@ -46,10 +46,7 @@ class GameModeCommand(private val stardustPlugin: StardustPlugin) {
                 target.sendMessage(Component.translatable("gameMode.changed").args(gameModeName))
             }
 
-            commandSender.sendMessage(
-                Component.translatable("commands.gamemode.success.other")
-                    .args(stardustPlugin.luckPermsService.getPlayerDisplayName(target), gameModeName)
-            );
+            commandSender.sendMessage(Component.translatable("commands.gamemode.success.other").args(target.displayName(), gameModeName))
         }
     }
 }
