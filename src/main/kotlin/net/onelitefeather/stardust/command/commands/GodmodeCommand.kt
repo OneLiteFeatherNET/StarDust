@@ -6,6 +6,7 @@ import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.extenstions.coloredDisplayName
 import net.onelitefeather.stardust.extenstions.miniMessage
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Mob
@@ -25,8 +26,7 @@ class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
         if (target != commandSender && !commandSender.hasPermission("stardust.command.godmode.others")) {
             commandSender.sendMessage(miniMessage {
                 stardustPlugin.i18nService.getMessage(
-                    "plugin.not-enough-permissions",
-                    stardustPlugin.i18nService.getPluginPrefix()
+                    "plugin.not-enough-permissions", stardustPlugin.i18nService.getPluginPrefix()
                 )
             })
             return
@@ -35,22 +35,16 @@ class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
         target.isInvulnerable = !target.isInvulnerable
         removeEnemies(target)
 
-        val enabled =
-            stardustPlugin.i18nService.getMessage(
-                "commands.god-mode.enable",
-                stardustPlugin.i18nService.getPluginPrefix(),
-                stardustPlugin.i18nService.translateLegacyString(target.displayName())
-            )
-        val disabled =
-            stardustPlugin.i18nService.getMessage(
-                "commands.god-mode.disable",
-                stardustPlugin.i18nService.getPluginPrefix(),
-                stardustPlugin.i18nService.translateLegacyString(target.displayName())
-            )
+        val enabledMessage = stardustPlugin.i18nService.getMessage(
+            "commands.god-mode.enable", stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
+        )
+        val disabledMessage = stardustPlugin.i18nService.getMessage(
+            "commands.god-mode.disable", stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
+        )
 
-        target.sendMessage(miniMessage { if (target.isInvulnerable) enabled else disabled })
+        target.sendMessage(miniMessage { if (target.isInvulnerable) enabledMessage else disabledMessage })
         if (commandSender != target) {
-            commandSender.sendMessage(miniMessage { if (target.isInvulnerable) enabled else disabled })
+            commandSender.sendMessage(miniMessage { if (target.isInvulnerable) enabledMessage else disabledMessage })
         }
     }
 
