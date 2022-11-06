@@ -5,7 +5,7 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Quoted
-import net.kyori.adventure.text.Component
+import dev.vankka.enhancedlegacytext.EnhancedLegacyText
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.extenstions.miniMessage
 import org.bukkit.Material
@@ -29,9 +29,9 @@ class RenameCommand(private val stardustPlugin: StardustPlugin) {
             return
         }
 
-        val displayText = stardustPlugin.i18nService.translateLegacyString(Component.text(text))
+        val displayText = EnhancedLegacyText.get().buildComponent(text).build()
         val itemMeta = itemInHand.itemMeta
-        itemMeta.displayName(miniMessage { displayText })
+        itemMeta.displayName(displayText)
         itemInHand.itemMeta = itemMeta
         player.updateInventory()
         player.sendMessage(miniMessage {
@@ -39,7 +39,7 @@ class RenameCommand(private val stardustPlugin: StardustPlugin) {
                 "commands.rename.success",
                 *arrayOf(
                     stardustPlugin.i18nService.getPluginPrefix(),
-                    displayText
+                    text
                 )
             )
         })
