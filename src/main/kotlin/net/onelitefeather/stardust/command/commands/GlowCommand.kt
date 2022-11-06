@@ -7,6 +7,7 @@ import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.extenstions.coloredDisplayName
 import net.onelitefeather.stardust.extenstions.miniMessage
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -17,7 +18,7 @@ class GlowCommand(private val stardustPlugin: StardustPlugin) {
     @CommandPermission("stardust.command.glow")
     @CommandDescription("Makes a Player glowing in his scoreboard team color.")
     fun handleCommand(commandSender: CommandSender, @Greedy @Argument(value = "player") target: Player?) {
-        if(target == null) {
+        if (target == null) {
             handleGlow(commandSender, commandSender as Player)
         } else {
             handleGlow(commandSender, target)
@@ -30,8 +31,7 @@ class GlowCommand(private val stardustPlugin: StardustPlugin) {
             commandSender.sendMessage(
                 MiniMessage.miniMessage().deserialize(
                     stardustPlugin.i18nService.getMessage(
-                        "plugin.not-enough-permissions",
-                        stardustPlugin.i18nService.getPluginPrefix()
+                        "plugin.not-enough-permissions", stardustPlugin.i18nService.getPluginPrefix()
                     )
                 )
             )
@@ -39,23 +39,19 @@ class GlowCommand(private val stardustPlugin: StardustPlugin) {
             return
         }
 
-        val enabled = stardustPlugin.i18nService.getMessage(
-            "commands.glow.enabled",
-            *arrayOf(
-                stardustPlugin.i18nService.getPluginPrefix(),
-                stardustPlugin.luckPermsService.getPlayerDisplayName(target)
+        val enabledMessage = stardustPlugin.i18nService.getMessage(
+            "commands.glow.enabled", *arrayOf(
+                stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
             )
         )
 
-        val disabled = stardustPlugin.i18nService.getMessage(
-            "commands.glow.disabled",
-            *arrayOf(
-                stardustPlugin.i18nService.getPluginPrefix(),
-                stardustPlugin.luckPermsService.getPlayerDisplayName(target)
+        val disabledMessage = stardustPlugin.i18nService.getMessage(
+            "commands.glow.disabled", *arrayOf(
+                stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
             )
         )
 
         target.isGlowing = !target.isGlowing
-        commandSender.sendMessage(miniMessage { if (target.isGlowing) enabled else disabled })
+        commandSender.sendMessage(miniMessage { if (target.isGlowing) enabledMessage else disabledMessage })
     }
 }
