@@ -7,7 +7,10 @@ import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.wrappers.PlayerInfoData
+import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.extenstions.addClient
+import net.onelitefeather.stardust.extenstions.toSentryUser
 
 class PacketListener(private val stardustPlugin: StardustPlugin) {
 
@@ -21,9 +24,16 @@ class PacketListener(private val stardustPlugin: StardustPlugin) {
         protocolManager.addPacketListener(object :
             PacketAdapter(stardustPlugin, ListenerPriority.HIGHEST, PacketType.Play.Server.PLAYER_INFO) {
             override fun onPacketSending(event: PacketEvent) {
-                val packetContainer = event.packet
-                val playerInfoDataList = packetContainer.playerInfoDataLists.read(0)
-                packetContainer.playerInfoDataLists.write(0, hideVanishedPlayers(playerInfoDataList))
+                try {
+                    val packetContainer = event.packet
+                    val playerInfoDataList = packetContainer.playerInfoDataLists.read(0)
+                    packetContainer.playerInfoDataLists.write(0, hideVanishedPlayers(playerInfoDataList))
+                } catch (e: Exception) {
+                    Sentry.captureException(e) {
+                        it.user = event.player.toSentryUser()
+                        event.player.addClient(it)
+                    }
+                }
             }
         })
     }

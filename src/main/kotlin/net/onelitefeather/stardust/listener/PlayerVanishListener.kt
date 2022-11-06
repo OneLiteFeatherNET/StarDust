@@ -1,8 +1,11 @@
 package net.onelitefeather.stardust.listener
 
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
+import io.sentry.Sentry
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.extenstions.addClient
+import net.onelitefeather.stardust.extenstions.toSentryUser
 import net.onelitefeather.stardust.user.User
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
@@ -21,7 +24,6 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
         val target = event.entity
         val attacker = event.damager
         val targetUser = stardustPlugin.userService.getUser(target.uniqueId)
-
         if (attacker is Permissible) {
             event.isCancelled = if (targetUser != null && targetUser.properties.isVanished()) {
                 !attacker.hasPermission("stardust.bypass.damage.vanish")
@@ -55,42 +57,80 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
     @EventHandler
     fun onFoodLevelChange(event: FoodLevelChangeEvent) {
         if (event.entity is Player) {
-            val user = stardustPlugin.userService.getUser(event.entity.uniqueId)
-            event.isCancelled = user != null && (user.properties.isVanished() || event.entity.isInvulnerable)
+            val player = event.entity as Player
+            try {
+                val user = stardustPlugin.userService.getUser(player.uniqueId)
+                event.isCancelled = user != null && (user.properties.isVanished() || player.isInvulnerable)
+            } catch (e: Exception) {
+                Sentry.captureException(e) {
+                    it.user = player.toSentryUser()
+                    player.addClient(it)
+                }
+            }
         }
     }
 
     @EventHandler
     fun onPickUp(event: EntityPickupItemEvent) {
-        val livingEntity = event.entity
-        val user = stardustPlugin.userService.getUser(livingEntity.uniqueId) ?: return
-        event.isCancelled = livingEntity is Player && user.properties.isVanished()
+        if (event.entity is Player) {
+            val player = event.entity as Player
+            try {
+                val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
+                event.isCancelled = user.properties.isVanished()
+            } catch (e: Exception) {
+                Sentry.captureException(e) {
+                    it.user = player.toSentryUser()
+                    player.addClient(it)
+                }
+            }
+        }
     }
 
     @EventHandler
     fun onDrop(event: PlayerDropItemEvent) {
         val player = event.player
-        val user = stardustPlugin.userService.getUser(player.uniqueId)
-        if (user != null && user.properties.isVanished()) event.isCancelled = true
+        try {
+            val user = stardustPlugin.userService.getUser(player.uniqueId)
+            if (user != null && user.properties.isVanished()) event.isCancelled = true
+        } catch (e: Exception) {
+            Sentry.captureException(e) {
+                it.user = player.toSentryUser()
+                player.addClient(it)
+            }
+        }
     }
 
     @EventHandler
     fun onPlayerPickupExp(event: PlayerPickupExperienceEvent) {
-        event.isCancelled = stardustPlugin.userService.getUser(event.player.uniqueId)?.properties?.isVanished() == true
+        val player = event.player
+        try {
+            event.isCancelled = stardustPlugin.userService.getUser(player.uniqueId)?.properties?.isVanished() == true
+        } catch (e: Exception) {
+            Sentry.captureException(e) {
+                it.user = player.toSentryUser()
+                player.addClient(it)
+            }
+        }
     }
 
     @EventHandler
     fun onPlayerDeath(event: PlayerDeathEvent) {
-
         val player = event.entity
-        val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
-        if (user.properties.isVanished()) {
-            event.drops.clear()
-            event.deathMessage(Component.text(""))
-            event.keepInventory = true
-            event.keepLevel = true
-            event.setShouldDropExperience(false)
-            event.setShouldPlayDeathSound(false)
+        try {
+            val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
+            if (user.properties.isVanished()) {
+                event.drops.clear()
+                event.deathMessage(Component.text(""))
+                event.keepInventory = true
+                event.keepLevel = true
+                event.setShouldDropExperience(false)
+                event.setShouldPlayDeathSound(false)
+            }
+        } catch (e: Exception) {
+            Sentry.captureException(e) {
+                it.user = player.toSentryUser()
+                player.addClient(it)
+            }
         }
     }
 }
