@@ -4,7 +4,7 @@ metadata.format.version = "1.1"
 # Paper
 paper = "1.19.2-R0.1-SNAPSHOT"
 # Error Tracking
-sentry = "6.0.0"
+sentry = "6.6.0"
 # Plugins
 shadow = "7.1.2"
 runPaper = "1.0.6"
