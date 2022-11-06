@@ -34,6 +34,8 @@ dependencies {
     compileOnly(libs.luckperms)
     compileOnly(libs.protocollib)
 
+    bukkitLibrary("dev.vankka:enhancedlegacytext:1.0.0")
+
     // Sentry
     implementation(libs.bundles.sentry)
 
