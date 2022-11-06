@@ -1,0 +1,63 @@
+package net.onelitefeather.stardust.command.commands
+
+import cloud.commandframework.annotations.Argument
+import cloud.commandframework.annotations.CommandDescription
+import cloud.commandframework.annotations.CommandMethod
+import cloud.commandframework.annotations.CommandPermission
+import cloud.commandframework.annotations.specifier.Greedy
+import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.extenstions.coloredDisplayName
+import net.onelitefeather.stardust.extenstions.miniMessage
+import org.bukkit.command.CommandSender
+import org.bukkit.entity.Mob
+import org.bukkit.entity.Player
+
+class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
+
+    @CommandMethod("godmode [player]")
+    @CommandPermission("stardust.command.godmode")
+    @CommandDescription("Makes a player invulnerable to everything")
+    fun handleCommand(commandSender: CommandSender, @Greedy @Argument(value = "player") target: Player?) {
+        handleInvulnerability(commandSender, target ?: commandSender as Player)
+    }
+
+    private fun handleInvulnerability(commandSender: CommandSender, target: Player) {
+
+        if (target != commandSender && !commandSender.hasPermission("stardust.command.godmode.others")) {
+            commandSender.sendMessage(miniMessage {
+                stardustPlugin.i18nService.getMessage(
+                    "plugin.not-enough-permissions", stardustPlugin.i18nService.getPluginPrefix()
+                )
+            })
+            return
+        }
+
+        target.isInvulnerable = !target.isInvulnerable
+        removeEnemies(target)
+
+        val enabledMessage = stardustPlugin.i18nService.getMessage(
+            "commands.god-mode.enable", stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
+        )
+        val disabledMessage = stardustPlugin.i18nService.getMessage(
+            "commands.god-mode.disable", stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
+        )
+
+        target.sendMessage(miniMessage { if (target.isInvulnerable) enabledMessage else disabledMessage })
+        if (commandSender != target) {
+            commandSender.sendMessage(miniMessage { if (target.isInvulnerable) enabledMessage else disabledMessage })
+        }
+    }
+
+    private fun removeEnemies(player: Player) {
+        if (player.isInvulnerable) {
+            player.location.getNearbyLivingEntities(32.0).forEach { livingEntity ->
+                if (livingEntity is Mob) {
+                    val target = livingEntity.target ?: return@forEach
+                    if (target == player) {
+                        livingEntity.target = null
+                    }
+                }
+            }
+        }
+    }
+}

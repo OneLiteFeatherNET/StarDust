@@ -7,3 +7,7 @@ variables:
   JAR_FILE: "Stardust.jar"
   BUCKET: "olf-dev"
   TEMPLATE: "default"
+
+deploy:
+  script:
+    - gradle shadowJar

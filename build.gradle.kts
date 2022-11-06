@@ -1,12 +1,9 @@
 plugins {
-    id("java")
-    `java-library`
-    // Shadow
-    // alias(libs.plugins.shadow)
+    kotlin("jvm") version "1.7.10"
+    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
+    id("xyz.jpenilla.run-paper") version "1.0.6"
 
-    // Bukkit
-    // alias(libs.plugins.pluginYmlBukkit)
-    // alias(libs.plugins.runPaper)
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 
     // LIQUIBASE
     // alias(libs.plugins.liquibase)
@@ -18,6 +15,7 @@ group = "net.onelitefeather"
 version = "1.0.0-SNAPSHOT"
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://maven.enginehub.org/repo/")
@@ -30,22 +28,27 @@ repositories {
 }
 
 dependencies {
+
     // Paper
     compileOnly(libs.paper)
+    compileOnly(libs.luckperms)
+    compileOnly(libs.protocollib)
+
+    bukkitLibrary("dev.vankka:enhancedlegacytext:1.0.0")
+
     // Sentry
     implementation(libs.bundles.sentry)
-    // CloudNet
-    compileOnly(libs.bundles.cloudnet)
+
     // Commands
     implementation(libs.bundles.cloud)
-
-    // ChatComponents
-    compileOnly(libs.bundles.adventure)
-
+    implementation(libs.commodore) {
+        isTransitive = false
+    }
 
     // Database
-    compileOnly(libs.bundles.hibernate)
-    compileOnly(libs.bundles.liquibase)
+    implementation("org.hibernate:hibernate-core:6.1.5.Final")
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.0.6")
+    implementation("org.hibernate.orm:hibernate-hikaricp:6.1.5.Final")
 
     // liquibaseRuntime("org.liquibase.ext:liquibase-hibernate5:4.9.1") // Changelog based db
     // liquibaseRuntime("org.mariadb.jdbc:mariadb-java-client:3.0.4") // Changelog based db
@@ -60,38 +63,39 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 tasks {
-    compileJava {
-        options.release.set(17)
-        options.encoding = "UTF-8"
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
     }
     test {
         useJUnitPlatform()
     }
-    /*runServer {
-        minecraftVersion("1.18.2")
-    }*/
-    /*shadowJar {
+    runServer {
+        minecraftVersion("1.19.2")
+    }
+    shadowJar {
         archiveFileName.set("${rootProject.name}.${archiveExtension.getOrElse("jar")}")
-    }*/
+    }
 }
 
-/*bukkit {
-    main = "${rootProject.group}.ElytraRace"
-    apiVersion = "1.18"
-    name = ""
+bukkit {
+    main = "${rootProject.group}.stardust.StardustPlugin"
+    apiVersion = "1.19"
+    name = "Stardust"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
 
-    authors = listOf("TheMeinerLP", "OneLiteFeather")
+    authors = listOf("UniqueGame", "OneLiteFeather")
 
-    depend = listOf("helper")
     softDepend = listOf("CloudNet-Bridge")
-}*/
+}
 
 /*liquibase {
     activities {
