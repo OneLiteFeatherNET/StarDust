@@ -5,6 +5,7 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.extenstions.miniMessage
 import org.bukkit.Material
@@ -95,7 +96,7 @@ class RepairCommand(private val stardustPlugin: StardustPlugin) {
             if (itemMeta is Damageable && itemMeta.damage > 0) {
                 itemMeta.damage = 0
                 itemStack.itemMeta = itemMeta
-                list.add(stardustPlugin.i18nService.translateLegacyString(itemStack.displayName()))
+                list.add(PlainTextComponentSerializer.plainText().serialize(itemStack.displayName()))
             }
         }
 
