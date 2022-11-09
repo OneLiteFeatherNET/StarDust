@@ -86,7 +86,6 @@ class StardustPlugin : JavaPlugin() {
             }
 
             server.pluginManager.registerEvents(CommandCooldownListener(this), this)
-            server.pluginManager.registerEvents(InventoryClickListener(this), this)
             server.pluginManager.registerEvents(PlayerChatListener(this), this)
             server.pluginManager.registerEvents(PlayerConnectionListener(this), this)
             server.pluginManager.registerEvents(PlayerVanishListener(this), this)
