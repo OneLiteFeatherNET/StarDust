@@ -50,7 +50,10 @@ class GameModeCommand(private val stardustPlugin: StardustPlugin) {
                     target.sendMessage(Component.translatable("gameMode.changed").args(gameModeName))
                 }
 
-                commandSender.sendMessage(Component.translatable("commands.gamemode.success.other").args(target.displayName(), gameModeName))
+                target.gameMode = gameMode
+                commandSender.sendMessage(
+                    Component.translatable("commands.gamemode.success.other").args(target.displayName(), gameModeName)
+                )
             }
         } catch (e: Exception) {
             Sentry.captureException(e) {
