@@ -12,8 +12,8 @@ plugins {
     // alias(libs.plugins.liquibase)
 }
 
+val baseVersion = "1.0.0"
 group = "net.onelitefeather"
-version = "1.0.0-SNAPSHOT"
 
 repositories {
     mavenLocal()
@@ -27,7 +27,6 @@ repositories {
     maven("https://repo.dmulloy2.net/repository/public/")
     maven("https://jitpack.io")
 }
-
 dependencies {
 
     // Paper
@@ -64,6 +63,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
+
 kotlin {
     jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
@@ -111,6 +111,19 @@ bukkit {
     authors = listOf("UniqueGame", "OneLiteFeather")
 
     softDepend = listOf("CloudNet-Bridge")
+}
+
+version = if (System.getenv().containsKey("CI")) {
+    val releaseOrSnapshot = if (System.getenv("CI_COMMIT_BRANCH").equals("main", true)) {
+        ""
+    } else if(System.getenv("CI_COMMIT_BRANCH").equals("test", true)) {
+        "-PREVIEW"
+    } else {
+        "-SNAPSHOT"
+    }
+    "$baseVersion$releaseOrSnapshot+${System.getenv("CI_COMMIT_SHORT_SHA")}"
+} else {
+    "$baseVersion-SNAPSHOT"
 }
 
 /*liquibase {
