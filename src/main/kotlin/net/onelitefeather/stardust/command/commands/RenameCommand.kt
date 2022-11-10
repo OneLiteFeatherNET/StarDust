@@ -6,10 +6,6 @@ import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Quoted
 import dev.vankka.enhancedlegacytext.EnhancedLegacyText
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextColor
-import net.kyori.adventure.text.minimessage.MiniMessage
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.extenstions.miniMessage
 import org.bukkit.Material
