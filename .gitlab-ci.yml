@@ -2,6 +2,10 @@ include:
   - project: onelitefeather/ci-template
     ref: main
     file: s3-upload.yaml
+  - project: onelitefeather/ci-template
+    ref: main
+    file: sonarqube.yaml
+
 
 variables:
   JAR_FILE: "Stardust.jar"
