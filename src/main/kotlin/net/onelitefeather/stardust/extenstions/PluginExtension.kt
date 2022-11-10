@@ -28,12 +28,13 @@ fun StardustPlugin.registerCommands() {
     annotationParser.parse(FlightCommand(this))
     annotationParser.parse(GameModeCommand(this))
     annotationParser.parse(GlowCommand(this))
+    annotationParser.parse(GodmodeCommand(this))
     annotationParser.parse(HealCommand(this))
+    annotationParser.parse(HelpCommand(this))
     annotationParser.parse(RenameCommand(this))
     annotationParser.parse(RepairCommand(this))
     annotationParser.parse(SignCommand(this))
     annotationParser.parse(SkullCommand(this))
-    annotationParser.parse(SpawnMobCommand(this))
     annotationParser.parse(VanishCommand(this))
 }
 
@@ -84,10 +85,10 @@ fun StardustPlugin.buildHelpSystem() {
     )
 
     minecraftHelp.helpColors = MinecraftHelp.HelpColors.of(
-        NamedTextColor.DARK_GREEN,
-        NamedTextColor.GREEN,
-        NamedTextColor.BLUE,
-        NamedTextColor.DARK_BLUE,
-        NamedTextColor.AQUA
+        NamedTextColor.GOLD,
+        NamedTextColor.YELLOW,
+        NamedTextColor.GOLD,
+        NamedTextColor.GRAY,
+        NamedTextColor.GOLD
     )
 }
