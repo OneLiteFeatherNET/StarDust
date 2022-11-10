@@ -31,7 +31,6 @@ fun StardustPlugin.registerCommands() {
     annotationParser.parse(GodmodeCommand(this))
     annotationParser.parse(HealCommand(this))
     annotationParser.parse(HelpCommand(this))
-    annotationParser.parse(InvseeCommand(this))
     annotationParser.parse(RenameCommand(this))
     annotationParser.parse(RepairCommand(this))
     annotationParser.parse(SignCommand(this))
