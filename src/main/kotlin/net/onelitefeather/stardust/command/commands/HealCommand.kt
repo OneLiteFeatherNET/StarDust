@@ -26,12 +26,12 @@ class HealCommand(private val stardustPlugin: StardustPlugin) {
     @CommandPermission("stardust.command.heal")
     @CommandDescription("Heal a Player.")
     fun onCommand(commandSender: CommandSender, @Greedy @Argument(value = "player") target: Player?) {
-        if (target == null) {
-            commandSender.sendMessage(miniMessage { stardustPlugin.i18nService.getMessage("plugin.player-not-found") })
-            return
+        if (commandSender is Player) {
+            healPlayer(commandSender, commandSender)
+        } else {
+            if (target == null) return
+            healPlayer(commandSender, target)
         }
-
-        healPlayer(commandSender, target)
     }
 
     private fun healPlayer(commandSender: CommandSender, target: Player) {
