@@ -5,10 +5,11 @@ plugins {
 
     id("com.github.johnrengelman.shadow") version "7.1.2"
 
+    // SonarQube
+    id("org.sonarqube") version "3.5.0.2730"
+    jacoco
     // LIQUIBASE
     // alias(libs.plugins.liquibase)
-    // SonarQube
-    // id("org.sonarqube") version "3.4.0.2513"
 }
 
 group = "net.onelitefeather"
@@ -70,17 +71,32 @@ kotlin {
 }
 
 tasks {
+
     compileKotlin {
         kotlinOptions {
             jvmTarget = "17"
         }
     }
+
+    getByName("sonarqube") {
+        dependsOn(rootProject.tasks.test)
+    }
+
+    jacocoTestReport {
+        dependsOn(rootProject.tasks.test)
+        reports {
+            xml.required.set(true)
+        }
+    }
+
     test {
         useJUnitPlatform()
     }
+
     runServer {
         minecraftVersion("1.19.2")
     }
+
     shadowJar {
         archiveFileName.set("${rootProject.name}.${archiveExtension.getOrElse("jar")}")
     }
@@ -113,10 +129,10 @@ bukkit {
         }
     }
 }*/
-/*sonarqube {
+sonarqube {
     properties {
-        property("sonar.projectKey", "cliar_alwilda-loup_AYHtte8H7chqtZHGSV5T")
+        property("sonar.projectKey", "onelitefeather_projects_stardust_AYRjNInxwVDHzVoeOyqT")
         property("sonar.qualitygate.wait", true)
     }
 }
-*/
+
