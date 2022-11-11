@@ -10,7 +10,9 @@ package net.onelitefeather.stardust.user
 enum class UserPropertyType(val friendlyName: String, val defaultValue: Any, val type: Byte) {
 
     FLYING("Flying", false, 2),
-    VANISHED("Vanished", false, 2)
+    VANISHED("Vanished", false, 2),
+    VANISH_DISABLE_ITEM_DROP("No-Drop", true, 2),
+    VANISH_DISABLE_ITEM_COLLECT("No-Collect", true, 2),
 }
 
 val USER_PROPERTY_TYPE_VALUES = UserPropertyType.values()
