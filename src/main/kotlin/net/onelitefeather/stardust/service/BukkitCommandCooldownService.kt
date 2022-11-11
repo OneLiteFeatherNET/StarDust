@@ -4,13 +4,15 @@ import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.api.CommandCooldownService
 import net.onelitefeather.stardust.command.CommandCooldown
+import net.onelitefeather.stardust.command.CooldownData
 import org.hibernate.HibernateException
 import org.hibernate.Transaction
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
-class BukkitCommandCooldownService(private val stardustPlugin: StardustPlugin): CommandCooldownService {
+
+class BukkitCommandCooldownService(private val stardustPlugin: StardustPlugin) : CommandCooldownService {
 
     override fun getCommandCooldown(commandSender: UUID, command: String): CommandCooldown? {
         try {
@@ -45,7 +47,7 @@ class BukkitCommandCooldownService(private val stardustPlugin: StardustPlugin): 
 
                 transaction = session.beginTransaction()
                 var commandCooldown = getCommandCooldown(commandSender, command)
-                val executedAt = System.currentTimeMillis() + getCooldownTime(timeUnit, time)
+                val executedAt = getCooldownTime(timeUnit, time)
 
                 if (commandCooldown != null) {
                     session.merge(
@@ -94,11 +96,22 @@ class BukkitCommandCooldownService(private val stardustPlugin: StardustPlugin): 
         }
     }
 
-    override fun exists(commandSender: UUID, command: String): Boolean = getCommandCooldown(commandSender, command) != null
+    override fun exists(commandSender: UUID, command: String): Boolean =
+        getCommandCooldown(commandSender, command) != null
 
-    override fun isCooldownOver(commandSender: UUID, command: String): Boolean = getCommandCooldown(commandSender, command)?.isOver() == true
+    override fun isCooldownOver(commandSender: UUID, command: String): Boolean =
+        getCommandCooldown(commandSender, command)?.isOver() == true
 
-    override fun hasCommandCooldown(commandLabel: String): Boolean {
-        return stardustPlugin.config.getConfigurationSection("command-cooldowns.$commandLabel") != null
+    override fun hasCommandCooldown(commandLabel: String): Boolean = getCooldownData(commandLabel) != null
+
+    override fun getCooldownDataList(): List<CooldownData> {
+        val section = stardustPlugin.config.getConfigurationSection("command-cooldowns") ?: return emptyList()
+        return section.getKeys(false).map {
+            val timeunitName = section.getString("$it.timeunit") ?: "SECONDS"
+            CooldownData(it, TimeUnit.valueOf(timeunitName), section.getLong("$it.time"))
+        }
     }
+
+    override fun getCooldownData(commandName: String): CooldownData? =
+        getCooldownDataList().firstOrNull { it.commandName.equals(commandName, true) }
 }
