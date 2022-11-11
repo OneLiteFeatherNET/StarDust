@@ -2,6 +2,7 @@ package net.onelitefeather.stardust.service
 
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.api.PlayerVanishService
+import net.onelitefeather.stardust.extenstions.removeEnemies
 import net.onelitefeather.stardust.user.User
 import net.onelitefeather.stardust.user.UserPropertyType
 import org.bukkit.entity.Player
@@ -39,6 +40,7 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
             showPlayer(player)
         } else {
             hidePlayer(player)
+            player.removeEnemies(32.0)
         }
 
         setVanished(user, !currentState)
