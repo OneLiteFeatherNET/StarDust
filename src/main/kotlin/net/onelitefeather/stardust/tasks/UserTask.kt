@@ -1,21 +1,17 @@
 package net.onelitefeather.stardust.tasks
 
 import io.sentry.Sentry
-import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import org.bukkit.entity.Player
+import net.onelitefeather.stardust.extenstions.miniMessage
 
 class UserTask(val stardustPlugin: StardustPlugin) : Runnable {
 
     override fun run() {
         try {
-            // Rework later
-            stardustPlugin.server.onlinePlayers.forEach { player: Player ->
-                val user = stardustPlugin.userService.getUser(player.uniqueId)
-                if (user != null && user.properties.isVanished()) {
-                    player.sendActionBar(
-                        MiniMessage.miniMessage().deserialize(stardustPlugin.i18nService.getMessage("plugin.vanish-actionbar"))
-                    )
+            stardustPlugin.server.onlinePlayers.forEach {
+                val user = stardustPlugin.userService.getUser(it.uniqueId) ?: return
+                if (user.properties.isVanished()) {
+                    it.sendActionBar(miniMessage { stardustPlugin.i18nService.getMessage("plugin.vanish-actionbar") })
                 }
             }
         } catch (e: Exception) {
