@@ -3,64 +3,59 @@ package net.onelitefeather.stardust.listener
 import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.extenstions.addClient
+import net.onelitefeather.stardust.extenstions.miniMessage
 import net.onelitefeather.stardust.extenstions.toSentryUser
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
-import java.util.concurrent.TimeUnit
 
 class CommandCooldownListener(private val stardustPlugin: StardustPlugin) : Listener {
 
     @EventHandler
     fun handlePlayerCommandPreprocess(event: PlayerCommandPreprocessEvent) {
 
+        val player = event.player
         try {
-            val commandRaw = event.message.replaceFirst("/".toRegex(), "")
-            val strings = commandRaw.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+            val commandRaw = event.message.replaceFirst("/", "")
+            val strings = commandRaw.split(" ").dropLastWhile { it.isEmpty() }.toTypedArray()
             val commandLabel = strings[0]
 
-            val player = event.player
-            if (strings.copyOfRange(1, strings.size).isNotEmpty() &&
-                stardustPlugin.commandCooldownService.hasCommandCooldown(commandLabel) &&
-                !player.hasPermission("essentials.commandcooldown.bypass")
+            if (strings.copyOfRange(1, strings.size)
+                    .isNotEmpty() && stardustPlugin.commandCooldownService.hasCommandCooldown(commandLabel)
             ) {
 
+                if (player.hasPermission("stardust.commandcooldown.bypass") && stardustPlugin.config.getBoolean("use-cooldown-bypass")) return
                 val commandCooldown =
                     stardustPlugin.commandCooldownService.getCommandCooldown(player.uniqueId, commandLabel)
 
-                if (!player.hasPermission("stardust.commandcooldown.bypass")) {
-                    if (commandCooldown != null && !stardustPlugin.commandCooldownService.isCooldownOver(
-                            player.uniqueId,
-                            commandLabel
+                if (commandCooldown != null && !commandCooldown.isOver()) {
+                    player.sendMessage(miniMessage {
+                        stardustPlugin.i18nService.getMessage(
+                            "plugin.command-cooldowned",
+                            stardustPlugin.i18nService.getPluginPrefix(),
+                            stardustPlugin.i18nService.getRemainingTime(commandCooldown.executedAt)
                         )
-                    ) {
-                        player.sendMessage(
-                            stardustPlugin.i18nService.getMessage(
-                                "plugin.command-cooldowned",
-                                stardustPlugin.i18nService.getPluginPrefix(),
-                                stardustPlugin.i18nService.getRemainingTime(commandCooldown.executedAt)
-                            )
-                        )
+                    })
 
-                        event.isCancelled = true
-                        return
-                    }
+                    event.isCancelled = true
+                    return
+                }
 
-                    val timeUnit =
-                        TimeUnit.valueOf(stardustPlugin.config.getString("command-cooldowns.$commandLabel.timeunit")!!)
-                    val time = stardustPlugin.config.getLong("command-cooldowns.$commandLabel.time")
+                val cooldownData = stardustPlugin.commandCooldownService.getCooldownData(commandLabel)
+                if (cooldownData != null) {
                     stardustPlugin.commandCooldownService.addCommandCooldown(
                         player.uniqueId,
-                        commandLabel,
-                        timeUnit,
-                        time,
+                        cooldownData.commandName,
+                        cooldownData.timeUnit,
+                        cooldownData.time
                     )
                 }
             }
         } catch (e: Exception) {
             Sentry.captureException(e) {
-                it.user = event.player.toSentryUser()
-                event.player.addClient(it)
+                it.user = player.toSentryUser()
+                player.addClient(it)
             }
         }
     }
