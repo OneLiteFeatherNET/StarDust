@@ -211,7 +211,31 @@ class UserService(private val stardustPlugin: StardustPlugin) {
         consumer.accept(success)
     }
 
-    fun getUserProperty(userproperties: UserProperties, type: UserPropertyType): UserProperty? {
+    fun existsUserProperty(userProperties: UserProperties, type: UserPropertyType): Boolean {
+        try {
+            stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
+                val query = session.createQuery(
+                    "SELECT u FROM UserProperty u JOIN FETCH u.userProperties up WHERE up.id = :id AND u.name = :type",
+                    UserProperty::class.java
+                )
+                query.setParameter("id", userProperties.id)
+                query.setParameter("type", type.name.lowercase())
+                return query.list().isNotEmpty()
+            }
+        } catch (e: HibernateException) {
+            stardustPlugin.logger.log(Level.SEVERE, "Could not find user property $type", e)
+            Sentry.captureException(e)
+        }
+
+        return false
+    }
+
+    fun getUserProperty(userProperties: UserProperties, type: UserPropertyType): UserProperty {
+
+        val defaultProperty =
+            UserProperty(null, type.name.lowercase(), type.defaultValue.toString(), type.type, userProperties)
+
+        if (!existsUserProperty(userProperties, type)) return defaultProperty
 
         try {
             stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
@@ -219,7 +243,7 @@ class UserService(private val stardustPlugin: StardustPlugin) {
                     "SELECT u FROM UserProperty u JOIN FETCH u.userProperties up WHERE up.id = :id AND u.name = :type",
                     UserProperty::class.java
                 )
-                query.setParameter("id", userproperties.id)
+                query.setParameter("id", userProperties.id)
                 query.setParameter("type", type.name.lowercase())
                 return query.uniqueResult()
             }
@@ -228,7 +252,7 @@ class UserService(private val stardustPlugin: StardustPlugin) {
             Sentry.captureException(e)
         }
 
-        return null
+        return defaultProperty
     }
 
     fun setUserProperty(user: User, type: UserPropertyType, value: Any) {
@@ -238,8 +262,8 @@ class UserService(private val stardustPlugin: StardustPlugin) {
             stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
                 transaction = session.beginTransaction()
                 val userProperty = getUserProperty(user.properties, type)
-                if (userProperty == null) {
-                    session.persist(UserProperty(null, type.name.lowercase(), value.toString(), type.type))
+                if (!existsUserProperty(user.properties, type)) {
+                    session.persist(UserProperty(null, type.name.lowercase(), value.toString(), type.type, user.properties))
                 } else {
                     session.merge(userProperty.copy(value = value.toString()))
                 }
