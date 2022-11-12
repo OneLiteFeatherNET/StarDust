@@ -6,6 +6,7 @@ import cloud.commandframework.paper.PaperCommandManager
 import io.sentry.Sentry
 import io.sentry.protocol.Device
 import net.onelitefeather.stardust.api.CommandCooldownService
+import net.onelitefeather.stardust.api.ItemSignService
 import net.onelitefeather.stardust.extenstions.buildCommandSystem
 import net.onelitefeather.stardust.extenstions.buildHelpSystem
 import net.onelitefeather.stardust.extenstions.initLuckPermsSupport
@@ -14,6 +15,8 @@ import net.onelitefeather.stardust.listener.*
 import net.onelitefeather.stardust.service.*
 import org.bukkit.NamespacedKey
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 
 class StardustPlugin : JavaPlugin() {
@@ -28,7 +31,7 @@ class StardustPlugin : JavaPlugin() {
     lateinit var userService: UserService
     lateinit var commandCooldownService: CommandCooldownService
     lateinit var luckPermsService: LuckPermsService
-
+    lateinit var itemSignService: ItemSignService<ItemStack, Player>
     lateinit var packetListener: PacketListener
     lateinit var context: StardustPlugin
 
@@ -57,8 +60,9 @@ class StardustPlugin : JavaPlugin() {
 
             saveDefaultConfig()
             signedNameSpacedKey = NamespacedKey(this, "signed")
-            luckPermsService = LuckPermsService(this)
 
+            itemSignService = BukkitItemSignService(this)
+            luckPermsService = LuckPermsService(this)
             i18nService = I18nService(this)
 
             val jdbcUrl = config.getString("database.jdbcUrl")
@@ -66,7 +70,7 @@ class StardustPlugin : JavaPlugin() {
             val username = config.getString("database.username")
             val password = config.getString("database.password") ?: "IReallyKnowWhatIAmDoingISwear"
 
-            if(jdbcUrl != null && databaseDriver != null && username != null) {
+            if (jdbcUrl != null && databaseDriver != null && username != null) {
                 databaseService = DatabaseService(jdbcUrl, username, password, databaseDriver)
                 databaseService.init()
                 commandCooldownService = BukkitCommandCooldownService(this)
@@ -80,7 +84,7 @@ class StardustPlugin : JavaPlugin() {
             userService = UserService(this)
             userService.startUserTask()
 
-            if(server.pluginManager.isPluginEnabled("ProtocolLib")) {
+            if (server.pluginManager.isPluginEnabled("ProtocolLib")) {
                 packetListener = PacketListener(this)
                 packetListener.register()
             }
@@ -98,7 +102,7 @@ class StardustPlugin : JavaPlugin() {
 
     override fun onDisable() {
 
-        if(this::userService.isInitialized) {
+        if (this::userService.isInitialized) {
             userService.stopUserTask()
         }
 
