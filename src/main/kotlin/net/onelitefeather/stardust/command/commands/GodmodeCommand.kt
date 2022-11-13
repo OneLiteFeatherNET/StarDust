@@ -7,12 +7,9 @@ import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
-import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.extenstions.toSentryUser
+import net.onelitefeather.stardust.extenstions.*
+import net.onelitefeather.stardust.util.RADIUS_REMOVE_ENEMIES
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
 
 class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
@@ -37,7 +34,7 @@ class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
             }
 
             target.isInvulnerable = !target.isInvulnerable
-            removeEnemies(target)
+            target.removeEnemies(RADIUS_REMOVE_ENEMIES)
 
             val enabledMessage = stardustPlugin.i18nService.getMessage(
                 "commands.god-mode.enable", stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
@@ -54,19 +51,6 @@ class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
             Sentry.captureException(e) {
                 it.user = target.toSentryUser()
                 target.addClient(it)
-            }
-        }
-    }
-
-    private fun removeEnemies(player: Player) {
-        if (player.isInvulnerable) {
-            player.location.getNearbyLivingEntities(32.0).forEach { livingEntity ->
-                if (livingEntity is Mob) {
-                    val target = livingEntity.target ?: return@forEach
-                    if (target == player) {
-                        livingEntity.target = null
-                    }
-                }
             }
         }
     }

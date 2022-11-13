@@ -7,6 +7,7 @@ import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.extenstions.addClient
 import net.onelitefeather.stardust.extenstions.toSentryUser
 import net.onelitefeather.stardust.user.User
+import net.onelitefeather.stardust.user.UserPropertyType
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -76,7 +77,10 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
             val player = event.entity as Player
             try {
                 val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
-                event.isCancelled = user.properties.isVanished()
+                event.isCancelled =
+                    user.properties.isVanished() && user.properties.getProperty(UserPropertyType.VANISH_DISABLE_ITEM_COLLECT)
+                        .getValue<Boolean>() == true
+
             } catch (e: Exception) {
                 Sentry.captureException(e) {
                     it.user = player.toSentryUser()
@@ -90,8 +94,10 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
     fun onDrop(event: PlayerDropItemEvent) {
         val player = event.player
         try {
-            val user = stardustPlugin.userService.getUser(player.uniqueId)
-            if (user != null && user.properties.isVanished()) event.isCancelled = true
+            val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
+            event.isCancelled =
+                user.properties.isVanished() && user.properties.getProperty(UserPropertyType.VANISH_DISABLE_ITEM_DROP)
+                    .getValue<Boolean>() == true
         } catch (e: Exception) {
             Sentry.captureException(e) {
                 it.user = player.toSentryUser()
@@ -103,8 +109,11 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
     @EventHandler
     fun onPlayerPickupExp(event: PlayerPickupExperienceEvent) {
         val player = event.player
+        val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
         try {
-            event.isCancelled = stardustPlugin.userService.getUser(player.uniqueId)?.properties?.isVanished() == true
+            event.isCancelled =
+                user.properties.isVanished() && user.properties.getProperty(UserPropertyType.VANISH_DISABLE_ITEM_COLLECT)
+                    .getValue<Boolean>() == true
         } catch (e: Exception) {
             Sentry.captureException(e) {
                 it.user = player.toSentryUser()
