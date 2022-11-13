@@ -6,7 +6,6 @@ database:
   dialect: 'org.hibernate.dialect.MariaDBDialect'
 
 settings:
-  signature-text-limit: 256
   afk-kick-time: 600
   auto-afk-time: 300
   use-cooldown-bypass: true
