@@ -74,22 +74,19 @@ class BukkitItemSignService(private val stardustPlugin: StardustPlugin) :
         itemStack: ItemStack,
         sign: Boolean,
         lore: List<Component>
-    ): MutableList<Component>? {
+    ): MutableList<Component> {
 
-        val itemMeta = itemStack.itemMeta
-        val currentLore = itemMeta.lore()
+        val currentLore = itemStack.lore()
 
-        if (currentLore == null) {
-            if (sign) itemMeta.lore(lore)
+        return if(currentLore == null) {
+            lore.toMutableList()
         } else {
-            if (sign) {
-                currentLore.plus(lore)
+            if(sign) {
+                currentLore.plus(lore).toMutableList()
             } else {
-                itemMeta.lore(removePlayerFromLore(player, currentLore))
+                removePlayerFromLore(player, currentLore)
             }
         }
-
-        return itemMeta.lore()
     }
 
     private fun removePlayerFromLore(player: Player, lore: MutableList<Component>): MutableList<Component> {
