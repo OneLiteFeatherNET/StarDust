@@ -9,4 +9,4 @@ const val DEFAULT_PLAYER_FOOD_LEVEL = 20
 const val DEFAULT_ENTITY_HAS_VISUAL_FIRE = false
 const val DEFAULT_PLAYER_SATURATION_LEVEL = 20.0F
 val DUMMY_USER = User(-1)
-val DATE_FORMAT = SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
+val DATE_FORMAT = SimpleDateFormat("dd.MM.yyyy")
