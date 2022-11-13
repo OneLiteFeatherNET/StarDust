@@ -8,6 +8,7 @@ import cloud.commandframework.annotations.specifier.Greedy
 import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.extenstions.*
+import net.onelitefeather.stardust.util.RADIUS_REMOVE_ENEMIES
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -33,7 +34,7 @@ class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
             }
 
             target.isInvulnerable = !target.isInvulnerable
-            target.removeEnemies(32.0)
+            target.removeEnemies(RADIUS_REMOVE_ENEMIES)
 
             val enabledMessage = stardustPlugin.i18nService.getMessage(
                 "commands.god-mode.enable", stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
