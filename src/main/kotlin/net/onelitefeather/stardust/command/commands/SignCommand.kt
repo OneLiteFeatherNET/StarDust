@@ -5,7 +5,6 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Quoted
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.extenstions.colorText
 import net.onelitefeather.stardust.extenstions.coloredDisplayName
@@ -36,20 +35,6 @@ class SignCommand(private val stardustPlugin: StardustPlugin) {
     @CommandPermission("stardust.command.sign")
     @CommandDescription("Signature the Item in your Hand.")
     fun handleCommand(player: Player, @Argument(value = "text") @Quoted text: String) {
-
-        val plainText = PlainTextComponentSerializer.plainText()
-            .serialize(PlainTextComponentSerializer.plainText().deserialize(text))
-
-        val signTextLimit = stardustPlugin.config.getInt("settings.signature-text-limit")
-        if (plainText.length > signTextLimit) {
-            player.sendMessage(
-                stardustPlugin.i18nService.getMessage(
-                    "commands.sign-text-limit-reached",
-                    *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), plainText.length)
-                )
-            )
-            return
-        }
 
         val itemStack = player.inventory.itemInMainHand
         if (itemStack.type == Material.AIR) {
