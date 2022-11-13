@@ -6,11 +6,8 @@ import com.comphenix.protocol.ProtocolManager
 import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
-import com.comphenix.protocol.wrappers.PlayerInfoData
-import io.sentry.Sentry
+import com.comphenix.protocol.wrappers.EnumWrappers
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
-import net.onelitefeather.stardust.extenstions.toSentryUser
 
 class PacketListener(private val stardustPlugin: StardustPlugin) {
 
@@ -24,23 +21,24 @@ class PacketListener(private val stardustPlugin: StardustPlugin) {
         protocolManager.addPacketListener(object :
             PacketAdapter(stardustPlugin, ListenerPriority.HIGHEST, PacketType.Play.Server.PLAYER_INFO) {
             override fun onPacketSending(event: PacketEvent) {
-                try {
-                    val packetContainer = event.packet
+                val packetContainer = event.packet
+
+                val playerInfoAction = packetContainer.playerInfoAction.read(0)
+
+                if (playerInfoAction == EnumWrappers.PlayerInfoAction.UPDATE_DISPLAY_NAME ||
+                    playerInfoAction == EnumWrappers.PlayerInfoAction.UPDATE_GAME_MODE ||
+                    playerInfoAction == EnumWrappers.PlayerInfoAction.UPDATE_LATENCY) {
+
                     val playerInfoDataList = packetContainer.playerInfoDataLists.read(0)
-                    packetContainer.playerInfoDataLists.write(0, hideVanishedPlayers(playerInfoDataList))
-                } catch (e: Exception) {
-                    Sentry.captureException(e) {
-                        it.user = event.player.toSentryUser()
-                        event.player.addClient(it)
+
+                    playerInfoDataList.removeIf {
+                        stardustPlugin.userService.getUser(it.profile.uuid)?.properties?.isVanished() == true
                     }
+
+                    packetContainer.playerInfoDataLists.write(0, playerInfoDataList)
                 }
             }
         })
     }
 
-
-    fun hideVanishedPlayers(playerInfoDataList: List<PlayerInfoData>): List<PlayerInfoData> =
-        playerInfoDataList.filter { playerInfoData ->
-            stardustPlugin.userService.getUser(playerInfoData.profile.uuid)?.properties?.isVanished() == true
-        }
 }
