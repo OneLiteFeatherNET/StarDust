@@ -40,9 +40,14 @@ class SignCommand(private val stardustPlugin: StardustPlugin) {
         val plainText = PlainTextComponentSerializer.plainText()
             .serialize(PlainTextComponentSerializer.plainText().deserialize(text))
 
-        //Remove the magic value later :D
-        if (plainText.length > 150) {
-            player.sendMessage("The length of your text is less than 150 (${plainText.length})")
+        val signTextLimit = stardustPlugin.config.getInt("settings.signature-text-limit")
+        if (plainText.length > signTextLimit) {
+            player.sendMessage(
+                stardustPlugin.i18nService.getMessage(
+                    "commands.sign-text-limit-reached",
+                    *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), plainText.length)
+                )
+            )
             return
         }
 
