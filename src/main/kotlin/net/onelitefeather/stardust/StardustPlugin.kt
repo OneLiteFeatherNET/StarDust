@@ -55,7 +55,15 @@ class StardustPlugin : JavaPlugin() {
         try {
             context = this
 
+            //Creating the default config
             saveDefaultConfig()
+
+            //Saving the default config values
+            config.options().copyDefaults(true)
+
+            //Saving the config is needed
+            saveConfig()
+
             signedNameSpacedKey = NamespacedKey(this, "signed")
             luckPermsService = LuckPermsService(this)
 

@@ -8,7 +8,8 @@ database:
 settings:
   afk-kick-time: 600
   auto-afk-time: 300
+  use-cooldown-bypass: true
 command-cooldowns:
   skull:
     timeunit: DAYS
-    time: 3
+    time: 1
