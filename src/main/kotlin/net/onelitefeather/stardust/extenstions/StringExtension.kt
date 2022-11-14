@@ -9,7 +9,7 @@ fun miniMessage(message: () -> String) = MiniMessage.miniMessage().deserialize(m
 
 fun String.colorText(): String = convertComponentToString(miniMessage { this })
 
-private fun convertComponentToString(message: Component): String {
+fun convertComponentToString(message: Component): String {
     return MiniMessage.miniMessage().serialize(
         LegacyComponentSerializer.legacyAmpersand()
             .deserialize(LegacyComponentSerializer.legacyAmpersand().serialize(message))
