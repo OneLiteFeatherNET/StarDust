@@ -36,6 +36,7 @@ fun StardustPlugin.registerCommands() {
     annotationParser.parse(SignCommand(this))
     annotationParser.parse(SkullCommand(this))
     annotationParser.parse(VanishCommand(this))
+    annotationParser.parse(syncFrogService)
 }
 
 fun StardustPlugin.buildCommandSystem() {
