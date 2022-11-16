@@ -40,8 +40,7 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                 return
             }
 
-            player.server.onlinePlayers.filter { stardustPlugin.userService.playerVanishService.isVanished(it) }
-                .forEach { stardustPlugin.userService.playerVanishService.hidePlayer(it) }
+            stardustPlugin.userService.playerVanishService.onPlayerJoin(player)
 
             player.allowFlight =
                 user.properties.isFlying() && !player.allowFlight || player.gameMode == GameMode.CREATIVE || player.gameMode == GameMode.SPECTATOR
