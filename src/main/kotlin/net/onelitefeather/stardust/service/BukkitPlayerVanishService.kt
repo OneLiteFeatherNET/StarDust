@@ -50,7 +50,7 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
 
     override fun isVanished(player: Player): Boolean {
         val user = userService.getUser(player.uniqueId) ?: return false
-        val vanishedProperty = userService.getUserProperty(user.properties, UserPropertyType.VANISHED) ?: return false
+        val vanishedProperty = userService.getUserProperty(user.properties, UserPropertyType.VANISHED)
         return vanishedProperty.getValue()!!
     }
 
@@ -58,4 +58,24 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
         userService.setUserProperty(user, UserPropertyType.VANISHED, vanished)
     }
 
+    override fun onPlayerJoin(player: Player) {
+        handlePlayerJoin(player)
+        stardustPlugin.server.onlinePlayers.forEach { handlePlayerJoin(it) }
+    }
+
+
+    private fun handlePlayerJoin(player: Player) {
+        val currentState = isVanished(player)
+        val user = userService.getUser(player.uniqueId) ?: return
+        if (currentState) {
+
+            if (!player.hasPermission("stardust.vanish.auto")) {
+                setVanished(user, false)
+                showPlayer(player)
+                return
+            }
+
+            hidePlayer(player)
+        }
+    }
 }
