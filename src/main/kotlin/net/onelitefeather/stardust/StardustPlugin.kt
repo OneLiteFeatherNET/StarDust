@@ -33,6 +33,7 @@ class StardustPlugin : JavaPlugin() {
     lateinit var luckPermsService: LuckPermsService
     lateinit var itemSignService: ItemSignService<ItemStack, Player>
     lateinit var packetListener: PacketListener
+    lateinit var syncFrogService: SyncFrogService
     lateinit var context: StardustPlugin
 
     override fun onEnable() {
@@ -69,6 +70,7 @@ class StardustPlugin : JavaPlugin() {
 
             signedNameSpacedKey = NamespacedKey(this, "signed")
 
+            syncFrogService = SyncFrogService(this)
             itemSignService = BukkitItemSignService(this)
             luckPermsService = LuckPermsService(this)
             i18nService = I18nService(this)
