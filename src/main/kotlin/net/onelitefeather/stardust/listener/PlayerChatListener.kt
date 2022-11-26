@@ -16,6 +16,15 @@ class PlayerChatListener(private val stardustPlugin: StardustPlugin) : Listener 
     fun onAsyncChat(event: AsyncChatEvent) {
         val player = event.player
         val user = stardustPlugin.userService.getUser(player.uniqueId)
+
+        event.renderer { _: Player, sourceDisplayName: Component, _: Component, _: Audience ->
+            Component.text()
+                .append(sourceDisplayName)
+                .append(Component.text(": "))
+                .append(event.message())
+                .build()
+        }
+
         if (user != null && user.properties.getProperty(UserPropertyType.VANISHED).getValue<Boolean>() == true) {
 
             if (!user.hasChatConfirmation(stardustPlugin.chatConfirmationKey)) {
@@ -27,14 +36,6 @@ class PlayerChatListener(private val stardustPlugin: StardustPlugin) : Listener 
             }
 
             return
-        }
-
-        event.renderer { _: Player, sourceDisplayName: Component, _: Component, _: Audience ->
-            Component.text()
-                .append(sourceDisplayName)
-                .append(Component.text(": "))
-                .append(event.message())
-                .build()
         }
     }
 }
