@@ -26,7 +26,6 @@ class StardustPlugin : JavaPlugin() {
     lateinit var minecraftHelp: MinecraftHelp<CommandSender>
 
     lateinit var i18nService: I18nService
-    lateinit var signedNameSpacedKey: NamespacedKey
     lateinit var databaseService: DatabaseService
     lateinit var userService: UserService
     lateinit var commandCooldownService: CommandCooldownService
@@ -35,6 +34,10 @@ class StardustPlugin : JavaPlugin() {
     lateinit var packetListener: PacketListener
     lateinit var syncFrogService: SyncFrogService
     lateinit var context: StardustPlugin
+
+    lateinit var playerNameTagService: PlayerNameTagService
+    lateinit var chatConfirmationKey: NamespacedKey
+    lateinit var signedNameSpacedKey: NamespacedKey
 
     override fun onEnable() {
 
@@ -65,15 +68,18 @@ class StardustPlugin : JavaPlugin() {
             //Saving the default config values
             config.options().copyDefaults(true)
 
+
             //Saving the config is needed
             saveConfig()
 
-            signedNameSpacedKey = NamespacedKey(this, "signed")
-
             syncFrogService = SyncFrogService(this)
             itemSignService = BukkitItemSignService(this)
-            luckPermsService = LuckPermsService(this)
             i18nService = I18nService(this)
+
+            playerNameTagService = PlayerNameTagService(this)
+
+            luckPermsService = LuckPermsService(this)
+            luckPermsService.init()
 
             val jdbcUrl = config.getString("database.jdbcUrl")
             val databaseDriver = config.getString("database.driver")
@@ -105,6 +111,7 @@ class StardustPlugin : JavaPlugin() {
             server.pluginManager.registerEvents(PlayerVanishListener(this), this)
 
             signedNameSpacedKey = NamespacedKey(this, "signed")
+            chatConfirmationKey = NamespacedKey(this, "chat_confirmation")
         } catch (e: Exception) {
             Sentry.captureException(e)
         }

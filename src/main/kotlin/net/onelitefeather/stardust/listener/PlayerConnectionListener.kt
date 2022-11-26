@@ -2,10 +2,7 @@ package net.onelitefeather.stardust.listener
 
 import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
-import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.extenstions.toSentryUser
+import net.onelitefeather.stardust.extenstions.*
 import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -21,7 +18,8 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
         try {
 
             if (stardustPlugin.luckPermsService.isEnabled()) {
-                player.displayName(stardustPlugin.luckPermsService.getPlayerDisplayName(player))
+                player.displayName(miniMessage { stardustPlugin.luckPermsService.getPlayerGroupPrefix(player).plus(player.name).colorText() })
+                stardustPlugin.playerNameTagService.updateNameTag(player)
             }
 
             val user = stardustPlugin.userService.getUser(player.uniqueId)
