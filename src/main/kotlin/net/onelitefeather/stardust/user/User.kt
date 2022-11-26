@@ -4,11 +4,14 @@ import jakarta.persistence.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import net.onelitefeather.stardust.extenstions.coloredDisplayName
 import net.onelitefeather.stardust.extenstions.miniMessage
 import org.bukkit.Bukkit
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
+import org.bukkit.persistence.PersistentDataType
 import org.hibernate.Hibernate
-import java.util.UUID
+import java.util.*
 
 @Entity
 @Table
@@ -44,13 +47,11 @@ data class User(
         })
     }
 
-
-
     fun getUniqueId(): UUID = UUID.fromString(uuid)
 
     fun getDisplayName(): String {
         val base = getBase() ?: return name
-        return LegacyComponentSerializer.legacyAmpersand().serialize(base.displayName())
+        return base.coloredDisplayName()
     }
 
     fun getBase(): Player? = Bukkit.getPlayer(getUniqueId())
@@ -59,6 +60,20 @@ data class User(
         val player = getBase() ?: return false
         player.kick(message)
         return true
+    }
+
+    fun confirmChatMessage(namespacedKey: NamespacedKey, value: Boolean) {
+        val player = getBase() ?: return
+        val container = player.persistentDataContainer
+        container[namespacedKey, PersistentDataType.INTEGER] = if (value) 1 else 0
+    }
+
+    fun hasChatConfirmation(namespacedKey: NamespacedKey): Boolean {
+        val player = getBase() ?: return false
+        val container = player.persistentDataContainer
+        if (!container.has(namespacedKey)) return false
+        val value = container[namespacedKey, PersistentDataType.INTEGER] ?: return false
+        return value == 1
     }
 
     override fun equals(other: Any?): Boolean {
