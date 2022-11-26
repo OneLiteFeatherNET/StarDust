@@ -45,7 +45,7 @@ class VanishSilentContainerFeature(private val stardustPlugin: StardustPlugin) :
 
         val vanished = stardustPlugin.userService.playerVanishService.isVanished(player)
         if (vanished) {
-            if (player.hasPermission(" stardust.vanish.silentopen") && player.isSneaking && event.action.isRightClick) {
+            if (player.hasPermission("stardust.vanish.silentopen") && player.isSneaking && event.action.isRightClick) {
                 silentContainerLooter[player] = blockState.inventory
 
                 player.velocity = DUMMY_VECTOR
