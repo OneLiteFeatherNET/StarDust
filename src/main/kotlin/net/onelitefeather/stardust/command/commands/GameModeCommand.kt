@@ -19,7 +19,7 @@ class GameModeCommand(private val stardustPlugin: StardustPlugin) {
 
     @CommandMethod("gamemode|gm <gamemode> [player]")
     @CommandPermission("stardust.command.gamemode")
-    @CommandDescription("Change the GameMode of a Player.")
+    @CommandDescription("Change the GameMode of a player.")
     fun handleCommand(
         commandSender: CommandSender,
         @Argument(value = "gamemode") gameMode: GameMode,

@@ -20,7 +20,7 @@ class GlowCommand(private val stardustPlugin: StardustPlugin) {
 
     @CommandMethod("glow [player]")
     @CommandPermission("stardust.command.glow")
-    @CommandDescription("Makes a Player glowing in his scoreboard team color.")
+    @CommandDescription("Makes a player glowing in his scoreboard team color.")
     fun handleCommand(commandSender: CommandSender, @Greedy @Argument(value = "player") target: Player?) {
         if (target == null) {
             handleGlow(commandSender, commandSender as Player)

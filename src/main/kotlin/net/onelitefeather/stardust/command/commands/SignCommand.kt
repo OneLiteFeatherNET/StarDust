@@ -24,11 +24,12 @@ class SignCommand(private val stardustPlugin: StardustPlugin) {
 
         val itemStack = player.inventory.itemInMainHand
         if (!stardustPlugin.itemSignService.hasSigned(itemStack, player)) {
-            player.sendMessage("Item is not signed by you")
+            player.sendMessage(miniMessage { stardustPlugin.i18nService.getMessage("commands.unsign.not-signed", stardustPlugin.i18nService.getPluginPrefix()) })
             return
         }
 
         giveItemStack(player, stardustPlugin.itemSignService.removeSignature(itemStack, player))
+        player.sendMessage(miniMessage { stardustPlugin.i18nService.getMessage("commands.unsign.success", stardustPlugin.i18nService.getPluginPrefix()) })
     }
 
     @CommandMethod("sign <text>")
