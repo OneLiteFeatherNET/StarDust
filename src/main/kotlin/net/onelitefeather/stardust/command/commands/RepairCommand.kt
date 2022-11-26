@@ -69,7 +69,7 @@ class RepairCommand(private val stardustPlugin: StardustPlugin) {
         }
 
         val damageable = itemStack.itemMeta as Damageable
-        if (damageable.damage > 1) {
+        if (damageable.damage > 0) {
             damageable.damage = 0
             itemStack.itemMeta = damageable
             player.updateInventory()
