@@ -21,7 +21,7 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
         try {
 
             if (stardustPlugin.luckPermsService.isEnabled()) {
-                player.displayName(stardustPlugin.luckPermsService.getPlayerDisplayName(player))
+                stardustPlugin.playerNameTagService.updateNameTag(player)
             }
 
             val user = stardustPlugin.userService.getUser(player.uniqueId)
