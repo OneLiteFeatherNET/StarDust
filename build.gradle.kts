@@ -106,11 +106,10 @@ bukkit {
     main = "${rootProject.group}.stardust.StardustPlugin"
     apiVersion = "1.19"
     name = "Stardust"
-    load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
+    load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
 
     authors = listOf("UniqueGame", "OneLiteFeather")
-
-    softDepend = listOf("CloudNet-Bridge")
+    softDepend = listOf("CloudNet-Bridge", "LuckPerms")
 }
 
 version = if (System.getenv().containsKey("CI")) {
