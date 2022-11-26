@@ -24,10 +24,10 @@ class HealCommand(private val stardustPlugin: StardustPlugin) {
 
     @CommandMethod("heal [player]")
     @CommandPermission("stardust.command.heal")
-    @CommandDescription("Heal a Player.")
+    @CommandDescription("Heal a player.")
     fun onCommand(commandSender: CommandSender, @Greedy @Argument(value = "player") target: Player?) {
         if (commandSender is Player) {
-            healPlayer(commandSender, commandSender)
+            healPlayer(commandSender, target ?: commandSender)
         } else {
             if (target == null) return
             healPlayer(commandSender, target)
