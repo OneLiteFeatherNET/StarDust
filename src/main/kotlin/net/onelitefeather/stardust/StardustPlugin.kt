@@ -105,6 +105,7 @@ class StardustPlugin : JavaPlugin() {
                 packetListener.register()
             }
 
+            server.pluginManager.registerEvents(VanishSilentContainerFeature(this), this)
             server.pluginManager.registerEvents(CommandCooldownListener(this), this)
             server.pluginManager.registerEvents(PlayerChatListener(this), this)
             server.pluginManager.registerEvents(PlayerConnectionListener(this), this)
