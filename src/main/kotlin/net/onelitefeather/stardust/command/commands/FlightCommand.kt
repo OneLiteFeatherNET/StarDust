@@ -21,7 +21,7 @@ class FlightCommand(val stardustPlugin: StardustPlugin) {
 
     @CommandMethod("flight|fly [player]")
     @CommandPermission("stardust.command.flight")
-    @CommandDescription("Allows a Player to flight.")
+    @CommandDescription("Allows a player to flight.")
     fun handleFlightCommand(commandSender: CommandSender, @Greedy @Argument(value = "player") target: Player?) {
 
         if (commandSender is Player && target == null) {
