@@ -30,7 +30,6 @@ class PlayerNameTagService(private val stardustPlugin: StardustPlugin) {
             val vanishTeam = "${sortId}vanished_${user.id}"
             val color = findScoreboardTeamColor(groupPrefix)
 
-            player.displayName(miniMessage { groupPrefix.colorText().plus(player.name) })
             for (current in stardustPlugin.server.onlinePlayers) {
                 initScoreboard(current)
 
