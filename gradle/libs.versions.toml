@@ -2,7 +2,7 @@ metadata.format.version = "1.1"
 
 [versions]
 # Paper
-paper = "1.19.2-R0.1-SNAPSHOT"
+paper = "1.19.3-R0.1-SNAPSHOT"
 # Error Tracking
 sentry = "6.6.0"
 # Plugins
@@ -13,7 +13,7 @@ liquibase = "2.1.0"
 # Chat
 adventure = "4.10.1"
 # Commands
-cloud = "1.7.1"
+cloud = "1.8.0"
 commodore = "2.2"
 # Database
 hibernate = "6.1.5.Final"
