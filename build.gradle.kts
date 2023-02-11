@@ -94,7 +94,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.19.2")
+        minecraftVersion("1.19.3")
     }
 
     shadowJar {
