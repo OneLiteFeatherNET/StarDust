@@ -19,11 +19,13 @@ class CommandCooldownListener(private val stardustPlugin: StardustPlugin) : List
 
             val commandRaw = event.message.replaceFirst("/", "")
             val strings = commandRaw.split(" ").dropLastWhile { it.isEmpty() }.toTypedArray()
-            val commandLabel = strings[0]
 
-            if (strings.copyOfRange(1, strings.size)
-                    .isNotEmpty() && stardustPlugin.commandCooldownService.hasCommandCooldown(commandLabel)
-            ) {
+            if(strings.isEmpty()) return
+
+            val commandLabelRaw = strings[0]
+            val commandLabel = if (commandLabelRaw.contains(":")) commandLabelRaw.split(":")[1] else commandLabelRaw
+
+            if (stardustPlugin.commandCooldownService.hasCommandCooldown(commandLabel)) {
 
                 if (player.hasPermission("stardust.commandcooldown.bypass") && stardustPlugin.config.getBoolean("settings.use-cooldown-bypass")) return
                 val commandCooldown =
