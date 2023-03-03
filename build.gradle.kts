@@ -1,63 +1,45 @@
 plugins {
     kotlin("jvm") version "1.7.10"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
-    id("xyz.jpenilla.run-paper") version "1.0.6"
-
     id("com.github.johnrengelman.shadow") version "7.1.2"
 
     // SonarQube
-    id("org.sonarqube") version "3.5.0.2730"
+    id("org.sonarqube") version "4.0.0.2929"
     jacoco
-    // LIQUIBASE
-    // alias(libs.plugins.liquibase)
 }
 
 val baseVersion = "1.0.0"
 group = "net.onelitefeather"
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven("https://papermc.io/repo/repository/maven-public/")
-    maven("https://maven.enginehub.org/repo/")
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://oss.sonatype.org/content/groups/public/")
-    maven("https://libraries.minecraft.net")
-    maven("https://repo.cloudnetservice.eu/repository/releases/")
+    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     maven("https://repo.dmulloy2.net/repository/public/")
-    maven("https://jitpack.io")
 }
 dependencies {
 
     // Paper
-    compileOnly(libs.paper)
-    compileOnly(libs.luckperms)
-    compileOnly(libs.protocollib)
-
-    bukkitLibrary("dev.vankka:enhancedlegacytext:1.0.0")
-
-    // Sentry
-    implementation(libs.bundles.sentry)
-
-    // Commands
-    implementation(libs.bundles.cloud)
-    implementation(libs.commodore) {
+    compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
+    bukkitLibrary("cloud.commandframework", "cloud-paper", "1.8.0")
+    bukkitLibrary("cloud.commandframework", "cloud-annotations", "1.8.0")
+    bukkitLibrary("cloud.commandframework", "cloud-minecraft-extras", "1.8.0")
+    bukkitLibrary("org.apache.commons:commons-lang3:3.12.0")
+    bukkitLibrary("me.lucko:commodore:2.2") {
         isTransitive = false
     }
+
+    compileOnly("net.luckperms:api:5.4")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
+
+    // Sentry
+    implementation("io.sentry:sentry:6.6.0")
+    implementation("io.sentry:sentry-jul:6.6.0")
 
     // Database
     implementation("org.hibernate:hibernate-core:6.1.5.Final")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.0.6")
     implementation("org.hibernate.orm:hibernate-hikaricp:6.1.5.Final")
-
-    // liquibaseRuntime("org.liquibase.ext:liquibase-hibernate5:4.9.1") // Changelog based db
-    // liquibaseRuntime("org.mariadb.jdbc:mariadb-java-client:3.0.4") // Changelog based db
-
-    // Liquibase
-    // liquibaseRuntime("org.liquibase:liquibase-core:3.10.3")
-    // liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:2.0.1")
-    // liquibaseRuntime("ch.qos.logback:logback-core:1.2.3")
-    // liquibaseRuntime("ch.qos.logback:logback-classic:1.2.3")
 
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
@@ -78,7 +60,7 @@ tasks {
         }
     }
 
-    getByName("sonarqube") {
+    getByName("sonar") {
         dependsOn(rootProject.tasks.test)
     }
 
@@ -93,10 +75,6 @@ tasks {
         useJUnitPlatform()
     }
 
-    runServer {
-        minecraftVersion("1.19.3")
-    }
-
     shadowJar {
         archiveFileName.set("${rootProject.name}.${archiveExtension.getOrElse("jar")}")
     }
@@ -109,7 +87,7 @@ bukkit {
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
 
     authors = listOf("UniqueGame", "OneLiteFeather")
-    softDepend = listOf("CloudNet-Bridge", "LuckPerms")
+    softDepend = listOf("CloudNet-Bridge", "LuckPerms", "ProtocolLib")
 }
 
 version = if (System.getenv().containsKey("CI")) {
@@ -125,22 +103,6 @@ version = if (System.getenv().containsKey("CI")) {
     "$baseVersion-SNAPSHOT"
 }
 
-/*liquibase {
-    activities {
-        create("diffMain") {
-            (this.arguments as MutableMap<String, String>).apply {
-                this["changeLogFile"] = "src/main/resources/db/changelog/db.changelog-diff.xml"
-                this["url"] = "jdbc:mariadb://localhost:3306/elytrarace"
-                this["username"] = "root"
-                this["password"] = "%Schueler90"
-// set e.g. the Dev Database to perform diffs
-                this["referenceUrl"] = "jdbc:mariadb://localhost:3306/elytraracediff"
-                this["referenceUsername"] = "root"
-                this["referencePassword"] = "%Schueler90"
-            }
-        }
-    }
-}*/
 sonarqube {
     properties {
         property("sonar.projectKey", "onelitefeather_projects_stardust_AYRjNInxwVDHzVoeOyqT")
