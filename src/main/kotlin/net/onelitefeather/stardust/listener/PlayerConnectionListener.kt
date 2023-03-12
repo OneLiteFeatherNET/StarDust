@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import java.util.logging.Level
 
 class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Listener {
 
@@ -16,11 +17,6 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
     fun handlePlayerJoin(event: PlayerJoinEvent) {
         val player = event.player
         try {
-
-            if (stardustPlugin.luckPermsService.isEnabled()) {
-                player.displayName(miniMessage { stardustPlugin.luckPermsService.getPlayerGroupPrefix(player).plus(player.name).colorText() })
-                stardustPlugin.playerNameTagService.updateNameTag(player)
-            }
 
             val user = stardustPlugin.userService.getUser(player.uniqueId)
             if (user == null) {
@@ -36,6 +32,11 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                     })
                 }
                 return
+            }
+
+            if(!player.name.equals(user.name, true)) {
+                stardustPlugin.logger.log(Level.INFO, "Updating Username from %s to %s".format(user.name, player.name))
+                stardustPlugin.userService.updateUser(user.copy(name = player.name))
             }
 
             stardustPlugin.userService.playerVanishService.onPlayerJoin(player)
