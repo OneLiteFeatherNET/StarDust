@@ -7,11 +7,14 @@ import net.onelitefeather.stardust.user.User
 import net.onelitefeather.stardust.user.UserPropertyType
 import net.onelitefeather.stardust.util.RADIUS_REMOVE_ENEMIES
 import org.bukkit.entity.Player
+import org.bukkit.metadata.FixedMetadataValue
 
 class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, private val userService: UserService) :
     PlayerVanishService<Player> {
 
     override fun hidePlayer(player: Player) {
+
+        setVanishedMetadata(player, true)
         val playerGroupPriority = stardustPlugin.luckPermsService.getGroupPriority(player)
         stardustPlugin.server.onlinePlayers.forEach { players ->
 
@@ -28,6 +31,8 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
     }
 
     override fun showPlayer(player: Player) {
+
+        setVanishedMetadata(player, false)
         stardustPlugin.server.onlinePlayers.filterNot { it.canSee(player) }
             .forEach { it.showPlayer(stardustPlugin, player) }
     }
@@ -45,7 +50,6 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
         }
 
         setVanished(user, !currentState)
-        stardustPlugin.playerNameTagService.updateNameTag(player)
         return isVanished(player)
     }
 
@@ -77,5 +81,9 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
 
             hidePlayer(player)
         }
+    }
+
+    private fun setVanishedMetadata(player: Player, vanished: Boolean) {
+        player.setMetadata("vanished", FixedMetadataValue(stardustPlugin, vanished))
     }
 }
