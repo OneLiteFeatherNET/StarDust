@@ -4,9 +4,6 @@ import io.sentry.Sentry
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.luckperms.api.LuckPerms
-import net.luckperms.api.event.user.UserLoadEvent
-import net.luckperms.api.event.user.track.UserDemoteEvent
-import net.luckperms.api.event.user.track.UserPromoteEvent
 import net.luckperms.api.model.group.Group
 import net.luckperms.api.query.QueryOptions
 import net.onelitefeather.stardust.StardustPlugin
@@ -25,7 +22,6 @@ class LuckPermsService(val stardustPlugin: StardustPlugin) {
                 if (provider != null) {
                     luckPerms = provider.provider
                     stardustPlugin.logger.log(Level.INFO, "Using ${provider.plugin.name} as Permission provider.")
-                    listen()
                 }
             }
         } catch (e: Exception) {
@@ -74,28 +70,5 @@ class LuckPermsService(val stardustPlugin: StardustPlugin) {
         return luckPerms.groupManager.loadedGroups.sortedByDescending {
             getGroupPriority(it.name)
         }.map { it.name }.indexOfFirst { it.equals(group.name, true) }
-    }
-
-    private fun listen() {
-
-        val eventBus = luckPerms.eventBus
-
-        eventBus.subscribe(UserPromoteEvent::class.java) {
-            val stardustUser = stardustPlugin.userService.getUser(it.user.uniqueId) ?: return@subscribe
-            val bukkitPlayer = stardustUser.getBase() ?: return@subscribe
-            stardustPlugin.playerNameTagService.updateNameTag(bukkitPlayer)
-        }
-
-        eventBus.subscribe(UserDemoteEvent::class.java) {
-            val stardustUser = stardustPlugin.userService.getUser(it.user.uniqueId) ?: return@subscribe
-            val bukkitPlayer = stardustUser.getBase() ?: return@subscribe
-            stardustPlugin.playerNameTagService.updateNameTag(bukkitPlayer)
-        }
-
-        eventBus.subscribe(UserLoadEvent::class.java) {
-            val stardustUser = stardustPlugin.userService.getUser(it.user.uniqueId) ?: return@subscribe
-            val bukkitPlayer = stardustUser.getBase() ?: return@subscribe
-            stardustPlugin.playerNameTagService.updateNameTag(bukkitPlayer)
-        }
     }
 }
