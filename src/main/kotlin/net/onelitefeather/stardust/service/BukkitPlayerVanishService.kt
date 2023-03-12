@@ -6,8 +6,8 @@ import net.onelitefeather.stardust.extenstions.removeEnemies
 import net.onelitefeather.stardust.user.User
 import net.onelitefeather.stardust.user.UserPropertyType
 import net.onelitefeather.stardust.util.RADIUS_REMOVE_ENEMIES
+import net.onelitefeather.stardust.util.VANISHED_METADATA_KEY
 import org.bukkit.entity.Player
-import org.bukkit.metadata.FixedMetadataValue
 
 class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, private val userService: UserService) :
     PlayerVanishService<Player> {
@@ -69,9 +69,8 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
     }
 
     private fun handlePlayerJoin(player: Player) {
-        val currentState = isVanished(player)
         val user = userService.getUser(player.uniqueId) ?: return
-        if (currentState) {
+        if (isVanished(player)) {
 
             if (!player.hasPermission("stardust.vanish.auto")) {
                 setVanished(user, false)
@@ -84,6 +83,6 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
     }
 
     private fun setVanishedMetadata(player: Player, vanished: Boolean) {
-        player.setMetadata("vanished", FixedMetadataValue(stardustPlugin, vanished))
+        player.setMetadata(VANISHED_METADATA_KEY, if(vanished) stardustPlugin.vanishedMetadata else stardustPlugin.notVanishedMetadata)
     }
 }
