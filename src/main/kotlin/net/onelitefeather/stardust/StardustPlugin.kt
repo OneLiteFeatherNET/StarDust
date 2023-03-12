@@ -17,6 +17,8 @@ import org.bukkit.NamespacedKey
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.metadata.FixedMetadataValue
+import org.bukkit.metadata.MetadataValue
 import org.bukkit.plugin.java.JavaPlugin
 
 class StardustPlugin : JavaPlugin() {
@@ -35,10 +37,13 @@ class StardustPlugin : JavaPlugin() {
     lateinit var syncFrogService: SyncFrogService
     lateinit var context: StardustPlugin
 
-    lateinit var playerNameTagService: PlayerNameTagService
     lateinit var chatConfirmationKey: NamespacedKey
     lateinit var signedNameSpacedKey: NamespacedKey
 
+    lateinit var vanishedMetadata: MetadataValue
+    lateinit var notVanishedMetadata: MetadataValue
+
+    @Suppress("kotlin:S1874")
     override fun onEnable() {
 
         Sentry.init {
@@ -47,6 +52,7 @@ class StardustPlugin : JavaPlugin() {
             it.tracesSampleRate = 1.0
             it.dsn = "https://81a5e07ea4b54399a4cfd0b9710e0310@sentry.themeinerlp.dev/3"
         }
+
         Sentry.configureScope {
             Device().apply {
                 name = server.name
@@ -72,11 +78,12 @@ class StardustPlugin : JavaPlugin() {
             //Saving the config is needed
             saveConfig()
 
+            vanishedMetadata = FixedMetadataValue(this, true)
+            notVanishedMetadata = FixedMetadataValue(this, false)
+
             syncFrogService = SyncFrogService(this)
             itemSignService = BukkitItemSignService(this)
             i18nService = I18nService(this)
-
-            playerNameTagService = PlayerNameTagService(this)
 
             luckPermsService = LuckPermsService(this)
             luckPermsService.init()
