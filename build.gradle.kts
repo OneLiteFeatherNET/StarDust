@@ -54,6 +54,10 @@ kotlin {
 
 tasks {
 
+    build {
+        dependsOn(shadowJar)
+    }
+
     compileKotlin {
         kotlinOptions {
             jvmTarget = "17"
