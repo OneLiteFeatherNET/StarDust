@@ -17,6 +17,8 @@ import org.bukkit.NamespacedKey
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.metadata.FixedMetadataValue
+import org.bukkit.metadata.MetadataValue
 import org.bukkit.plugin.java.JavaPlugin
 
 class StardustPlugin : JavaPlugin() {
@@ -37,6 +39,9 @@ class StardustPlugin : JavaPlugin() {
 
     lateinit var chatConfirmationKey: NamespacedKey
     lateinit var signedNameSpacedKey: NamespacedKey
+
+    lateinit var vanishedMetadata: MetadataValue
+    lateinit var notVanishedMetadata: MetadataValue
 
     @Suppress("kotlin:S1874")
     override fun onEnable() {
@@ -72,6 +77,9 @@ class StardustPlugin : JavaPlugin() {
 
             //Saving the config is needed
             saveConfig()
+
+            vanishedMetadata = FixedMetadataValue(this, true)
+            notVanishedMetadata = FixedMetadataValue(this, false)
 
             syncFrogService = SyncFrogService(this)
             itemSignService = BukkitItemSignService(this)
