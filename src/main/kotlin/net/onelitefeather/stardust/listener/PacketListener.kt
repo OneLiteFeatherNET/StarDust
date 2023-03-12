@@ -22,12 +22,13 @@ class PacketListener(private val stardustPlugin: StardustPlugin) {
             PacketAdapter(stardustPlugin, ListenerPriority.HIGHEST, PacketType.Play.Server.PLAYER_INFO) {
             override fun onPacketSending(event: PacketEvent) {
                 val packetContainer = event.packet
+                if (packetContainer.playerInfoAction.size() == 0) return
 
                 val playerInfoAction = packetContainer.playerInfoAction.read(0)
-
                 if (playerInfoAction == EnumWrappers.PlayerInfoAction.UPDATE_DISPLAY_NAME ||
                     playerInfoAction == EnumWrappers.PlayerInfoAction.UPDATE_GAME_MODE ||
-                    playerInfoAction == EnumWrappers.PlayerInfoAction.UPDATE_LATENCY) {
+                    playerInfoAction == EnumWrappers.PlayerInfoAction.UPDATE_LATENCY
+                ) {
 
                     val playerInfoDataList = packetContainer.playerInfoDataLists.read(0)
 
