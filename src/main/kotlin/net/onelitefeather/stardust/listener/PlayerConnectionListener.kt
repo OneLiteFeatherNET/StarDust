@@ -31,6 +31,12 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                         )
                     })
                 }
+
+                event.joinMessage(miniMessage {
+                    stardustPlugin.i18nService.getMessage(
+                        "listener.join-message", *arrayOf(player.coloredDisplayName())
+                    )
+                })
                 return
             }
 
@@ -47,7 +53,6 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
             if (!player.hasPermission("stardust.join.gamemode")) {
                 player.gameMode = player.server.defaultGameMode
             }
-
             event.joinMessage(if (user.properties.isVanished()) null else miniMessage {
                 stardustPlugin.i18nService.getMessage(
                     "listener.join-message", *arrayOf(player.coloredDisplayName())
