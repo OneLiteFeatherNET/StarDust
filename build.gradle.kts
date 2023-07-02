@@ -40,7 +40,7 @@ dependencies {
     implementation("io.sentry:sentry-jul:6.6.0")
 
     // Database
-    implementation("org.hibernate:hibernate-core:6.1.5.Final")
+    implementation("org.hibernate:hibernate-core:6.2.6.Final")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.0.6")
     implementation("org.hibernate.orm:hibernate-hikaricp:6.1.5.Final")
 
