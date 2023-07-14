@@ -36,7 +36,7 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
 
     // Sentry
-    implementation("io.sentry:sentry:6.6.0")
+    implementation("io.sentry:sentry:6.25.2")
     implementation("io.sentry:sentry-jul:6.6.0")
 
     // Database
