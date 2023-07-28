@@ -5,12 +5,9 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
-import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
 import net.onelitefeather.stardust.extenstions.coloredDisplayName
 import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.extenstions.toSentryUser
 import net.onelitefeather.stardust.util.DEFAULT_ENTITY_HAS_VISUAL_FIRE
 import net.onelitefeather.stardust.util.DEFAULT_PLAYER_FIRE_TICKS
 import net.onelitefeather.stardust.util.DEFAULT_PLAYER_FOOD_LEVEL
@@ -70,10 +67,7 @@ class HealCommand(private val stardustPlugin: StardustPlugin) {
 
             commandSender.sendMessage(miniMessage { message })
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = target.toSentryUser()
-                target.addClient(it)
-            }
+            this.stardustPlugin.getLogger().throwing(HealCommand::class.java.simpleName, "healPlayer", e)
         }
     }
 }

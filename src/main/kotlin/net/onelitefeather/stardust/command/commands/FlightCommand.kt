@@ -5,17 +5,13 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
-import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
 import net.onelitefeather.stardust.extenstions.coloredDisplayName
 import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.extenstions.toSentryUser
 import net.onelitefeather.stardust.user.UserPropertyType
 import org.bukkit.GameMode
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import java.lang.Exception
 
 class FlightCommand(val stardustPlugin: StardustPlugin) {
 
@@ -80,10 +76,7 @@ class FlightCommand(val stardustPlugin: StardustPlugin) {
                 target.sendMessage(miniMessage { if (target.allowFlight) enabledMessage else disabledMessage })
             }
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = target.toSentryUser()
-                target.addClient(it)
-            }
+            this.stardustPlugin.getLogger().throwing(FlightCommand::class.java.simpleName, "handleFlight", e)
         }
     }
 }

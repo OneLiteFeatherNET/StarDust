@@ -1,10 +1,7 @@
 package net.onelitefeather.stardust.listener
 
-import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
 import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.extenstions.toSentryUser
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
@@ -20,7 +17,7 @@ class CommandCooldownListener(private val stardustPlugin: StardustPlugin) : List
             val commandRaw = event.message.replaceFirst("/", "")
             val strings = commandRaw.split(" ").dropLastWhile { it.isEmpty() }.toTypedArray()
 
-            if(strings.isEmpty()) return
+            if (strings.isEmpty()) return
 
             val commandLabelRaw = strings[0]
             val commandLabel = if (commandLabelRaw.contains(":")) commandLabelRaw.split(":")[1] else commandLabelRaw
@@ -55,10 +52,8 @@ class CommandCooldownListener(private val stardustPlugin: StardustPlugin) : List
                 }
             }
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
+            this.stardustPlugin.getLogger()
+                .throwing(CommandCooldownListener::class.java.simpleName, "handlePlayerCommandPreprocess", e)
         }
     }
 }

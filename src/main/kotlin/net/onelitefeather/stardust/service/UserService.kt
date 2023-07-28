@@ -1,17 +1,14 @@
 package net.onelitefeather.stardust.service
 
-import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.api.PlayerVanishService
-import net.onelitefeather.stardust.extenstions.addClient
-import net.onelitefeather.stardust.extenstions.toSentryUser
 import net.onelitefeather.stardust.tasks.UserTask
 import net.onelitefeather.stardust.user.*
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import org.hibernate.HibernateException
 import org.hibernate.Transaction
-import java.util.UUID
+import java.util.*
 import java.util.function.Consumer
 import java.util.logging.Level
 
@@ -41,7 +38,6 @@ class UserService(private val stardustPlugin: StardustPlugin) {
             }
         } catch (e: HibernateException) {
             stardustPlugin.logger.log(Level.SEVERE, "Could not load users.", e)
-            Sentry.captureException(e)
         }
 
         return emptyList()
@@ -56,7 +52,6 @@ class UserService(private val stardustPlugin: StardustPlugin) {
             }
         } catch (e: HibernateException) {
             stardustPlugin.logger.log(Level.SEVERE, "Could not find an user by the given uuid $uuid", e)
-            Sentry.captureException(e)
         }
 
         return null
@@ -71,7 +66,6 @@ class UserService(private val stardustPlugin: StardustPlugin) {
             }
         } catch (e: HibernateException) {
             stardustPlugin.logger.log(Level.SEVERE, "Could not find an user by the given name $name", e)
-            Sentry.captureException(e)
         }
 
         return null
@@ -107,10 +101,6 @@ class UserService(private val stardustPlugin: StardustPlugin) {
                 }
             } catch (e: HibernateException) {
                 transaction?.rollback()
-                Sentry.captureException(e) {
-                    it.user = player.toSentryUser()
-                    player.addClient(it)
-                }
             }
         }
     }
@@ -141,7 +131,6 @@ class UserService(private val stardustPlugin: StardustPlugin) {
         } catch (e: HibernateException) {
             stardustPlugin.logger.log(Level.SEVERE, "Cannot update user properties", e)
             transaction?.rollback()
-            Sentry.captureException(e)
         }
     }
 
@@ -158,7 +147,6 @@ class UserService(private val stardustPlugin: StardustPlugin) {
             }
         } catch (e: HibernateException) {
             stardustPlugin.logger.log(Level.SEVERE, "Could not user properties for player ${user.name}", e)
-            Sentry.captureException(e)
         }
 
         return null
@@ -183,7 +171,6 @@ class UserService(private val stardustPlugin: StardustPlugin) {
         } catch (e: HibernateException) {
             stardustPlugin.logger.log(Level.SEVERE, "Something went wrong!", e)
             transaction?.rollback()
-            Sentry.captureException(e)
         }
 
         return getUser(user.getUniqueId())
@@ -205,7 +192,6 @@ class UserService(private val stardustPlugin: StardustPlugin) {
             success = false
             stardustPlugin.logger.log(Level.SEVERE, "Something went wrong!", e)
             transaction?.rollback()
-            Sentry.captureException(e)
         }
 
         consumer.accept(success)
@@ -224,7 +210,6 @@ class UserService(private val stardustPlugin: StardustPlugin) {
             }
         } catch (e: HibernateException) {
             stardustPlugin.logger.log(Level.SEVERE, "Could not find user property $type", e)
-            Sentry.captureException(e)
         }
 
         return false
@@ -249,7 +234,6 @@ class UserService(private val stardustPlugin: StardustPlugin) {
             }
         } catch (e: HibernateException) {
             stardustPlugin.logger.log(Level.SEVERE, "Could not find user property $type", e)
-            Sentry.captureException(e)
         }
 
         return defaultProperty
@@ -263,7 +247,15 @@ class UserService(private val stardustPlugin: StardustPlugin) {
                 transaction = session.beginTransaction()
                 val userProperty = getUserProperty(user.properties, type)
                 if (!existsUserProperty(user.properties, type)) {
-                    session.persist(UserProperty(null, type.name.lowercase(), value.toString(), type.type, user.properties))
+                    session.persist(
+                        UserProperty(
+                            null,
+                            type.name.lowercase(),
+                            value.toString(),
+                            type.type,
+                            user.properties
+                        )
+                    )
                 } else {
                     session.merge(userProperty.copy(value = value.toString()))
                 }
@@ -273,7 +265,6 @@ class UserService(private val stardustPlugin: StardustPlugin) {
         } catch (e: HibernateException) {
             transaction?.rollback()
             stardustPlugin.logger.log(Level.SEVERE, "Cannot set user property $type for user ${user.name}", e)
-            Sentry.captureException(e)
         }
     }
 }
