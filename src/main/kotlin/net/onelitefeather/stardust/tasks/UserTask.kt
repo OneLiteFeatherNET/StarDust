@@ -1,8 +1,8 @@
 package net.onelitefeather.stardust.tasks
 
-import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.extenstions.miniMessage
+import java.util.logging.Level
 
 class UserTask(val stardustPlugin: StardustPlugin) : Runnable {
 
@@ -15,7 +15,7 @@ class UserTask(val stardustPlugin: StardustPlugin) : Runnable {
                 }
             }
         } catch (e: Exception) {
-            Sentry.captureException(e)
+            stardustPlugin.logger.log(Level.SEVERE, "Could not run for loop", e)
         }
     }
 }

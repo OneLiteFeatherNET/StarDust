@@ -5,9 +5,10 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
-import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.*
+import net.onelitefeather.stardust.extenstions.coloredDisplayName
+import net.onelitefeather.stardust.extenstions.miniMessage
+import net.onelitefeather.stardust.extenstions.removeEnemies
 import net.onelitefeather.stardust.util.RADIUS_REMOVE_ENEMIES
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -48,10 +49,7 @@ class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
                 commandSender.sendMessage(miniMessage { if (target.isInvulnerable) enabledMessage else disabledMessage })
             }
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = target.toSentryUser()
-                target.addClient(it)
-            }
+            this.stardustPlugin.getLogger().throwing(GodmodeCommand::class.java.simpleName, "handleInvulnerability", e)
         }
     }
 }

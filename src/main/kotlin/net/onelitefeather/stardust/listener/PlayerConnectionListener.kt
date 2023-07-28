@@ -1,8 +1,8 @@
 package net.onelitefeather.stardust.listener
 
-import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.*
+import net.onelitefeather.stardust.extenstions.coloredDisplayName
+import net.onelitefeather.stardust.extenstions.miniMessage
 import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -34,7 +34,7 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                 return
             }
 
-            if(!player.name.equals(user.name, true)) {
+            if (!player.name.equals(user.name, true)) {
                 stardustPlugin.logger.log(Level.INFO, "Updating Username from %s to %s".format(user.name, player.name))
                 stardustPlugin.userService.updateUser(user.copy(name = player.name))
             }
@@ -54,10 +54,8 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                 )
             })
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
+            this.stardustPlugin.getLogger()
+                .throwing(PlayerConnectionListener::class.java.simpleName, "handlePlayerJoin", e)
         }
     }
 
@@ -72,10 +70,8 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                 )
             })
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
+            this.stardustPlugin.getLogger()
+                .throwing(PlayerConnectionListener::class.java.simpleName, "onPlayerQuit", e)
         }
     }
 }

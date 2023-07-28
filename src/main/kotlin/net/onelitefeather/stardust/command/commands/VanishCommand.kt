@@ -6,11 +6,8 @@ import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import com.google.common.base.Preconditions
-import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
 import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.extenstions.toSentryUser
 import net.onelitefeather.stardust.user.UserPropertyType
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -123,10 +120,7 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) {
                 target.sendMessage(miniMessage { if (state) targetEnable else targetDisable })
             }
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = target.toSentryUser()
-                target.addClient(it)
-            }
+            this.stardustPlugin.getLogger().throwing(VanishCommand::class.java.simpleName, "toggleVanish", e)
         }
     }
 }
