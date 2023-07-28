@@ -8,7 +8,7 @@ plugins {
     jacoco
 }
 
-val baseVersion = "1.0.0"
+val baseVersion = "1.1.0"
 group = "net.onelitefeather"
 
 repositories {
@@ -20,21 +20,17 @@ repositories {
 dependencies {
 
     // Paper
-    compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
-    bukkitLibrary("cloud.commandframework", "cloud-paper", "1.8.0")
-    bukkitLibrary("cloud.commandframework", "cloud-annotations", "1.8.0")
-    bukkitLibrary("cloud.commandframework", "cloud-minecraft-extras", "1.8.0")
+    compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
+    bukkitLibrary("cloud.commandframework", "cloud-paper", "1.8.2")
+    bukkitLibrary("cloud.commandframework", "cloud-annotations", "1.8.2")
+    bukkitLibrary("cloud.commandframework", "cloud-minecraft-extras", "1.8.2")
     bukkitLibrary("org.apache.commons:commons-lang3:3.12.0")
     bukkitLibrary("me.lucko:commodore:2.2") {
         isTransitive = false
     }
 
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
-
-    // Sentry
-    implementation("io.sentry:sentry:6.6.0")
-    implementation("io.sentry:sentry-jul:6.6.0")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0")
 
     // Database
     implementation("org.hibernate:hibernate-core:6.1.5.Final")
