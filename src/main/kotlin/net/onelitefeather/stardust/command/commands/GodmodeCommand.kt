@@ -8,12 +8,12 @@ import cloud.commandframework.annotations.specifier.Greedy
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.extenstions.coloredDisplayName
-import net.onelitefeather.stardust.extenstions.removeEnemies
+import net.onelitefeather.stardust.util.PlayerUtils
 import net.onelitefeather.stardust.util.RADIUS_REMOVE_ENEMIES
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
+class GodmodeCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
 
     @CommandMethod("godmode [player]")
     @CommandPermission("stardust.command.godmode")
@@ -37,7 +37,7 @@ class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
             }
 
             target.isInvulnerable = !target.isInvulnerable
-            target.removeEnemies(RADIUS_REMOVE_ENEMIES)
+            removeEnemies(target, RADIUS_REMOVE_ENEMIES)
 
             val enabledMessage = stardustPlugin.i18nService.getMessage(
                 "commands.god-mode.enable", stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
