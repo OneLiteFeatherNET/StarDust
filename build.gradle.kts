@@ -3,6 +3,7 @@ plugins {
     id("net.minecrell.plugin-yml.paper") version "0.6.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("xyz.jpenilla.run-paper") version "2.1.0"
+
     // SonarQube
     id("org.sonarqube") version "4.0.0.2929"
     jacoco
@@ -67,13 +68,14 @@ tasks {
         }
     }
 
-    test {
-        useJUnitPlatform()
-    }
-
     runServer {
         minecraftVersion("1.20.1")
         jvmArgs("-DPaper.IgnoreJavaVersion=true", "-Dcom.mojang.eula.agree=true")
+    }
+
+    test {
+        useJUnitPlatform()
+
     }
 
     shadowJar {
@@ -87,7 +89,7 @@ paper {
     name = "Stardust"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
 
-    authors = listOf("UniqueGame", "OneLiteFeather")
+    authors = listOf("UniqueGame", "OneLiteFeather", "TheMeinerLP")
     serverDependencies {
         register("CloudNet-Bridge") {
             required = false
