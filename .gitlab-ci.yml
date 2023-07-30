@@ -1,3 +1,5 @@
+image:  repo.htl-md.schule:5003/gradle:8.2.1-jdk17-alpine
+
 include:
   - project: onelitefeather/ci-template
     ref: Better-Pipelines
