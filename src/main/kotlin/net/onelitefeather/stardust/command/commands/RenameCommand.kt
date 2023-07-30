@@ -7,11 +7,11 @@ import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Quoted
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.colorText
+import net.onelitefeather.stardust.util.StringUtils
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
-class RenameCommand(private val stardustPlugin: StardustPlugin) {
+class RenameCommand(private val stardustPlugin: StardustPlugin) : StringUtils {
 
     @CommandMethod("itemrename|rename <text>")
     @CommandPermission("stardust.command.rename")
@@ -33,7 +33,7 @@ class RenameCommand(private val stardustPlugin: StardustPlugin) {
         }
 
         val itemMeta = itemInHand.itemMeta
-        itemMeta.displayName(MiniMessage.miniMessage().deserialize(text.colorText()))
+        itemMeta.displayName(MiniMessage.miniMessage().deserialize(colorText(text)))
         itemInHand.itemMeta = itemMeta
         player.updateInventory()
         player.sendMessage(
@@ -42,7 +42,7 @@ class RenameCommand(private val stardustPlugin: StardustPlugin) {
                     "commands.rename.success",
                     *arrayOf(
                         stardustPlugin.i18nService.getPluginPrefix(),
-                        text.colorText()
+                        colorText(text)
                     )
                 )
             )

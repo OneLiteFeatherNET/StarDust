@@ -9,9 +9,8 @@ import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.colorText
 import net.onelitefeather.stardust.extenstions.coloredDisplayName
-import net.onelitefeather.stardust.extenstions.convertComponentToString
+import net.onelitefeather.stardust.util.StringUtils
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
@@ -28,7 +27,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener {
+class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtils {
 
     private var frogNameSpacedKey: NamespacedKey = NamespacedKey(stardustPlugin, "frog_data_key")
     private var frogVariantKey: NamespacedKey = NamespacedKey(stardustPlugin, "frog_variant_key")
@@ -131,7 +130,7 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener {
         val variant = container[frogVariantKey, PersistentDataType.STRING] ?: Variant.TEMPERATE.name
 
         if (customName != null) {
-            frog.customName(MiniMessage.miniMessage().deserialize(customName.colorText()))
+            frog.customName(MiniMessage.miniMessage().deserialize(colorText(customName)))
         }
 
         frog.variant = Variant.valueOf(variant.uppercase())
