@@ -20,12 +20,15 @@ class RenameCommand(private val stardustPlugin: StardustPlugin) {
 
         val itemInHand = player.inventory.itemInMainHand
         if (itemInHand.type == Material.AIR) {
-            player.sendMessage(miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "commands.rename.invalid-item",
-                    *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+            player.sendMessage(
+                MiniMessage.miniMessage().deserialize(
+                    stardustPlugin.i18nService.getMessage(
+                        "commands.rename.invalid-item",
+                        *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+                    )
                 )
-            })
+            )
+
             return
         }
 
