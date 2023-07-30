@@ -6,7 +6,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 
 interface StringUtils {
     /**
-     * This method converts a text into a minimessage (legacy format) and colors it
+     * This method converts a text into a mini message string and extract (Convert it into mini tags) the legacy color codes out of it.
      */
     fun colorText(text: String): String {
         return convertComponentToString(
@@ -14,6 +14,9 @@ interface StringUtils {
         )
     }
 
+    /**
+     * Translate a component and the content into mini message string.
+     */
     fun convertComponentToString(message: Component): String {
         return MiniMessage.miniMessage().serialize(
             LegacyComponentSerializer.legacyAmpersand()
