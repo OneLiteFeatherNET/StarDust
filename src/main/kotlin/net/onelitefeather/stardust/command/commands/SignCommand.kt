@@ -7,15 +7,15 @@ import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Quoted
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.colorText
 import net.onelitefeather.stardust.extenstions.coloredDisplayName
 import net.onelitefeather.stardust.util.DATE_FORMAT
+import net.onelitefeather.stardust.util.StringUtils
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-class SignCommand(private val stardustPlugin: StardustPlugin) {
+class SignCommand(private val stardustPlugin: StardustPlugin) : StringUtils {
 
     @CommandMethod("unsign")
     @CommandPermission("stardust.command.unsign")
@@ -79,7 +79,7 @@ class SignCommand(private val stardustPlugin: StardustPlugin) {
         val message = MiniMessage.miniMessage().deserialize(
             stardustPlugin.i18nService.getMessage(
                 "commands.sign.item-lore-message",
-                *arrayOf(text.colorText(), player.coloredDisplayName(), DATE_FORMAT.format(System.currentTimeMillis()))
+                *arrayOf(colorText(text), player.coloredDisplayName(), DATE_FORMAT.format(System.currentTimeMillis()))
             )
         )
 
