@@ -1,8 +1,8 @@
 plugins {
-    kotlin("jvm") version "1.7.10"
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-
+    kotlin("jvm") version "1.8.20"
+    id("net.minecrell.plugin-yml.paper") version "0.6.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("xyz.jpenilla.run-paper") version "2.1.0"
     // SonarQube
     id("org.sonarqube") version "4.0.0.2929"
     jacoco
@@ -21,11 +21,11 @@ dependencies {
 
     // Paper
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
-    bukkitLibrary("cloud.commandframework", "cloud-paper", "1.8.2")
-    bukkitLibrary("cloud.commandframework", "cloud-annotations", "1.8.2")
-    bukkitLibrary("cloud.commandframework", "cloud-minecraft-extras", "1.8.2")
-    bukkitLibrary("org.apache.commons:commons-lang3:3.12.0")
-    bukkitLibrary("me.lucko:commodore:2.2") {
+    implementation("cloud.commandframework", "cloud-paper", "1.8.2")
+    implementation("cloud.commandframework", "cloud-annotations", "1.8.2")
+    implementation("cloud.commandframework", "cloud-minecraft-extras", "1.8.2")
+    implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("me.lucko:commodore:2.2") {
         isTransitive = false
     }
 
@@ -71,19 +71,35 @@ tasks {
         useJUnitPlatform()
     }
 
+    runServer {
+        minecraftVersion("1.20.1")
+        jvmArgs("-DPaper.IgnoreJavaVersion=true", "-Dcom.mojang.eula.agree=true")
+    }
+
     shadowJar {
         archiveFileName.set("${rootProject.name}.${archiveExtension.getOrElse("jar")}")
     }
 }
 
-bukkit {
+paper {
     main = "${rootProject.group}.stardust.StardustPlugin"
     apiVersion = "1.19"
     name = "Stardust"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
 
     authors = listOf("UniqueGame", "OneLiteFeather")
-    softDepend = listOf("CloudNet-Bridge", "LuckPerms", "ProtocolLib")
+    serverDependencies {
+        register("CloudNet-Bridge") {
+            required = false
+        }
+        register("LuckPerms") {
+            required = false
+        }
+        register("ProtocolLib") {
+            required = false
+        }
+    }
+    // softDepend = listOf("CloudNet-Bridge", "LuckPerms", "ProtocolLib")
 }
 
 version = if (System.getenv().containsKey("CI")) {
