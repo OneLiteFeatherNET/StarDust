@@ -1,7 +1,7 @@
 package net.onelitefeather.stardust.listener
 
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.miniMessage
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
@@ -29,13 +29,15 @@ class CommandCooldownListener(private val stardustPlugin: StardustPlugin) : List
                     stardustPlugin.commandCooldownService.getCommandCooldown(player.uniqueId, commandLabel)
 
                 if (commandCooldown != null && !commandCooldown.isOver()) {
-                    player.sendMessage(miniMessage {
-                        stardustPlugin.i18nService.getMessage(
-                            "plugin.command-cooldowned",
-                            stardustPlugin.i18nService.getPluginPrefix(),
-                            stardustPlugin.i18nService.getRemainingTime(commandCooldown.executedAt)
+                    player.sendMessage(
+                        MiniMessage.miniMessage().deserialize(
+                            stardustPlugin.i18nService.getMessage(
+                                "plugin.command-cooldowned",
+                                stardustPlugin.i18nService.getPluginPrefix(),
+                                stardustPlugin.i18nService.getRemainingTime(commandCooldown.executedAt)
+                            )
                         )
-                    })
+                    )
 
                     event.isCancelled = true
                     return

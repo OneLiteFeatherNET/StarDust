@@ -6,8 +6,8 @@ import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import com.google.common.base.Preconditions
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.miniMessage
 import net.onelitefeather.stardust.user.UserPropertyType
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -74,29 +74,33 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) {
         val currentValue = property.getValue<Boolean>() ?: return
 
         stardustPlugin.userService.setUserProperty(user, propertyType, !currentValue)
-        commandSender.sendMessage(miniMessage {
-            stardustPlugin.i18nService.getMessage(
-                "commands.vanish.property-set",
-                *arrayOf(
-                    stardustPlugin.i18nService.getPluginPrefix(),
-                    propertyType.friendlyName,
-                    !currentValue,
-                    target.name
+        commandSender.sendMessage(
+            MiniMessage.miniMessage().deserialize(
+                stardustPlugin.i18nService.getMessage(
+                    "commands.vanish.property-set",
+                    *arrayOf(
+                        stardustPlugin.i18nService.getPluginPrefix(),
+                        propertyType.friendlyName,
+                        !currentValue,
+                        target.name
+                    )
                 )
             )
-        })
+        )
     }
 
     fun toggleVanish(commandSender: CommandSender, target: Player) {
 
         try {
             if (target != commandSender && !commandSender.hasPermission("stardust.command.vanish.others")) {
-                commandSender.sendMessage(miniMessage {
-                    stardustPlugin.i18nService.getMessage(
-                        "plugin.not-enough-permissions",
-                        *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+                commandSender.sendMessage(
+                    MiniMessage.miniMessage().deserialize(
+                        stardustPlugin.i18nService.getMessage(
+                            "plugin.not-enough-permissions",
+                            *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+                        )
                     )
-                })
+                )
                 return
             }
 
@@ -114,10 +118,12 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) {
                 )
 
                 if (commandSender != target) {
-                    commandSender.sendMessage(miniMessage { if (state) targetEnable else targetDisable })
+                    commandSender.sendMessage(
+                        MiniMessage.miniMessage().deserialize(if (state) targetEnable else targetDisable)
+                    )
                 }
 
-                target.sendMessage(miniMessage { if (state) targetEnable else targetDisable })
+                target.sendMessage(MiniMessage.miniMessage().deserialize(if (state) targetEnable else targetDisable))
             }
         } catch (e: Exception) {
             this.stardustPlugin.getLogger().throwing(VanishCommand::class.java.simpleName, "toggleVanish", e)

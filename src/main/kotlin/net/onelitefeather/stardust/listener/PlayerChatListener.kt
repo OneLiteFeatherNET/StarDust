@@ -3,8 +3,8 @@ package net.onelitefeather.stardust.listener
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.miniMessage
 import net.onelitefeather.stardust.user.UserPropertyType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -30,7 +30,14 @@ class PlayerChatListener(private val stardustPlugin: StardustPlugin) : Listener 
             if (!user.hasChatConfirmation(stardustPlugin.chatConfirmationKey)) {
                 user.confirmChatMessage(stardustPlugin.chatConfirmationKey, true)
                 event.isCancelled = true
-                player.sendMessage(miniMessage { stardustPlugin.i18nService.getMessage("vanish.confirm-chat-message", stardustPlugin.i18nService.getPluginPrefix()) })
+                player.sendMessage(
+                    MiniMessage.miniMessage().deserialize(
+                        stardustPlugin.i18nService.getMessage(
+                            "vanish.confirm-chat-message",
+                            stardustPlugin.i18nService.getPluginPrefix()
+                        )
+                    )
+                )
             } else {
                 user.confirmChatMessage(stardustPlugin.chatConfirmationKey, false)
             }

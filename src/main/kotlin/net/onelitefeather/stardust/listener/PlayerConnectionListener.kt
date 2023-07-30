@@ -1,8 +1,8 @@
 package net.onelitefeather.stardust.listener
 
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.extenstions.coloredDisplayName
-import net.onelitefeather.stardust.extenstions.miniMessage
 import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -23,13 +23,15 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
 
                 //Register a new User
                 stardustPlugin.userService.registerUser(player) {
-                    player.sendMessage(miniMessage {
-                        stardustPlugin.i18nService.getMessage(
-                            "plugin.first-join", *arrayOf(
-                                stardustPlugin.i18nService.getPluginPrefix(), player.coloredDisplayName()
+                    player.sendMessage(
+                        MiniMessage.miniMessage().deserialize(
+                            stardustPlugin.i18nService.getMessage(
+                                "plugin.first-join", *arrayOf(
+                                    stardustPlugin.i18nService.getPluginPrefix(), player.coloredDisplayName()
+                                )
                             )
                         )
-                    })
+                    )
                 }
                 return
             }
@@ -48,11 +50,13 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                 player.gameMode = player.server.defaultGameMode
             }
 
-            event.joinMessage(if (user.properties.isVanished()) null else miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "listener.join-message", *arrayOf(player.coloredDisplayName())
+            event.joinMessage(
+                if (user.properties.isVanished()) null else MiniMessage.miniMessage().deserialize(
+                    stardustPlugin.i18nService.getMessage(
+                        "listener.join-message", *arrayOf(player.coloredDisplayName())
+                    )
                 )
-            })
+            )
         } catch (e: Exception) {
             this.stardustPlugin.getLogger()
                 .throwing(PlayerConnectionListener::class.java.simpleName, "handlePlayerJoin", e)
@@ -64,11 +68,13 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
         val player = event.player
         try {
             val user = stardustPlugin.userService.getUser(player.uniqueId)
-            event.quitMessage(if (user?.properties?.isVanished() == true) null else miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "listener.quit-message", *arrayOf(player.coloredDisplayName())
+            event.quitMessage(
+                if (user?.properties?.isVanished() == true) null else MiniMessage.miniMessage().deserialize(
+                    stardustPlugin.i18nService.getMessage(
+                        "listener.quit-message", *arrayOf(player.coloredDisplayName())
+                    )
                 )
-            })
+            )
         } catch (e: Exception) {
             this.stardustPlugin.getLogger()
                 .throwing(PlayerConnectionListener::class.java.simpleName, "onPlayerQuit", e)
