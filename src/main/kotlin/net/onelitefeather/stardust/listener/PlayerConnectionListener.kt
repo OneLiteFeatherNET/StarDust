@@ -2,7 +2,7 @@ package net.onelitefeather.stardust.listener
 
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
+import net.onelitefeather.stardust.util.PlayerUtils
 import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.logging.Level
 
-class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Listener {
+class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Listener, PlayerUtils {
 
     @EventHandler
     fun handlePlayerJoin(event: PlayerJoinEvent) {
@@ -27,7 +27,7 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                         MiniMessage.miniMessage().deserialize(
                             stardustPlugin.i18nService.getMessage(
                                 "plugin.first-join", *arrayOf(
-                                    stardustPlugin.i18nService.getPluginPrefix(), player.coloredDisplayName()
+                                    stardustPlugin.i18nService.getPluginPrefix(), coloredDisplayName(player)
                                 )
                             )
                         )
@@ -53,7 +53,7 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
             event.joinMessage(
                 if (user.properties.isVanished()) null else MiniMessage.miniMessage().deserialize(
                     stardustPlugin.i18nService.getMessage(
-                        "listener.join-message", *arrayOf(player.coloredDisplayName())
+                        "listener.join-message", *arrayOf(coloredDisplayName(player))
                     )
                 )
             )
@@ -71,7 +71,7 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
             event.quitMessage(
                 if (user?.properties?.isVanished() == true) null else MiniMessage.miniMessage().deserialize(
                     stardustPlugin.i18nService.getMessage(
-                        "listener.quit-message", *arrayOf(player.coloredDisplayName())
+                        "listener.quit-message", *arrayOf(coloredDisplayName(player))
                     )
                 )
             )
