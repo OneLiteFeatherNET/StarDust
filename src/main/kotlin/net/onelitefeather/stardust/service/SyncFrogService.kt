@@ -9,7 +9,7 @@ import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
+import net.onelitefeather.stardust.util.PlayerUtils
 import net.onelitefeather.stardust.util.StringUtils
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -27,7 +27,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtils {
+class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtils, PlayerUtils {
 
     private var frogNameSpacedKey: NamespacedKey = NamespacedKey(stardustPlugin, "frog_data_key")
     private var frogVariantKey: NamespacedKey = NamespacedKey(stardustPlugin, "frog_variant_key")
@@ -192,7 +192,7 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtil
                     stardustPlugin.i18nService.getPluginPrefix(),
                     amount,
                     frogBucketName,
-                    player.coloredDisplayName()
+                    coloredDisplayName(player)
                 )
             )
         )

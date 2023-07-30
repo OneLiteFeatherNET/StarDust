@@ -1,5 +1,7 @@
 package net.onelitefeather.stardust.util
 
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
 
@@ -18,5 +20,15 @@ interface PlayerUtils {
                 }
             }
         }
+    }
+
+    /**
+     * Convert the display name of a player into mini message string.
+     */
+    fun coloredDisplayName(player: Player): String {
+        return  MiniMessage.miniMessage().serialize(
+            LegacyComponentSerializer.legacyAmpersand()
+                .deserialize(LegacyComponentSerializer.legacyAmpersand().serialize(player.displayName()))
+        )
     }
 }

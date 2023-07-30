@@ -7,13 +7,13 @@ import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
 import net.onelitefeather.stardust.user.UserPropertyType
+import net.onelitefeather.stardust.util.PlayerUtils
 import org.bukkit.GameMode
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class FlightCommand(val stardustPlugin: StardustPlugin) {
+class FlightCommand(val stardustPlugin: StardustPlugin) : PlayerUtils {
 
     @CommandMethod("flight|fly [player]")
     @CommandPermission("stardust.command.flight")
@@ -37,12 +37,12 @@ class FlightCommand(val stardustPlugin: StardustPlugin) {
 
             val enabledMessage = stardustPlugin.i18nService.getMessage(
                 "commands.flight.enable",
-                *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName())
+                *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), coloredDisplayName(target))
             )
 
             val disabledMessage = stardustPlugin.i18nService.getMessage(
                 "commands.flight.disable",
-                *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName())
+                *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), coloredDisplayName(target))
             )
 
             if (commandSender != target && !commandSender.hasPermission("stardust.command.flight.others")) {
@@ -64,7 +64,7 @@ class FlightCommand(val stardustPlugin: StardustPlugin) {
                             "commands.flight.already-in-creative",
                             *arrayOf(
                                 stardustPlugin.i18nService.getPluginPrefix(),
-                                target.coloredDisplayName()
+                                coloredDisplayName(target)
                             )
                         )
                     )

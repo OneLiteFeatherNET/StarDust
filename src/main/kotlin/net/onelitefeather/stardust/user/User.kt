@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
+import net.onelitefeather.stardust.util.PlayerUtils
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
@@ -35,7 +35,7 @@ data class User(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val ignoredUser: User? = null
-) {
+) : PlayerUtils {
     constructor() : this(null)
 
 
@@ -53,7 +53,7 @@ data class User(
 
     fun getDisplayName(): String {
         val base = getBase() ?: return name
-        return base.coloredDisplayName()
+        return coloredDisplayName(base)
     }
 
     fun getBase(): Player? = Bukkit.getPlayer(getUniqueId())

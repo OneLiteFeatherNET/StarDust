@@ -7,17 +7,13 @@ import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
-import net.onelitefeather.stardust.util.DEFAULT_ENTITY_HAS_VISUAL_FIRE
-import net.onelitefeather.stardust.util.DEFAULT_PLAYER_FIRE_TICKS
-import net.onelitefeather.stardust.util.DEFAULT_PLAYER_FOOD_LEVEL
-import net.onelitefeather.stardust.util.DEFAULT_PLAYER_SATURATION_LEVEL
+import net.onelitefeather.stardust.util.*
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeInstance
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class HealCommand(private val stardustPlugin: StardustPlugin) {
+class HealCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
 
     @CommandMethod("heal [player]")
     @CommandPermission("stardust.command.heal")
@@ -59,7 +55,7 @@ class HealCommand(private val stardustPlugin: StardustPlugin) {
             val message = this.stardustPlugin.i18nService.getMessage(
                 "commands.heal.success",
                 stardustPlugin.i18nService.getPluginPrefix(),
-                target.coloredDisplayName(),
+                coloredDisplayName(target),
                 target.health
             )
 
