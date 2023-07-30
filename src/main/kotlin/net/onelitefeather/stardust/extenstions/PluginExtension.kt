@@ -8,7 +8,6 @@ import cloud.commandframework.execution.CommandExecutionCoordinator
 import cloud.commandframework.meta.CommandMeta
 import cloud.commandframework.minecraft.extras.MinecraftHelp
 import cloud.commandframework.paper.PaperCommandManager
-import io.sentry.Sentry
 import net.kyori.adventure.text.format.NamedTextColor
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.command.commands.*
@@ -18,7 +17,7 @@ import java.util.function.Function
 import java.util.logging.Level
 
 fun StardustPlugin.initLuckPermsSupport() {
-    if(server.pluginManager.isPluginEnabled("LuckPerms")) {
+    if (server.pluginManager.isPluginEnabled("LuckPerms")) {
         luckPermsService = LuckPermsService(this)
         luckPermsService.init()
     }
@@ -49,7 +48,6 @@ fun StardustPlugin.buildCommandSystem() {
         )
     } catch (e: Exception) {
         logger.log(Level.WARNING, "Failed to build command system", e)
-        Sentry.captureException(e)
         server.pluginManager.disablePlugin(this)
         return
     }

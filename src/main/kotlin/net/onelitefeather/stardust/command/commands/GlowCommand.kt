@@ -5,16 +5,12 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
-import io.sentry.Sentry
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
 import net.onelitefeather.stardust.extenstions.coloredDisplayName
 import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.extenstions.toSentryUser
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import java.lang.Exception
 
 class GlowCommand(private val stardustPlugin: StardustPlugin) {
 
@@ -59,10 +55,7 @@ class GlowCommand(private val stardustPlugin: StardustPlugin) {
             target.isGlowing = !target.isGlowing
             commandSender.sendMessage(miniMessage { if (target.isGlowing) enabledMessage else disabledMessage })
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = target.toSentryUser()
-                target.addClient(it)
-            }
+            this.stardustPlugin.getLogger().throwing(GlowCommand::class.java.simpleName, "handleGlow", e)
         }
     }
 }

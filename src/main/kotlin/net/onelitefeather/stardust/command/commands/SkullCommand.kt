@@ -4,11 +4,8 @@ import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
-import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
 import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.extenstions.toSentryUser
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -45,10 +42,7 @@ class SkullCommand(private val stardustPlugin: StardustPlugin) {
                 )
             })
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
+            this.stardustPlugin.getLogger().throwing(SkullCommand::class.java.simpleName, "handleCommand", e)
         }
     }
 }
