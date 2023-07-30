@@ -17,3 +17,8 @@ variables:
 deploy:
   script:
     - gradle shadowJar
+
+test:
+  image: repo.htl-md.schule:5003/gradle:8.2.1-jdk17-alpine
+sonarqube-check-mr:
+  image: repo.htl-md.schule:5003/gradle:8.2.1-jdk17-alpine
