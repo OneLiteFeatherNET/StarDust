@@ -35,11 +35,13 @@ class HealCommand(private val stardustPlugin: StardustPlugin) {
 
         try {
             if (target != commandSender && !commandSender.hasPermission("stardust.command.heal.others")) {
-                commandSender.sendMessage(miniMessage {
-                    stardustPlugin.i18nService.getMessage(
-                        "plugin.not-enough-permissions", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+                commandSender.sendMessage(
+                    MiniMessage.miniMessage().deserialize(
+                        stardustPlugin.i18nService.getMessage(
+                            "plugin.not-enough-permissions", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+                        )
                     )
-                })
+                )
 
                 return
             }
