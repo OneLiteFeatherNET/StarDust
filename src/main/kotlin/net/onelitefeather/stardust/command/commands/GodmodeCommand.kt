@@ -5,9 +5,9 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.extenstions.coloredDisplayName
-import net.onelitefeather.stardust.extenstions.miniMessage
 import net.onelitefeather.stardust.extenstions.removeEnemies
 import net.onelitefeather.stardust.util.RADIUS_REMOVE_ENEMIES
 import org.bukkit.command.CommandSender
@@ -26,11 +26,13 @@ class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
 
         try {
             if (target != commandSender && !commandSender.hasPermission("stardust.command.godmode.others")) {
-                commandSender.sendMessage(miniMessage {
-                    stardustPlugin.i18nService.getMessage(
-                        "plugin.not-enough-permissions", stardustPlugin.i18nService.getPluginPrefix()
+                commandSender.sendMessage(
+                    MiniMessage.miniMessage().deserialize(
+                        stardustPlugin.i18nService.getMessage(
+                            "plugin.not-enough-permissions", stardustPlugin.i18nService.getPluginPrefix()
+                        )
                     )
-                })
+                )
                 return
             }
 
@@ -44,9 +46,14 @@ class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
                 "commands.god-mode.disable", stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
             )
 
-            target.sendMessage(miniMessage { if (target.isInvulnerable) enabledMessage else disabledMessage })
+            target.sendMessage(
+                MiniMessage.miniMessage().deserialize(if (target.isInvulnerable) enabledMessage else disabledMessage)
+            )
             if (commandSender != target) {
-                commandSender.sendMessage(miniMessage { if (target.isInvulnerable) enabledMessage else disabledMessage })
+                commandSender.sendMessage(
+                    MiniMessage.miniMessage()
+                        .deserialize(if (target.isInvulnerable) enabledMessage else disabledMessage)
+                )
             }
         } catch (e: Exception) {
             this.stardustPlugin.getLogger().throwing(GodmodeCommand::class.java.simpleName, "handleInvulnerability", e)

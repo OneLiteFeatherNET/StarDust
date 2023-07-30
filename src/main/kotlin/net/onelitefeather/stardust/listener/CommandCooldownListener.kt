@@ -2,11 +2,9 @@ package net.onelitefeather.stardust.listener
 
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.miniMessage
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
-import kotlin.math.abs
 
 class CommandCooldownListener(private val stardustPlugin: StardustPlugin) : Listener {
 
@@ -31,7 +29,16 @@ class CommandCooldownListener(private val stardustPlugin: StardustPlugin) : List
                     stardustPlugin.commandCooldownService.getCommandCooldown(player.uniqueId, commandLabel)
 
                 if (commandCooldown != null && !commandCooldown.isOver()) {
-                    player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.command-cooldowned:'${stardustPlugin.getPluginPrefix()}':${getRemainingTime(commandCooldown.executedAt)}"))
+                    player.sendMessage(
+                        MiniMessage.miniMessage().deserialize(
+                            stardustPlugin.i18nService.getMessage(
+                                "plugin.command-cooldowned",
+                                stardustPlugin.i18nService.getPluginPrefix(),
+                                stardustPlugin.i18nService.getRemainingTime(commandCooldown.executedAt)
+                            )
+                        )
+                    )
+
                     event.isCancelled = true
                     return
                 }
@@ -50,23 +57,5 @@ class CommandCooldownListener(private val stardustPlugin: StardustPlugin) : List
             this.stardustPlugin.getLogger()
                 .throwing(CommandCooldownListener::class.java.simpleName, "handlePlayerCommandPreprocess", e)
         }
-    }
-
-    fun getRemainingTime(time: Long): String {
-        val diff = abs(time - System.currentTimeMillis())
-        val seconds = diff / 1000 % 60
-        val minutes = diff / (1000 * 60) % 60
-        val hours = diff / (1000 * 60 * 60) % 24
-        val days = diff / (1000 * 60 * 60 * 24)
-        val remainingTime = if (days > 0) {
-            "<lang:remaining-time.days:$days:$hours:$minutes:$seconds>"
-        } else if (hours > 0) {
-            "<lang:remaining-time.hours:$hours:$minutes:$seconds>"
-        } else if (minutes > 0) {
-            "<lang:remaining-time.minutes:$minutes:$seconds>"
-        } else {
-            "<lang:remaining-time.seconds:$seconds>"
-        }
-        return remainingTime
     }
 }
