@@ -4,8 +4,8 @@ import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.miniMessage
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -35,12 +35,14 @@ class SkullCommand(private val stardustPlugin: StardustPlugin) {
             skullItem.itemMeta = skullMeta
             player.inventory.addItem(skullItem)
 
-            player.sendMessage(miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "commands.skull.success",
-                    *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), skullOwner)
+            player.sendMessage(
+                MiniMessage.miniMessage().deserialize(
+                    stardustPlugin.i18nService.getMessage(
+                        "commands.skull.success",
+                        *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), skullOwner)
+                    )
                 )
-            })
+            )
         } catch (e: Exception) {
             this.stardustPlugin.getLogger().throwing(SkullCommand::class.java.simpleName, "handleCommand", e)
         }

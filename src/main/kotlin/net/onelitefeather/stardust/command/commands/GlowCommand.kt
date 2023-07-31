@@ -7,12 +7,11 @@ import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
-import net.onelitefeather.stardust.extenstions.miniMessage
+import net.onelitefeather.stardust.util.PlayerUtils
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class GlowCommand(private val stardustPlugin: StardustPlugin) {
+class GlowCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
 
     @CommandMethod("glow [player]")
     @CommandPermission("stardust.command.glow")
@@ -42,18 +41,20 @@ class GlowCommand(private val stardustPlugin: StardustPlugin) {
 
             val enabledMessage = stardustPlugin.i18nService.getMessage(
                 "commands.glow.enabled", *arrayOf(
-                    stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
+                    stardustPlugin.i18nService.getPluginPrefix(), coloredDisplayName(target)
                 )
             )
 
             val disabledMessage = stardustPlugin.i18nService.getMessage(
                 "commands.glow.disabled", *arrayOf(
-                    stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
+                    stardustPlugin.i18nService.getPluginPrefix(), coloredDisplayName(target)
                 )
             )
 
             target.isGlowing = !target.isGlowing
-            commandSender.sendMessage(miniMessage { if (target.isGlowing) enabledMessage else disabledMessage })
+            commandSender.sendMessage(
+                MiniMessage.miniMessage().deserialize(if (target.isGlowing) enabledMessage else disabledMessage)
+            )
         } catch (e: Exception) {
             this.stardustPlugin.getLogger().throwing(GlowCommand::class.java.simpleName, "handleGlow", e)
         }

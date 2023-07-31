@@ -67,13 +67,14 @@ tasks {
         }
     }
 
-    test {
-        useJUnitPlatform()
-    }
-
     runServer {
         minecraftVersion("1.20.1")
         jvmArgs("-DPaper.IgnoreJavaVersion=true", "-Dcom.mojang.eula.agree=true")
+    }
+
+    test {
+        useJUnitPlatform()
+
     }
 
     shadowJar {

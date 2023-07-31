@@ -5,17 +5,17 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Quoted
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.colorText
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
-import net.onelitefeather.stardust.extenstions.miniMessage
 import net.onelitefeather.stardust.util.DATE_FORMAT
+import net.onelitefeather.stardust.util.PlayerUtils
+import net.onelitefeather.stardust.util.StringUtils
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-class SignCommand(private val stardustPlugin: StardustPlugin) {
+class SignCommand(private val stardustPlugin: StardustPlugin) : StringUtils, PlayerUtils {
 
     @CommandMethod("unsign")
     @CommandPermission("stardust.command.unsign")
@@ -24,12 +24,26 @@ class SignCommand(private val stardustPlugin: StardustPlugin) {
 
         val itemStack = player.inventory.itemInMainHand
         if (!stardustPlugin.itemSignService.hasSigned(itemStack, player)) {
-            player.sendMessage(miniMessage { stardustPlugin.i18nService.getMessage("commands.unsign.not-signed", stardustPlugin.i18nService.getPluginPrefix()) })
+            player.sendMessage(
+                MiniMessage.miniMessage().deserialize(
+                    stardustPlugin.i18nService.getMessage(
+                        "commands.unsign.not-signed",
+                        stardustPlugin.i18nService.getPluginPrefix()
+                    )
+                )
+            )
             return
         }
 
         giveItemStack(player, stardustPlugin.itemSignService.removeSignature(itemStack, player))
-        player.sendMessage(miniMessage { stardustPlugin.i18nService.getMessage("commands.unsign.success", stardustPlugin.i18nService.getPluginPrefix()) })
+        player.sendMessage(
+            MiniMessage.miniMessage().deserialize(
+                stardustPlugin.i18nService.getMessage(
+                    "commands.unsign.success",
+                    stardustPlugin.i18nService.getPluginPrefix()
+                )
+            )
+        )
     }
 
     @CommandMethod("sign <text>")
@@ -39,39 +53,45 @@ class SignCommand(private val stardustPlugin: StardustPlugin) {
 
         val itemStack = player.inventory.itemInMainHand
         if (itemStack.type == Material.AIR) {
-            player.sendMessage(miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "commands.sign.no-item-in-hand", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+            player.sendMessage(
+                MiniMessage.miniMessage().deserialize(
+                    stardustPlugin.i18nService.getMessage(
+                        "commands.sign.no-item-in-hand", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+                    )
                 )
-            })
+            )
             return
         }
 
         val signService = stardustPlugin.itemSignService
         if (signService.hasSigned(itemStack, player) && !player.hasPermission("stardust.command.sign.override")) {
-            player.sendMessage(miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "commands.sign.already-signed", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+            player.sendMessage(
+                MiniMessage.miniMessage().deserialize(
+                    stardustPlugin.i18nService.getMessage(
+                        "commands.sign.already-signed", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+                    )
                 )
-            })
+            )
 
             return
         }
 
-        val message = miniMessage {
+        val message = MiniMessage.miniMessage().deserialize(
             stardustPlugin.i18nService.getMessage(
                 "commands.sign.item-lore-message",
-                *arrayOf(text.colorText(), player.coloredDisplayName(), DATE_FORMAT.format(System.currentTimeMillis()))
+                *arrayOf(colorText(text), coloredDisplayName(player), DATE_FORMAT.format(System.currentTimeMillis()))
             )
-        }
+        )
 
         giveItemStack(player, signService.sign(itemStack, listOf(message), player))
 
-        player.sendMessage(miniMessage {
-            stardustPlugin.i18nService.getMessage(
-                "commands.sign.signed", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+        player.sendMessage(
+            MiniMessage.miniMessage().deserialize(
+                stardustPlugin.i18nService.getMessage(
+                    "commands.sign.signed", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+                )
             )
-        })
+        )
     }
 
     private fun giveItemStack(player: Player, itemStack: ItemStack) {
@@ -81,12 +101,14 @@ class SignCommand(private val stardustPlugin: StardustPlugin) {
             if (player.inventory.firstEmpty() != -1) {
                 player.inventory.setItem(player.inventory.firstEmpty(), itemStack)
             } else {
-                player.sendMessage(miniMessage {
-                    stardustPlugin.i18nService.getMessage(
-                        "plugin.inventory-full",
-                        *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+                player.sendMessage(
+                    MiniMessage.miniMessage().deserialize(
+                        stardustPlugin.i18nService.getMessage(
+                            "plugin.inventory-full",
+                            *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
+                        )
                     )
-                })
+                )
             }
         }
     }
