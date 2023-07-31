@@ -9,17 +9,12 @@ import cloud.commandframework.meta.CommandMeta
 import cloud.commandframework.minecraft.extras.MinecraftHelp
 import cloud.commandframework.paper.PaperCommandManager
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.translation.GlobalTranslator
 import net.kyori.adventure.translation.TranslationRegistry
 import net.kyori.adventure.util.UTF8ResourceBundleControl
-import net.kyori.adventure.text.format.NamedTextColor
 import net.onelitefeather.stardust.api.CommandCooldownService
 import net.onelitefeather.stardust.api.ItemSignService
-import net.onelitefeather.stardust.api.utils.DoubleParsingI18nMiniMessage
-import net.onelitefeather.stardust.extenstions.buildCommandSystem
-import net.onelitefeather.stardust.extenstions.buildHelpSystem
-import net.onelitefeather.stardust.extenstions.initLuckPermsSupport
-import net.onelitefeather.stardust.extenstions.registerCommands
 import net.onelitefeather.stardust.command.commands.*
 import net.onelitefeather.stardust.listener.*
 import net.onelitefeather.stardust.service.*
@@ -39,8 +34,8 @@ class StardustPlugin : JavaPlugin() {
 
     private val supportedLocals: Array<Locale> = arrayOf(Locale.US, Locale.GERMAN)
 
-    lateinit var paperCommandManager: PaperCommandManager<CommandSender>
-    lateinit var annotationParser: AnnotationParser<CommandSender>
+    private lateinit var paperCommandManager: PaperCommandManager<CommandSender>
+    private lateinit var annotationParser: AnnotationParser<CommandSender>
     lateinit var minecraftHelp: MinecraftHelp<CommandSender>
 
     lateinit var i18nService: I18nService
