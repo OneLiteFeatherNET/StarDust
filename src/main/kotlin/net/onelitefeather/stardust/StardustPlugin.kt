@@ -117,6 +117,7 @@ class StardustPlugin : JavaPlugin() {
             server.pluginManager.registerEvents(PlayerChatListener(this), this)
             server.pluginManager.registerEvents(PlayerConnectionListener(this), this)
             server.pluginManager.registerEvents(PlayerVanishListener(this), this)
+            server.pluginManager.registerEvents(PlayerAdvancementListener(this), this)
 
             signedNameSpacedKey = NamespacedKey(this, "signed")
             chatConfirmationKey = NamespacedKey(this, "chat_confirmation")
