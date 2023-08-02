@@ -18,6 +18,7 @@ import net.onelitefeather.stardust.api.ItemSignService
 import net.onelitefeather.stardust.command.commands.*
 import net.onelitefeather.stardust.listener.*
 import net.onelitefeather.stardust.service.*
+import net.onelitefeather.stardust.util.LynxWrapper
 import org.bukkit.NamespacedKey
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -73,7 +74,7 @@ class StardustPlugin : JavaPlugin() {
                 registry.registerAll(locale, bundle, false)
             }
             registry.defaultLocale(supportedLocals.first())
-            GlobalTranslator.translator().addSource(registry)
+            GlobalTranslator.translator().addSource(LynxWrapper(registry))
 
             vanishedMetadata = FixedMetadataValue(this, true)
             notVanishedMetadata = FixedMetadataValue(this, false)
