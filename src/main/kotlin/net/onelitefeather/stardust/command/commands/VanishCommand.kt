@@ -9,11 +9,42 @@ import com.google.common.base.Preconditions
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.user.UserPropertyType
+import net.onelitefeather.stardust.util.PlayerUtils
+import net.onelitefeather.stardust.util.StringUtils
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 @Suppress("unused")
-class VanishCommand(private val stardustPlugin: StardustPlugin) {
+class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, PlayerUtils {
+
+    @CommandMethod("vanish|v fakejoin [player]")
+    @CommandPermission("stardust.command.vanish.fakejoin")
+    @CommandDescription("Allows to perform a fake join")
+    fun commandFakeJoin(
+        commandSender: Player,
+        @Greedy @Argument(value = "player") target: Player?
+    ) {
+        if (target == null) {
+            Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<lang:listener.join-message:'${coloredDisplayName(commandSender)}'>"))
+            return
+        }
+        Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<lang:listener.join-message:'${coloredDisplayName(target)}'>"))
+    }
+
+    @CommandMethod("vanish|v fakequit [player]")
+    @CommandPermission("stardust.command.vanish.fakequit")
+    @CommandDescription("Allows to perform a fake quit")
+    fun commandFakeQuit(
+        commandSender: Player,
+        @Greedy @Argument(value = "player") target: Player?
+    ) {
+        if (target == null) {
+            Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<lang:listener.quit-message:'${coloredDisplayName(commandSender)}'>"))
+            return
+        }
+        Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<lang:listener.quit-message:'${coloredDisplayName(target)}'>"))
+    }
 
     @CommandMethod("vanish|v nodrop [player]")
     @CommandPermission("stardust.command.vanish.nodrop")
