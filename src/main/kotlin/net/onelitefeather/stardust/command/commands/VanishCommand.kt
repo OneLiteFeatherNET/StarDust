@@ -74,33 +74,14 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) {
         val currentValue = property.getValue<Boolean>() ?: return
 
         stardustPlugin.userService.setUserProperty(user, propertyType, !currentValue)
-        commandSender.sendMessage(
-            MiniMessage.miniMessage().deserialize(
-                stardustPlugin.i18nService.getMessage(
-                    "commands.vanish.property-set",
-                    *arrayOf(
-                        stardustPlugin.i18nService.getPluginPrefix(),
-                        propertyType.friendlyName,
-                        !currentValue,
-                        target.name
-                    )
-                )
-            )
-        )
+        commandSender.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.vanish.property-set:'${stardustPlugin.getPluginPrefix()}':'${propertyType.friendlyName}':'${!currentValue}':'${target.name}'>"))
     }
 
     fun toggleVanish(commandSender: CommandSender, target: Player) {
 
         try {
             if (target != commandSender && !commandSender.hasPermission("stardust.command.vanish.others")) {
-                commandSender.sendMessage(
-                    MiniMessage.miniMessage().deserialize(
-                        stardustPlugin.i18nService.getMessage(
-                            "plugin.not-enough-permissions",
-                            *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                        )
-                    )
-                )
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.not-enough-permissions:'${stardustPlugin.getPluginPrefix()}'>"))
                 return
             }
 
@@ -108,15 +89,8 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) {
             if (user != null) {
 
                 val state = stardustPlugin.userService.playerVanishService.toggle(target)
-                val targetEnable = stardustPlugin.i18nService.getMessage(
-                    "commands.vanish.enable",
-                    *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), user.getDisplayName())
-                )
-                val targetDisable = stardustPlugin.i18nService.getMessage(
-                    "commands.vanish.disable",
-                    *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), user.getDisplayName())
-                )
-
+                val targetEnable = "<lang:commands.vanish.enable:'${stardustPlugin.getPluginPrefix()}':'${user.getDisplayName()}'>"
+                val targetDisable = "<lang:commands.vanish.disable:'${stardustPlugin.getPluginPrefix()}':'${user.getDisplayName()}'>"
                 if (commandSender != target) {
                     commandSender.sendMessage(
                         MiniMessage.miniMessage().deserialize(if (state) targetEnable else targetDisable)

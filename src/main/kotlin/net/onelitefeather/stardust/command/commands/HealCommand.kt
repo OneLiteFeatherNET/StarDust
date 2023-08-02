@@ -31,14 +31,7 @@ class HealCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
 
         try {
             if (target != commandSender && !commandSender.hasPermission("stardust.command.heal.others")) {
-                commandSender.sendMessage(
-                    MiniMessage.miniMessage().deserialize(
-                        stardustPlugin.i18nService.getMessage(
-                            "plugin.not-enough-permissions", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                        )
-                    )
-                )
-
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.not-enough-permissions:'${stardustPlugin.i18nService.getPluginPrefix()}'>"))
                 return
             }
 
@@ -52,12 +45,7 @@ class HealCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
             target.foodLevel = DEFAULT_PLAYER_FOOD_LEVEL
             target.saturation = DEFAULT_PLAYER_SATURATION_LEVEL
 
-            val message = this.stardustPlugin.i18nService.getMessage(
-                "commands.heal.success",
-                stardustPlugin.i18nService.getPluginPrefix(),
-                coloredDisplayName(target),
-                target.health
-            )
+            val message = "<lang:commands.heal.success:'${stardustPlugin.getPluginPrefix()}':'${coloredDisplayName(target)}':'${target.health}'>"
 
             if (commandSender != target) {
                 target.sendMessage(MiniMessage.miniMessage().deserialize(message))

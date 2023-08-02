@@ -25,11 +25,9 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                 stardustPlugin.userService.registerUser(player) {
                     player.sendMessage(
                         MiniMessage.miniMessage().deserialize(
-                            stardustPlugin.i18nService.getMessage(
-                                "plugin.first-join", *arrayOf(
-                                    stardustPlugin.i18nService.getPluginPrefix(), coloredDisplayName(player)
-                                )
-                            )
+                            "<lang:plugin.first-join:'${stardustPlugin.getPluginPrefix()}':'${
+                                coloredDisplayName(player)
+                            }'>"
                         )
                     )
                 }
@@ -51,11 +49,8 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
             }
 
             event.joinMessage(
-                if (user.properties.isVanished()) null else MiniMessage.miniMessage().deserialize(
-                    stardustPlugin.i18nService.getMessage(
-                        "listener.join-message", *arrayOf(coloredDisplayName(player))
-                    )
-                )
+                if (user.properties.isVanished()) null else MiniMessage.miniMessage()
+                    .deserialize("<lang:listener.join-message:'${coloredDisplayName(player)}'>")
             )
         } catch (e: Exception) {
             this.stardustPlugin.getLogger()
@@ -69,11 +64,9 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
         try {
             val user = stardustPlugin.userService.getUser(player.uniqueId)
             event.quitMessage(
-                if (user?.properties?.isVanished() == true) null else MiniMessage.miniMessage().deserialize(
-                    stardustPlugin.i18nService.getMessage(
-                        "listener.quit-message", *arrayOf(coloredDisplayName(player))
-                    )
-                )
+                if (user?.properties?.isVanished() == true) null else MiniMessage.miniMessage()
+                    .deserialize("<lang:listener.quit-message:'${coloredDisplayName(player)}'>")
+
             )
         } catch (e: Exception) {
             this.stardustPlugin.getLogger()
