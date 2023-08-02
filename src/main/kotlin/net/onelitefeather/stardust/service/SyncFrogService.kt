@@ -65,14 +65,7 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtil
 
             removeFrogBucket(player, player.inventory.itemInMainHand, true)
 
-            player.sendMessage(
-                MiniMessage.miniMessage().deserialize(
-                    stardustPlugin.i18nService.getMessage(
-                        "frog-bucket-spawn-success",
-                        *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                    )
-                )
-            )
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:frog-bucket-spawn-success:'${stardustPlugin.getPluginPrefix()}'>"))
         }
     }
 
@@ -172,30 +165,13 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtil
 
         //If the slot returns -1 the inventory of the player is full
         if (slot == -1) {
-            player.sendMessage(
-                MiniMessage.miniMessage().deserialize(
-                    stardustPlugin.i18nService.getMessage(
-                        "plugin.inventory-full",
-                        *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                    )
-                )
-            )
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.inventory-full:'${stardustPlugin.getPluginPrefix()}'>"))
             return
         }
 
         val itemStack = createFrogItemStack(amount, variant, customName)
         player.inventory.setItem(slot, itemStack)
-        val message = MiniMessage.miniMessage().deserialize(
-            stardustPlugin.i18nService.getMessage(
-                "frog-bucket-added-to-inventory",
-                *arrayOf(
-                    stardustPlugin.i18nService.getPluginPrefix(),
-                    amount,
-                    frogBucketName,
-                    coloredDisplayName(player)
-                )
-            )
-        )
+        val message = MiniMessage.miniMessage().deserialize("<lang:frog-bucket-added-to-inventory:'${stardustPlugin.getPluginPrefix()}':'$amount':'$frogBucketName':'${coloredDisplayName(player)}'>")
 
         if (!actionBarMessage) {
             player.sendMessage(message)

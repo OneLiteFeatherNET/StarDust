@@ -35,24 +35,15 @@ class FlightCommand(val stardustPlugin: StardustPlugin) : PlayerUtils {
         try {
             val user = stardustPlugin.userService.getUser(target.uniqueId)!!
 
-            val enabledMessage = stardustPlugin.i18nService.getMessage(
-                "commands.flight.enable",
-                *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), coloredDisplayName(target))
-            )
-
-            val disabledMessage = stardustPlugin.i18nService.getMessage(
-                "commands.flight.disable",
-                *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), coloredDisplayName(target))
-            )
+            val enabledMessage =
+                "<lang:commands.flight.enable:'${stardustPlugin.getPluginPrefix()}':'${coloredDisplayName(target)}'>"
+            val disabledMessage =
+                "<lang:commands.flight.disable:'${stardustPlugin.getPluginPrefix()}':'${coloredDisplayName(target)}'>"
 
             if (commandSender != target && !commandSender.hasPermission("stardust.command.flight.others")) {
                 commandSender.sendMessage(
-                    MiniMessage.miniMessage().deserialize(
-                        this.stardustPlugin.i18nService.getMessage(
-                            "plugin.not-enough-permissions",
-                            *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                        )
-                    )
+                    MiniMessage.miniMessage()
+                        .deserialize("<lang:plugin.not-enough-permissions:'${stardustPlugin.getPluginPrefix()}'>")
                 )
                 return
             }
@@ -60,13 +51,12 @@ class FlightCommand(val stardustPlugin: StardustPlugin) : PlayerUtils {
             if (target.gameMode == GameMode.CREATIVE) {
                 commandSender.sendMessage(
                     MiniMessage.miniMessage().deserialize(
-                        stardustPlugin.i18nService.getMessage(
-                            "commands.flight.already-in-creative",
-                            *arrayOf(
-                                stardustPlugin.i18nService.getPluginPrefix(),
-                                coloredDisplayName(target)
+                        "<lang:commands.flight.already-in-creative:'${stardustPlugin.getPluginPrefix()}':'${
+                            coloredDisplayName(
+                                target
                             )
-                        )
+                        }'>"
+
                     )
                 )
                 return

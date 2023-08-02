@@ -25,26 +25,15 @@ class GodmodeCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
 
         try {
             if (target != commandSender && !commandSender.hasPermission("stardust.command.godmode.others")) {
-                commandSender.sendMessage(
-                    MiniMessage.miniMessage().deserialize(
-                        stardustPlugin.i18nService.getMessage(
-                            "plugin.not-enough-permissions", stardustPlugin.i18nService.getPluginPrefix()
-                        )
-                    )
-                )
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.not-enough-permissions:'${stardustPlugin.getPluginPrefix()}'>"))
                 return
             }
 
             target.isInvulnerable = !target.isInvulnerable
             removeEnemies(target, RADIUS_REMOVE_ENEMIES)
 
-            val enabledMessage = stardustPlugin.i18nService.getMessage(
-                "commands.god-mode.enable", stardustPlugin.i18nService.getPluginPrefix(), coloredDisplayName(target)
-            )
-            val disabledMessage = stardustPlugin.i18nService.getMessage(
-                "commands.god-mode.disable", stardustPlugin.i18nService.getPluginPrefix(), coloredDisplayName(target)
-            )
-
+            val enabledMessage = "<lang:commands.god-mode.enable:'${stardustPlugin.getPluginPrefix()}':'${coloredDisplayName(target)}'>"
+            val disabledMessage = "<lang:commands.god-mode.disable:'${stardustPlugin.getPluginPrefix()}':'${coloredDisplayName(target)}'>"
             target.sendMessage(
                 MiniMessage.miniMessage().deserialize(if (target.isInvulnerable) enabledMessage else disabledMessage)
             )
