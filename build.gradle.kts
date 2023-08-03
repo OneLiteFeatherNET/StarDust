@@ -5,7 +5,7 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.1.0"
 
     // SonarQube
-    id("org.sonarqube") version "4.0.0.2929"
+    id("org.sonarqube") version "4.2.1.3168"
     jacoco
 }
 
@@ -119,7 +119,8 @@ version = if (System.getenv().containsKey("CI")) {
 
 sonarqube {
     properties {
-        property("sonar.projectKey", "onelitefeather_projects_stardust_AYRjNInxwVDHzVoeOyqT")
+        property("sonar.projectKey", "onelitefeather_projects_stardust_AYm9PCcJq35l90nqW9Pm")
+        property("sonar.projectName", "Stardust")
         property("sonar.qualitygate.wait", true)
     }
 }
