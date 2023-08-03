@@ -28,29 +28,11 @@ class GlowCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
 
         try {
             if (commandSender != target && !commandSender.hasPermission("stardust.command.glow.others")) {
-                commandSender.sendMessage(
-                    MiniMessage.miniMessage().deserialize(
-                        stardustPlugin.i18nService.getMessage(
-                            "plugin.not-enough-permissions", stardustPlugin.i18nService.getPluginPrefix()
-                        )
-                    )
-                )
-
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.not-enough-permissions:'${stardustPlugin.getPluginPrefix()}'>"))
                 return
             }
-
-            val enabledMessage = stardustPlugin.i18nService.getMessage(
-                "commands.glow.enabled", *arrayOf(
-                    stardustPlugin.i18nService.getPluginPrefix(), coloredDisplayName(target)
-                )
-            )
-
-            val disabledMessage = stardustPlugin.i18nService.getMessage(
-                "commands.glow.disabled", *arrayOf(
-                    stardustPlugin.i18nService.getPluginPrefix(), coloredDisplayName(target)
-                )
-            )
-
+            val enabledMessage = "<lang:commands.glow.enabled:'${stardustPlugin.getPluginPrefix()}':'${coloredDisplayName(target)}'>"
+            val disabledMessage = "<lang:commands.glow.disabled:'${stardustPlugin.getPluginPrefix()}':'${coloredDisplayName(target)}'>"
             target.isGlowing = !target.isGlowing
             commandSender.sendMessage(
                 MiniMessage.miniMessage().deserialize(if (target.isGlowing) enabledMessage else disabledMessage)

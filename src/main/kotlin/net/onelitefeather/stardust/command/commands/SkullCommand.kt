@@ -35,14 +35,8 @@ class SkullCommand(private val stardustPlugin: StardustPlugin) {
             skullItem.itemMeta = skullMeta
             player.inventory.addItem(skullItem)
 
-            player.sendMessage(
-                MiniMessage.miniMessage().deserialize(
-                    stardustPlugin.i18nService.getMessage(
-                        "commands.skull.success",
-                        *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), skullOwner)
-                    )
-                )
-            )
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.skull.success:'${stardustPlugin.getPluginPrefix()}':'$skullOwner'>"))
+
         } catch (e: Exception) {
             this.stardustPlugin.getLogger().throwing(SkullCommand::class.java.simpleName, "handleCommand", e)
         }

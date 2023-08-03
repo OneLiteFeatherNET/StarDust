@@ -8,12 +8,17 @@ import cloud.commandframework.execution.CommandExecutionCoordinator
 import cloud.commandframework.meta.CommandMeta
 import cloud.commandframework.minecraft.extras.MinecraftHelp
 import cloud.commandframework.paper.PaperCommandManager
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.translation.GlobalTranslator
+import net.kyori.adventure.translation.TranslationRegistry
+import net.kyori.adventure.util.UTF8ResourceBundleControl
 import net.onelitefeather.stardust.api.CommandCooldownService
 import net.onelitefeather.stardust.api.ItemSignService
 import net.onelitefeather.stardust.command.commands.*
 import net.onelitefeather.stardust.listener.*
 import net.onelitefeather.stardust.service.*
+import net.onelitefeather.stardust.util.LynxWrapper
 import org.bukkit.NamespacedKey
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -21,14 +26,17 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.metadata.MetadataValue
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.*
 import java.util.function.Function
 import java.util.logging.Level
 
 
 class StardustPlugin : JavaPlugin() {
 
-    lateinit var paperCommandManager: PaperCommandManager<CommandSender>
-    lateinit var annotationParser: AnnotationParser<CommandSender>
+    private val supportedLocals: Array<Locale> = arrayOf(Locale.US, Locale.GERMAN)
+
+    private lateinit var paperCommandManager: PaperCommandManager<CommandSender>
+    private lateinit var annotationParser: AnnotationParser<CommandSender>
     lateinit var minecraftHelp: MinecraftHelp<CommandSender>
 
     lateinit var i18nService: I18nService
@@ -39,7 +47,6 @@ class StardustPlugin : JavaPlugin() {
     lateinit var itemSignService: ItemSignService<ItemStack, Player>
     lateinit var packetListener: PacketListener
     lateinit var syncFrogService: SyncFrogService
-    lateinit var context: StardustPlugin
 
     lateinit var chatConfirmationKey: NamespacedKey
     lateinit var signedNameSpacedKey: NamespacedKey
@@ -49,9 +56,7 @@ class StardustPlugin : JavaPlugin() {
 
     @Suppress("kotlin:S1874")
     override fun onEnable() {
-
         try {
-            context = this
 
             //Creating the default config
             saveDefaultConfig()
@@ -62,6 +67,14 @@ class StardustPlugin : JavaPlugin() {
 
             //Saving the config is needed
             saveConfig()
+
+            val registry = TranslationRegistry.create(Key.key("stardust", "localization"))
+            supportedLocals.forEach { locale ->
+                val bundle = ResourceBundle.getBundle("stardust", locale, UTF8ResourceBundleControl.get())
+                registry.registerAll(locale, bundle, false)
+            }
+            registry.defaultLocale(supportedLocals.first())
+            GlobalTranslator.translator().addSource(LynxWrapper(registry))
 
             vanishedMetadata = FixedMetadataValue(this, true)
             notVanishedMetadata = FixedMetadataValue(this, false)
@@ -211,5 +224,9 @@ class StardustPlugin : JavaPlugin() {
                 NamedTextColor.GRAY,
                 NamedTextColor.GOLD
         )
+    }
+
+    fun getPluginPrefix(): String {
+        return "<lang:plugin.prefix:${this.name}>"
     }
 }

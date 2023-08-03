@@ -20,15 +20,7 @@ class RenameCommand(private val stardustPlugin: StardustPlugin) : StringUtils {
 
         val itemInHand = player.inventory.itemInMainHand
         if (itemInHand.type == Material.AIR) {
-            player.sendMessage(
-                MiniMessage.miniMessage().deserialize(
-                    stardustPlugin.i18nService.getMessage(
-                        "commands.rename.invalid-item",
-                        *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                    )
-                )
-            )
-
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.rename.invalid-item:'${stardustPlugin.getPluginPrefix()}'>"))
             return
         }
 
@@ -36,16 +28,6 @@ class RenameCommand(private val stardustPlugin: StardustPlugin) : StringUtils {
         itemMeta.displayName(MiniMessage.miniMessage().deserialize(colorText(text)))
         itemInHand.itemMeta = itemMeta
         player.updateInventory()
-        player.sendMessage(
-            MiniMessage.miniMessage().deserialize(
-                stardustPlugin.i18nService.getMessage(
-                    "commands.rename.success",
-                    *arrayOf(
-                        stardustPlugin.i18nService.getPluginPrefix(),
-                        colorText(text)
-                    )
-                )
-            )
-        )
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.rename.success:'${stardustPlugin.getPluginPrefix()}':'${colorText(text)}'>"))
     }
 }

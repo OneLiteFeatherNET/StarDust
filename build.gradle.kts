@@ -3,7 +3,6 @@ plugins {
     id("net.minecrell.plugin-yml.paper") version "0.6.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("xyz.jpenilla.run-paper") version "2.1.0"
-
     // SonarQube
     id("org.sonarqube") version "4.0.0.2929"
     jacoco
@@ -89,7 +88,7 @@ paper {
     name = "Stardust"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
 
-    authors = listOf("UniqueGame", "OneLiteFeather", "TheMeinerLP")
+    authors = listOf("UniqueGame", "OneLiteFeather")
     serverDependencies {
         register("CloudNet-Bridge") {
             required = false

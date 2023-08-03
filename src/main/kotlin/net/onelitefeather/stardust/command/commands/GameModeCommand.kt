@@ -34,14 +34,7 @@ class GameModeCommand(private val stardustPlugin: StardustPlugin) {
 
                 if (commandSender != target) {
                     if (!commandSender.hasPermission("stardust.command.gamemode.others")) {
-                        commandSender.sendMessage(
-                            MiniMessage.miniMessage().deserialize(
-                                stardustPlugin.i18nService.getMessage(
-                                    "plugin.not-enough-permissions",
-                                    *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                                )
-                            )
-                        )
+                        commandSender.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.not-enough-permissions:'${stardustPlugin.getPluginPrefix()}'>"))
                         return
                     }
 
