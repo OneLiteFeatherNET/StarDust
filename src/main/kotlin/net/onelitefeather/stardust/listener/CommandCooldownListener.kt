@@ -20,14 +20,14 @@ class CommandCooldownListener(private val stardustPlugin: StardustPlugin) : List
 
             if (strings.isEmpty()) return
 
-            val commandLabelRaw = strings[0]
-            val commandLabel = if (commandLabelRaw.contains(":")) commandLabelRaw.split(":")[1] else commandLabelRaw
+            val labelOrCommand = strings[0]
+            val command = if (labelOrCommand.contains(":")) labelOrCommand.substringAfter(':') else labelOrCommand
 
-            if (stardustPlugin.commandCooldownService.hasCommandCooldown(commandLabel)) {
+            if (stardustPlugin.commandCooldownService.hasCommandCooldown(command)) {
 
                 if (player.hasPermission("stardust.commandcooldown.bypass") && stardustPlugin.config.getBoolean("settings.use-cooldown-bypass")) return
                 val commandCooldown =
-                    stardustPlugin.commandCooldownService.getCommandCooldown(player.uniqueId, commandLabel)
+                    stardustPlugin.commandCooldownService.getCommandCooldown(player.uniqueId, command)
 
                 if (commandCooldown != null && !commandCooldown.isOver()) {
                     player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.command-cooldowned:'${stardustPlugin.getPluginPrefix()}':${getRemainingTime(commandCooldown.executedAt)}"))
@@ -35,7 +35,7 @@ class CommandCooldownListener(private val stardustPlugin: StardustPlugin) : List
                     return
                 }
 
-                val cooldownData = stardustPlugin.commandCooldownService.getCooldownData(commandLabel)
+                val cooldownData = stardustPlugin.commandCooldownService.getCooldownData(command)
                 if (cooldownData != null) {
                     stardustPlugin.commandCooldownService.addCommandCooldown(
                         player.uniqueId,
