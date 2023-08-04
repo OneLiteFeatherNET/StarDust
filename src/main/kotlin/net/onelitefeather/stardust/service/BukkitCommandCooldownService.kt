@@ -98,7 +98,7 @@ class BukkitCommandCooldownService(private val stardustPlugin: StardustPlugin) :
     override fun isCooldownOver(commandSender: UUID, command: String): Boolean =
         getCommandCooldown(commandSender, command)?.isOver() == true
 
-    override fun hasCommandCooldown(commandLabel: String): Boolean = getCooldownData(commandLabel) != null
+    override fun hasCommandCooldown(commandOrLabel: String): Boolean = getCooldownData(commandOrLabel) != null
 
     override fun getCooldownDataList(): List<CooldownData> {
         val section = stardustPlugin.config.getConfigurationSection("command-cooldowns") ?: return emptyList()
