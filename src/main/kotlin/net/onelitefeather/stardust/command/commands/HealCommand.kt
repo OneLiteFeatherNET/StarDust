@@ -5,22 +5,15 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
-import io.sentry.Sentry
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
-import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.extenstions.toSentryUser
-import net.onelitefeather.stardust.util.DEFAULT_ENTITY_HAS_VISUAL_FIRE
-import net.onelitefeather.stardust.util.DEFAULT_PLAYER_FIRE_TICKS
-import net.onelitefeather.stardust.util.DEFAULT_PLAYER_FOOD_LEVEL
-import net.onelitefeather.stardust.util.DEFAULT_PLAYER_SATURATION_LEVEL
+import net.onelitefeather.stardust.util.*
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeInstance
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class HealCommand(private val stardustPlugin: StardustPlugin) {
+class HealCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
 
     @CommandMethod("heal [player]")
     @CommandPermission("stardust.command.heal")
@@ -38,12 +31,7 @@ class HealCommand(private val stardustPlugin: StardustPlugin) {
 
         try {
             if (target != commandSender && !commandSender.hasPermission("stardust.command.heal.others")) {
-                commandSender.sendMessage(miniMessage {
-                    stardustPlugin.i18nService.getMessage(
-                        "plugin.not-enough-permissions", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                    )
-                })
-
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.not-enough-permissions:'${stardustPlugin.i18nService.getPluginPrefix()}'>"))
                 return
             }
 
@@ -57,23 +45,15 @@ class HealCommand(private val stardustPlugin: StardustPlugin) {
             target.foodLevel = DEFAULT_PLAYER_FOOD_LEVEL
             target.saturation = DEFAULT_PLAYER_SATURATION_LEVEL
 
-            val message = this.stardustPlugin.i18nService.getMessage(
-                "commands.heal.success",
-                stardustPlugin.i18nService.getPluginPrefix(),
-                target.coloredDisplayName(),
-                target.health
-            )
+            val message = "<lang:commands.heal.success:'${stardustPlugin.getPluginPrefix()}':'${coloredDisplayName(target)}':'${target.health}'>"
 
             if (commandSender != target) {
-                target.sendMessage(miniMessage { message })
+                target.sendMessage(MiniMessage.miniMessage().deserialize(message))
             }
 
-            commandSender.sendMessage(miniMessage { message })
+            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(message))
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = target.toSentryUser()
-                target.addClient(it)
-            }
+            this.stardustPlugin.getLogger().throwing(HealCommand::class.java.simpleName, "healPlayer", e)
         }
     }
 }

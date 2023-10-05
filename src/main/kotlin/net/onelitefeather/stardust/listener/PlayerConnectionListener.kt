@@ -1,8 +1,8 @@
 package net.onelitefeather.stardust.listener
 
-import io.sentry.Sentry
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.*
+import net.onelitefeather.stardust.util.PlayerUtils
 import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.logging.Level
 
-class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Listener {
+class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Listener, PlayerUtils {
 
     @EventHandler
     fun handlePlayerJoin(event: PlayerJoinEvent) {
@@ -23,18 +23,18 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
 
                 //Register a new User
                 stardustPlugin.userService.registerUser(player) {
-                    player.sendMessage(miniMessage {
-                        stardustPlugin.i18nService.getMessage(
-                            "plugin.first-join", *arrayOf(
-                                stardustPlugin.i18nService.getPluginPrefix(), player.coloredDisplayName()
-                            )
+                    player.sendMessage(
+                        MiniMessage.miniMessage().deserialize(
+                            "<lang:plugin.first-join:'${stardustPlugin.getPluginPrefix()}':'${
+                                coloredDisplayName(player)
+                            }'>"
                         )
-                    })
+                    )
                 }
                 return
             }
 
-            if(!player.name.equals(user.name, true)) {
+            if (!player.name.equals(user.name, true)) {
                 stardustPlugin.logger.log(Level.INFO, "Updating Username from %s to %s".format(user.name, player.name))
                 stardustPlugin.userService.updateUser(user.copy(name = player.name))
             }
@@ -48,16 +48,13 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                 player.gameMode = player.server.defaultGameMode
             }
 
-            event.joinMessage(if (user.properties.isVanished()) null else miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "listener.join-message", *arrayOf(player.coloredDisplayName())
-                )
-            })
+            event.joinMessage(
+                if (user.properties.isVanished()) null else MiniMessage.miniMessage()
+                    .deserialize("<lang:listener.join-message:'${coloredDisplayName(player)}'>")
+            )
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
+            this.stardustPlugin.getLogger()
+                .throwing(PlayerConnectionListener::class.java.simpleName, "handlePlayerJoin", e)
         }
     }
 
@@ -66,16 +63,14 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
         val player = event.player
         try {
             val user = stardustPlugin.userService.getUser(player.uniqueId)
-            event.quitMessage(if (user?.properties?.isVanished() == true) null else miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "listener.quit-message", *arrayOf(player.coloredDisplayName())
-                )
-            })
+            event.quitMessage(
+                if (user?.properties?.isVanished() == true) null else MiniMessage.miniMessage()
+                    .deserialize("<lang:listener.quit-message:'${coloredDisplayName(player)}'>")
+
+            )
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
+            this.stardustPlugin.getLogger()
+                .throwing(PlayerConnectionListener::class.java.simpleName, "onPlayerQuit", e)
         }
     }
 }

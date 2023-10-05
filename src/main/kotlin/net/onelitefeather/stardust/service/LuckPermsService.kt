@@ -1,6 +1,5 @@
 package net.onelitefeather.stardust.service
 
-import io.sentry.Sentry
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.luckperms.api.LuckPerms
@@ -25,7 +24,7 @@ class LuckPermsService(val stardustPlugin: StardustPlugin) {
                 }
             }
         } catch (e: Exception) {
-            Sentry.captureException(e)
+            stardustPlugin.logger.throwing(LuckPermsService::class.java.simpleName, "init", e)
         }
     }
 

@@ -7,12 +7,14 @@ import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Quoted
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.colorText
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
-import net.onelitefeather.stardust.extenstions.convertComponentToString
-import net.onelitefeather.stardust.extenstions.miniMessage
-import org.bukkit.*
+import net.onelitefeather.stardust.util.PlayerUtils
+import net.onelitefeather.stardust.util.StringUtils
+import org.bukkit.GameMode
+import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Frog
 import org.bukkit.entity.Frog.Variant
@@ -25,7 +27,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener {
+class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtils, PlayerUtils {
 
     private var frogNameSpacedKey: NamespacedKey = NamespacedKey(stardustPlugin, "frog_data_key")
     private var frogVariantKey: NamespacedKey = NamespacedKey(stardustPlugin, "frog_variant_key")
@@ -46,7 +48,7 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener {
         @Argument(value = "variant") variant: Variant,
         @Argument(value = "amount") amount: Int
     ) {
-        addFrogBucketToPlayer(player, amount, miniMessage { customName }, variant, false)
+        addFrogBucketToPlayer(player, amount, MiniMessage.miniMessage().deserialize(customName), variant, false)
     }
 
     @EventHandler
@@ -63,12 +65,7 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener {
 
             removeFrogBucket(player, player.inventory.itemInMainHand, true)
 
-            player.sendMessage(miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "frog-bucket-spawn-success",
-                    *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                )
-            })
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:frog-bucket-spawn-success:'${stardustPlugin.getPluginPrefix()}'>"))
         }
     }
 
@@ -92,7 +89,13 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener {
 
         if (isFrogInBucket(itemInHand)) return
         if (entity is Frog && itemInHand.type == Material.BUCKET) {
-            addFrogBucketToPlayer(player, 1, entity.customName() ?: miniMessage { entity.name }, entity.variant, true)
+            addFrogBucketToPlayer(
+                player,
+                1,
+                entity.customName() ?: MiniMessage.miniMessage().deserialize(entity.name),
+                entity.variant,
+                true
+            )
             entity.health = 0.0
             removeFrogBucket(player, itemInHand, false)
             event.isCancelled = true
@@ -120,7 +123,7 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener {
         val variant = container[frogVariantKey, PersistentDataType.STRING] ?: Variant.TEMPERATE.name
 
         if (customName != null) {
-            frog.customName(miniMessage { customName.colorText() })
+            frog.customName(MiniMessage.miniMessage().deserialize(colorText(customName)))
         }
 
         frog.variant = Variant.valueOf(variant.uppercase())
@@ -132,11 +135,11 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener {
         val itemStack = ItemStack(Material.BUCKET, amount)
         val itemMeta = itemStack.itemMeta
 
-        itemMeta.displayName(miniMessage { frogBucketName })
+        itemMeta.displayName(MiniMessage.miniMessage().deserialize(frogBucketName))
 
         itemMeta.addEnchant(Enchantment.DIG_SPEED, 1, false)
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
-        itemMeta.lore(listOf(miniMessage { variant.name.lowercase() }))
+        itemMeta.lore(listOf(MiniMessage.miniMessage().deserialize(variant.name.lowercase())))
 
         val container = itemMeta.persistentDataContainer
 
@@ -162,30 +165,13 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener {
 
         //If the slot returns -1 the inventory of the player is full
         if (slot == -1) {
-            player.sendMessage(
-                miniMessage {
-                    stardustPlugin.i18nService.getMessage(
-                        "plugin.inventory-full",
-                        *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                    )
-                }
-            )
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.inventory-full:'${stardustPlugin.getPluginPrefix()}'>"))
             return
         }
 
         val itemStack = createFrogItemStack(amount, variant, customName)
         player.inventory.setItem(slot, itemStack)
-        val message = miniMessage {
-            stardustPlugin.i18nService.getMessage(
-                "frog-bucket-added-to-inventory",
-                *arrayOf(
-                    stardustPlugin.i18nService.getPluginPrefix(),
-                    amount,
-                    frogBucketName,
-                    player.coloredDisplayName()
-                )
-            )
-        }
+        val message = MiniMessage.miniMessage().deserialize("<lang:frog-bucket-added-to-inventory:'${stardustPlugin.getPluginPrefix()}':'$amount':'$frogBucketName':'${coloredDisplayName(player)}'>")
 
         if (!actionBarMessage) {
             player.sendMessage(message)
