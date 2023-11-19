@@ -1,11 +1,8 @@
 package net.onelitefeather.stardust.listener
 
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
-import io.sentry.Sentry
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
-import net.onelitefeather.stardust.extenstions.toSentryUser
 import net.onelitefeather.stardust.user.User
 import net.onelitefeather.stardust.user.UserPropertyType
 import org.bukkit.entity.Entity
@@ -63,10 +60,8 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
                 val user = stardustPlugin.userService.getUser(player.uniqueId)
                 event.isCancelled = user != null && (user.properties.isVanished() || player.isInvulnerable)
             } catch (e: Exception) {
-                Sentry.captureException(e) {
-                    it.user = player.toSentryUser()
-                    player.addClient(it)
-                }
+                this.stardustPlugin.getLogger()
+                    .throwing(PlayerVanishListener::class.java.simpleName, "onFoodLevelChange", e)
             }
         }
     }
@@ -82,10 +77,8 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
                         .getValue<Boolean>() == true
 
             } catch (e: Exception) {
-                Sentry.captureException(e) {
-                    it.user = player.toSentryUser()
-                    player.addClient(it)
-                }
+                this.stardustPlugin.getLogger()
+                    .throwing(PlayerVanishListener::class.java.simpleName, "onPickUp", e)
             }
         }
     }
@@ -99,10 +92,8 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
                 user.properties.isVanished() && user.properties.getProperty(UserPropertyType.VANISH_DISABLE_ITEM_DROP)
                     .getValue<Boolean>() == true
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
+            this.stardustPlugin.getLogger()
+                .throwing(PlayerVanishListener::class.java.simpleName, "onDrop", e)
         }
     }
 
@@ -115,10 +106,8 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
                 user.properties.isVanished() && user.properties.getProperty(UserPropertyType.VANISH_DISABLE_ITEM_COLLECT)
                     .getValue<Boolean>() == true
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
+            this.stardustPlugin.getLogger()
+                .throwing(PlayerVanishListener::class.java.simpleName, "onPlayerPickupExp", e)
         }
     }
 
@@ -136,10 +125,8 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
                 event.setShouldPlayDeathSound(false)
             }
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
+            this.stardustPlugin.getLogger()
+                .throwing(PlayerVanishListener::class.java.simpleName, "onPlayerDeath", e)
         }
     }
 }

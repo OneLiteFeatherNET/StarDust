@@ -1,14 +1,14 @@
 plugins {
-    kotlin("jvm") version "1.7.10"
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-
+    kotlin("jvm") version "1.8.20"
+    id("net.minecrell.plugin-yml.paper") version "0.6.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("xyz.jpenilla.run-paper") version "2.1.0"
     // SonarQube
-    id("org.sonarqube") version "4.0.0.2929"
+    id("org.sonarqube") version "4.2.1.3168"
     jacoco
 }
 
-val baseVersion = "1.0.0"
+val baseVersion = "1.1.0"
 group = "net.onelitefeather"
 
 repositories {
@@ -20,21 +20,17 @@ repositories {
 dependencies {
 
     // Paper
-    compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
-    bukkitLibrary("cloud.commandframework", "cloud-paper", "1.8.0")
-    bukkitLibrary("cloud.commandframework", "cloud-annotations", "1.8.0")
-    bukkitLibrary("cloud.commandframework", "cloud-minecraft-extras", "1.8.0")
-    bukkitLibrary("org.apache.commons:commons-lang3:3.12.0")
-    bukkitLibrary("me.lucko:commodore:2.2") {
+    compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
+    implementation("cloud.commandframework", "cloud-paper", "1.8.2")
+    implementation("cloud.commandframework", "cloud-annotations", "1.8.2")
+    implementation("cloud.commandframework", "cloud-minecraft-extras", "1.8.2")
+    implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("me.lucko:commodore:2.2") {
         isTransitive = false
     }
 
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
-
-    // Sentry
-    implementation("io.sentry:sentry:6.6.0")
-    implementation("io.sentry:sentry-jul:6.6.0")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0")
 
     // Database
     implementation("org.hibernate:hibernate-core:6.1.5.Final")
@@ -71,8 +67,14 @@ tasks {
         }
     }
 
+    runServer {
+        minecraftVersion("1.20.1")
+        jvmArgs("-DPaper.IgnoreJavaVersion=true", "-Dcom.mojang.eula.agree=true")
+    }
+
     test {
         useJUnitPlatform()
+
     }
 
     shadowJar {
@@ -80,14 +82,25 @@ tasks {
     }
 }
 
-bukkit {
+paper {
     main = "${rootProject.group}.stardust.StardustPlugin"
     apiVersion = "1.19"
     name = "Stardust"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
 
     authors = listOf("UniqueGame", "OneLiteFeather")
-    softDepend = listOf("CloudNet-Bridge", "LuckPerms", "ProtocolLib")
+    serverDependencies {
+        register("CloudNet-Bridge") {
+            required = false
+        }
+        register("LuckPerms") {
+            required = false
+        }
+        register("ProtocolLib") {
+            required = false
+        }
+    }
+    // softDepend = listOf("CloudNet-Bridge", "LuckPerms", "ProtocolLib")
 }
 
 version = if (System.getenv().containsKey("CI")) {
@@ -105,7 +118,8 @@ version = if (System.getenv().containsKey("CI")) {
 
 sonarqube {
     properties {
-        property("sonar.projectKey", "onelitefeather_projects_stardust_AYRjNInxwVDHzVoeOyqT")
+        property("sonar.projectKey", "onelitefeather_projects_stardust_AYm9PCcJq35l90nqW9Pm")
+        property("sonar.projectName", "Stardust")
         property("sonar.qualitygate.wait", true)
     }
 }

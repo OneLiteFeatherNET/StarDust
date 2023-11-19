@@ -1,17 +1,48 @@
 package net.onelitefeather.stardust.api
 
 import net.onelitefeather.stardust.user.User
+import org.bukkit.entity.Player
 
-interface PlayerVanishService<P> {
+/**
+ * API Class to handle player vanishing
+ * @author TheMeinerLP
+ */
+interface PlayerVanishService<P : Player> {
 
+    /**
+     * Hides a player for other players
+     * @param player to be hide
+     */
     fun hidePlayer(player: P)
 
+    /**
+     * Shows a player for other players
+     * @param player to be shown to other player
+     */
     fun showPlayer(player: P)
 
+    /**
+     * Toggle vanish status of a player
+     * @param player be affected
+     */
     fun toggle(player: P): Boolean
 
+    /**
+     * Check if the player in vanish
+     * @return the current status
+     */
     fun isVanished(player: P): Boolean
 
+    /**
+     * Set a user explicit the vanish status
+     * @param vanished status of the user
+     * @param user to be affected
+     */
     fun setVanished(user: User, vanished: Boolean)
+
+    /**
+     * Handles if a player joinin the server
+     * @param player be affected
+     */
     fun onPlayerJoin(player: P)
 }

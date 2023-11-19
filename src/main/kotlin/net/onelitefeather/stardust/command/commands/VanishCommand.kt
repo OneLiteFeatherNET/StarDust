@@ -6,17 +6,45 @@ import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import com.google.common.base.Preconditions
-import io.sentry.Sentry
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
-import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.extenstions.toSentryUser
 import net.onelitefeather.stardust.user.UserPropertyType
+import net.onelitefeather.stardust.util.PlayerUtils
+import net.onelitefeather.stardust.util.StringUtils
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 @Suppress("unused")
-class VanishCommand(private val stardustPlugin: StardustPlugin) {
+class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, PlayerUtils {
+
+    @CommandMethod("vanish|v fakejoin [player]")
+    @CommandPermission("stardust.command.vanish.fakejoin")
+    @CommandDescription("Allows to perform a fake join")
+    fun commandFakeJoin(
+        commandSender: Player,
+        @Greedy @Argument(value = "player") target: Player?
+    ) {
+        if (target == null) {
+            Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<lang:listener.join-message:'${coloredDisplayName(commandSender)}'>"))
+            return
+        }
+        Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<lang:listener.join-message:'${coloredDisplayName(target)}'>"))
+    }
+
+    @CommandMethod("vanish|v fakequit [player]")
+    @CommandPermission("stardust.command.vanish.fakequit")
+    @CommandDescription("Allows to perform a fake quit")
+    fun commandFakeQuit(
+        commandSender: Player,
+        @Greedy @Argument(value = "player") target: Player?
+    ) {
+        if (target == null) {
+            Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<lang:listener.quit-message:'${coloredDisplayName(commandSender)}'>"))
+            return
+        }
+        Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<lang:listener.quit-message:'${coloredDisplayName(target)}'>"))
+    }
 
     @CommandMethod("vanish|v nodrop [player]")
     @CommandPermission("stardust.command.vanish.nodrop")
@@ -77,29 +105,14 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) {
         val currentValue = property.getValue<Boolean>() ?: return
 
         stardustPlugin.userService.setUserProperty(user, propertyType, !currentValue)
-        commandSender.sendMessage(miniMessage {
-            stardustPlugin.i18nService.getMessage(
-                "commands.vanish.property-set",
-                *arrayOf(
-                    stardustPlugin.i18nService.getPluginPrefix(),
-                    propertyType.friendlyName,
-                    !currentValue,
-                    target.name
-                )
-            )
-        })
+        commandSender.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.vanish.property-set:'${stardustPlugin.getPluginPrefix()}':'${propertyType.friendlyName}':'${!currentValue}':'${target.name}'>"))
     }
 
     fun toggleVanish(commandSender: CommandSender, target: Player) {
 
         try {
             if (target != commandSender && !commandSender.hasPermission("stardust.command.vanish.others")) {
-                commandSender.sendMessage(miniMessage {
-                    stardustPlugin.i18nService.getMessage(
-                        "plugin.not-enough-permissions",
-                        *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                    )
-                })
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.not-enough-permissions:'${stardustPlugin.getPluginPrefix()}'>"))
                 return
             }
 
@@ -107,26 +120,18 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) {
             if (user != null) {
 
                 val state = stardustPlugin.userService.playerVanishService.toggle(target)
-                val targetEnable = stardustPlugin.i18nService.getMessage(
-                    "commands.vanish.enable",
-                    *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), user.getDisplayName())
-                )
-                val targetDisable = stardustPlugin.i18nService.getMessage(
-                    "commands.vanish.disable",
-                    *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), user.getDisplayName())
-                )
-
+                val targetEnable = "<lang:commands.vanish.enable:'${stardustPlugin.getPluginPrefix()}':'${user.getDisplayName()}'>"
+                val targetDisable = "<lang:commands.vanish.disable:'${stardustPlugin.getPluginPrefix()}':'${user.getDisplayName()}'>"
                 if (commandSender != target) {
-                    commandSender.sendMessage(miniMessage { if (state) targetEnable else targetDisable })
+                    commandSender.sendMessage(
+                        MiniMessage.miniMessage().deserialize(if (state) targetEnable else targetDisable)
+                    )
                 }
 
-                target.sendMessage(miniMessage { if (state) targetEnable else targetDisable })
+                target.sendMessage(MiniMessage.miniMessage().deserialize(if (state) targetEnable else targetDisable))
             }
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = target.toSentryUser()
-                target.addClient(it)
-            }
+            this.stardustPlugin.getLogger().throwing(VanishCommand::class.java.simpleName, "toggleVanish", e)
         }
     }
 }

@@ -5,14 +5,14 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
-import io.sentry.Sentry
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.*
+import net.onelitefeather.stardust.util.PlayerUtils
 import net.onelitefeather.stardust.util.RADIUS_REMOVE_ENEMIES
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
+class GodmodeCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
 
     @CommandMethod("godmode [player]")
     @CommandPermission("stardust.command.godmode")
@@ -25,33 +25,26 @@ class GodmodeCommand(private val stardustPlugin: StardustPlugin) {
 
         try {
             if (target != commandSender && !commandSender.hasPermission("stardust.command.godmode.others")) {
-                commandSender.sendMessage(miniMessage {
-                    stardustPlugin.i18nService.getMessage(
-                        "plugin.not-enough-permissions", stardustPlugin.i18nService.getPluginPrefix()
-                    )
-                })
+                commandSender.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.not-enough-permissions:'${stardustPlugin.getPluginPrefix()}'>"))
                 return
             }
 
             target.isInvulnerable = !target.isInvulnerable
-            target.removeEnemies(RADIUS_REMOVE_ENEMIES)
+            removeEnemies(target, RADIUS_REMOVE_ENEMIES)
 
-            val enabledMessage = stardustPlugin.i18nService.getMessage(
-                "commands.god-mode.enable", stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
+            val enabledMessage = "<lang:commands.god-mode.enable:'${stardustPlugin.getPluginPrefix()}':'${coloredDisplayName(target)}'>"
+            val disabledMessage = "<lang:commands.god-mode.disable:'${stardustPlugin.getPluginPrefix()}':'${coloredDisplayName(target)}'>"
+            target.sendMessage(
+                MiniMessage.miniMessage().deserialize(if (target.isInvulnerable) enabledMessage else disabledMessage)
             )
-            val disabledMessage = stardustPlugin.i18nService.getMessage(
-                "commands.god-mode.disable", stardustPlugin.i18nService.getPluginPrefix(), target.coloredDisplayName()
-            )
-
-            target.sendMessage(miniMessage { if (target.isInvulnerable) enabledMessage else disabledMessage })
             if (commandSender != target) {
-                commandSender.sendMessage(miniMessage { if (target.isInvulnerable) enabledMessage else disabledMessage })
+                commandSender.sendMessage(
+                    MiniMessage.miniMessage()
+                        .deserialize(if (target.isInvulnerable) enabledMessage else disabledMessage)
+                )
             }
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = target.toSentryUser()
-                target.addClient(it)
-            }
+            this.stardustPlugin.getLogger().throwing(GodmodeCommand::class.java.simpleName, "handleInvulnerability", e)
         }
     }
 }

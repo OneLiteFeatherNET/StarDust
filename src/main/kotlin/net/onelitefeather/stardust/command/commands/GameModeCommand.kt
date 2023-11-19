@@ -5,12 +5,9 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
-import io.sentry.Sentry
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
-import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.extenstions.toSentryUser
 import org.bukkit.GameMode
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -37,13 +34,7 @@ class GameModeCommand(private val stardustPlugin: StardustPlugin) {
 
                 if (commandSender != target) {
                     if (!commandSender.hasPermission("stardust.command.gamemode.others")) {
-                        commandSender.sendMessage(miniMessage {
-                            stardustPlugin.i18nService.getMessage(
-                                "plugin.not-enough-permissions",
-                                *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                            )
-                        })
-
+                        commandSender.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.not-enough-permissions:'${stardustPlugin.getPluginPrefix()}'>"))
                         return
                     }
 
@@ -56,10 +47,7 @@ class GameModeCommand(private val stardustPlugin: StardustPlugin) {
                 )
             }
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = target?.toSentryUser()
-                target?.addClient(it)
-            }
+            this.stardustPlugin.getLogger().throwing(GameModeCommand::class.java.simpleName, "handleCommand", e)
         }
     }
 }
