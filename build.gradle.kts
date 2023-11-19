@@ -33,7 +33,7 @@ dependencies {
     }
 
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
 
     // Sentry
     implementation("io.sentry:sentry:6.6.0")
