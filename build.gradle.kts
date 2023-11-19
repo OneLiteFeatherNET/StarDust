@@ -24,7 +24,7 @@ dependencies {
 
     // Paper
     compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
-    bukkitLibrary("cloud.commandframework", "cloud-paper", "1.8.0")
+    bukkitLibrary("cloud.commandframework", "cloud-paper", "1.8.4")
     bukkitLibrary("cloud.commandframework", "cloud-annotations", "1.8.4")
     bukkitLibrary("cloud.commandframework", "cloud-minecraft-extras", "1.8.0")
     bukkitLibrary("org.apache.commons:commons-lang3:3.12.0")
