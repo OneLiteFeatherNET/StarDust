@@ -1,24 +1,7 @@
-image:  repo.htl-md.schule:5003/gradle:8.2.1-jdk17-alpine
-
 include:
-  - project: onelitefeather/ci-template
-    ref: Better-Pipelines
-    file: s3-upload.yaml
-  - project: onelitefeather/ci-template
-    ref: Better-Pipelines
-    file: sonarqube.yaml
-
-
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+  - component: gitlab.themeinerlp.dev/onelitefeather/ci-components/paper-plugin@0.0.3
 variables:
-  JAR_FILE: "Stardust.jar"
-  BUCKET: "olf-dev"
-  TEMPLATE: "default"
-
-deploy:
-  script:
-    - gradle shadowJar
-
-test:
-  image: repo.htl-md.schule:5003/gradle:8.2.1-jdk17-alpine
-sonarqube-check-mr:
-  image: repo.htl-md.schule:5003/gradle:8.2.1-jdk17-alpine
+  SECURE_ANALYZERS_PREFIX: "${HTL_NEXUS_PROXY}/security-products"
