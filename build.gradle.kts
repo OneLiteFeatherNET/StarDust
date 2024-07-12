@@ -5,8 +5,8 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.1.0"
 
     // SonarQube
-    id("org.sonarqube") version "4.2.1.3168"
-    jacoco
+//    id("org.sonarqube") version "4.2.1.3168"
+//    jacoco
 }
 
 val baseVersion = "1.1.0"
@@ -57,16 +57,16 @@ tasks {
         }
     }
 
-    getByName("sonar") {
-        dependsOn(rootProject.tasks.test)
-    }
-
-    jacocoTestReport {
-        dependsOn(rootProject.tasks.test)
-        reports {
-            xml.required.set(true)
-        }
-    }
+//    getByName("sonar") {
+//        dependsOn(rootProject.tasks.test)
+//    }
+//
+//    jacocoTestReport {
+//        dependsOn(rootProject.tasks.test)
+//        reports {
+//            xml.required.set(true)
+//        }
+//    }
 
     runServer {
         minecraftVersion("1.20.1")
@@ -117,11 +117,11 @@ version = if (System.getenv().containsKey("CI")) {
     "$baseVersion-SNAPSHOT"
 }
 
-sonarqube {
-    properties {
-        property("sonar.projectKey", "onelitefeather_projects_stardust_AYm9PCcJq35l90nqW9Pm")
-        property("sonar.projectName", "Stardust")
-        property("sonar.qualitygate.wait", true)
-    }
-}
+//sonarqube {
+//    properties {
+//        property("sonar.projectKey", "onelitefeather_projects_stardust_AYm9PCcJq35l90nqW9Pm")
+//        property("sonar.projectName", "Stardust")
+//        property("sonar.qualitygate.wait", true)
+//    }
+//}
 
