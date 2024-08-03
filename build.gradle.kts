@@ -116,11 +116,3 @@ version = if (System.getenv().containsKey("CI")) {
     "$baseVersion-SNAPSHOT"
 }
 
-//sonarqube {
-//    properties {
-//        property("sonar.projectKey", "onelitefeather_projects_stardust_AYm9PCcJq35l90nqW9Pm")
-//        property("sonar.projectName", "Stardust")
-//        property("sonar.qualitygate.wait", true)
-//    }
-//}
-
