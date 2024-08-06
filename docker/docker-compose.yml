@@ -1,6 +1,20 @@
-version: '3.7'
+# docker compose up -d
 services:
-  keydb:
-    image: eqalpha/keydb
+  postgres:
+    image: postgres
+    container_name: 'stardust_postgresql'
     ports:
-      - "6379:6379"
+      - 5432:5432
+    shm_size: 128mb
+    volumes:
+      - ./postgresql/data/:/var/lib/postgresql
+    environment:
+      POSTGRES_PASSWORD: stardust
+      POSTGRES_USER: stardust
+      POSTGRES_DB: stardust
+    networks:
+      - stardust_postgresql_go_net
+
+networks:
+  stardust_postgresql_go_net:
+    driver: bridge
