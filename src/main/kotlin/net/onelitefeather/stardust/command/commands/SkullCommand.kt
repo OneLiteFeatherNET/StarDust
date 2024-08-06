@@ -4,7 +4,7 @@ import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
-import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -35,7 +35,12 @@ class SkullCommand(private val stardustPlugin: StardustPlugin) {
             skullItem.itemMeta = skullMeta
             player.inventory.addItem(skullItem)
 
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.skull.success:'${stardustPlugin.getPluginPrefix()}':'$skullOwner'>"))
+            player.sendMessage(
+                Component.translatable("commands.skull.success").arguments(
+                    stardustPlugin.getPluginPrefix(),
+                    Component.text(skullOwner)
+                )
+            )
 
         } catch (e: Exception) {
             this.stardustPlugin.getLogger().throwing(SkullCommand::class.java.simpleName, "handleCommand", e)

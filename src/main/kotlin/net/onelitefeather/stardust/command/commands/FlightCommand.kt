@@ -5,7 +5,7 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
-import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.user.UserPropertyType
 import net.onelitefeather.stardust.util.PlayerUtils
@@ -35,43 +35,27 @@ class FlightCommand(val stardustPlugin: StardustPlugin) : PlayerUtils {
         try {
             val user = stardustPlugin.userService.getUser(target.uniqueId)!!
 
-            val enabledMessage =
-                "<lang:commands.flight.enable:'${stardustPlugin.getPluginPrefix()}':'${coloredDisplayName(target)}'>"
-            val disabledMessage =
-                "<lang:commands.flight.disable:'${stardustPlugin.getPluginPrefix()}':'${coloredDisplayName(target)}'>"
+            val enabledMessage = Component.translatable("commands.flight.enable").arguments(stardustPlugin.getPluginPrefix(), target.displayName())
+            val disabledMessage = Component.translatable("commands.flight.disable").arguments(stardustPlugin.getPluginPrefix(), target.displayName())
 
             if (commandSender != target && !commandSender.hasPermission("stardust.command.flight.others")) {
-                commandSender.sendMessage(
-                    MiniMessage.miniMessage()
-                        .deserialize("<lang:plugin.not-enough-permissions:'${stardustPlugin.getPluginPrefix()}'>")
-                )
+                commandSender.sendMessage(Component.translatable("plugin.not-enough-permissions").arguments(stardustPlugin.getPluginPrefix()))
                 return
             }
 
             if (target.gameMode == GameMode.CREATIVE) {
-                commandSender.sendMessage(
-                    MiniMessage.miniMessage().deserialize(
-                        "<lang:commands.flight.already-in-creative:'${stardustPlugin.getPluginPrefix()}':'${
-                            coloredDisplayName(
-                                target
-                            )
-                        }'>"
-
-                    )
-                )
+                commandSender.sendMessage(Component.translatable("commands.flight.already-in-creative").arguments(
+                    stardustPlugin.getPluginPrefix(),
+                    target.displayName()))
                 return
             }
 
             target.allowFlight = !target.allowFlight
             stardustPlugin.userService.setUserProperty(user, UserPropertyType.FLYING, target.allowFlight)
-            commandSender.sendMessage(
-                MiniMessage.miniMessage().deserialize(if (target.allowFlight) enabledMessage else disabledMessage)
-            )
+            commandSender.sendMessage(if (target.allowFlight) enabledMessage else disabledMessage   )
 
             if (commandSender != target) {
-                target.sendMessage(
-                    MiniMessage.miniMessage().deserialize(if (target.allowFlight) enabledMessage else disabledMessage)
-                )
+                target.sendMessage(if (target.allowFlight) enabledMessage else disabledMessage )
             }
         } catch (e: Exception) {
             this.stardustPlugin.getLogger().throwing(FlightCommand::class.java.simpleName, "handleFlight", e)

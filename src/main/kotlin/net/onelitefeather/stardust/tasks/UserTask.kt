@@ -1,6 +1,6 @@
 package net.onelitefeather.stardust.tasks
 
-import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import java.util.logging.Level
 
@@ -11,7 +11,7 @@ class UserTask(val stardustPlugin: StardustPlugin) : Runnable {
             stardustPlugin.server.onlinePlayers.forEach {
                 val user = stardustPlugin.userService.getUser(it.uniqueId) ?: return
                 if (user.properties.isVanished()) {
-                    it.sendActionBar(MiniMessage.miniMessage().deserialize("<lang:plugin.vanish-actionbar>"))
+                    it.sendActionBar(Component.translatable("plugin.vanish-actionbar"))
                 }
             }
         } catch (e: Exception) {
