@@ -1,5 +1,6 @@
 package net.onelitefeather.stardust.listener
 
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.util.PlayerUtils
@@ -23,13 +24,7 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
 
                 //Register a new User
                 stardustPlugin.userService.registerUser(player) {
-                    player.sendMessage(
-                        MiniMessage.miniMessage().deserialize(
-                            "<lang:plugin.first-join:'${stardustPlugin.getPluginPrefix()}':'${
-                                coloredDisplayName(player)
-                            }'>"
-                        )
-                    )
+                    player.sendMessage(Component.translatable("plugin.first-join").arguments(stardustPlugin.getPluginPrefix(), player.displayName()))
                 }
                 return
             }
@@ -49,9 +44,9 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
             }
 
             event.joinMessage(
-                if (user.properties.isVanished()) null else MiniMessage.miniMessage()
-                    .deserialize("<lang:listener.join-message:'${coloredDisplayName(player)}'>")
-            )
+                if (user.properties.isVanished()) null else
+                Component.translatable("listener.join-message").arguments(player.displayName()))
+
         } catch (e: Exception) {
             this.stardustPlugin.getLogger()
                 .throwing(PlayerConnectionListener::class.java.simpleName, "handlePlayerJoin", e)
@@ -64,8 +59,8 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
         try {
             val user = stardustPlugin.userService.getUser(player.uniqueId)
             event.quitMessage(
-                if (user?.properties?.isVanished() == true) null else MiniMessage.miniMessage()
-                    .deserialize("<lang:listener.quit-message:'${coloredDisplayName(player)}'>")
+                if (user?.properties?.isVanished() == true) null else
+                    Component.translatable("listener.quit-message").arguments(player.displayName())
 
             )
         } catch (e: Exception) {

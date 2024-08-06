@@ -9,6 +9,7 @@ import cloud.commandframework.meta.CommandMeta
 import cloud.commandframework.minecraft.extras.MinecraftHelp
 import cloud.commandframework.paper.PaperCommandManager
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.translation.GlobalTranslator
 import net.kyori.adventure.translation.TranslationRegistry
@@ -218,7 +219,7 @@ class StardustPlugin : JavaPlugin() {
         )
     }
 
-    fun getPluginPrefix(): String {
-        return "<lang:plugin.prefix:${this.name}>"
+    fun getPluginPrefix(): Component {
+        return Component.translatable("plugin.prefix").arguments(Component.text(this.name))
     }
 }
