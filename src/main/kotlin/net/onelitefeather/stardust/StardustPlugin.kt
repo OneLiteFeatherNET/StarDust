@@ -40,7 +40,6 @@ class StardustPlugin : JavaPlugin() {
     private lateinit var annotationParser: AnnotationParser<CommandSender>
     lateinit var minecraftHelp: MinecraftHelp<CommandSender>
 
-    lateinit var i18nService: I18nService
     lateinit var databaseService: DatabaseService
     lateinit var userService: UserService
     lateinit var commandCooldownService: CommandCooldownService
@@ -82,7 +81,6 @@ class StardustPlugin : JavaPlugin() {
 
             syncFrogService = SyncFrogService(this)
             itemSignService = BukkitItemSignService(this)
-            i18nService = I18nService(this)
 
             luckPermsService = LuckPermsService(this)
             luckPermsService.init()
