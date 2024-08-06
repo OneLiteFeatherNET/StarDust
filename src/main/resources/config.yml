@@ -1,10 +1,3 @@
-# Database settings
-database:
-  jdbcUrl: 'jdbc:mariadb://localhost:3307/stardust?useSSL=false'
-  username: 'root'
-  password: '%Schueler90'
-  driver: 'org.mariadb.jdbc.Driver'
-  dialect: 'org.hibernate.dialect.MariaDBDialect'
 # General plugin settings
 settings:
   afk-kick-time: 600
