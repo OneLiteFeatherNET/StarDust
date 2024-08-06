@@ -5,6 +5,7 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Quoted
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.translation.GlobalTranslator
 import net.onelitefeather.stardust.StardustPlugin
@@ -25,12 +26,12 @@ class SignCommand(private val stardustPlugin: StardustPlugin) : StringUtils, Pla
 
         val itemStack = player.inventory.itemInMainHand
         if (!stardustPlugin.itemSignService.hasSigned(itemStack, player)) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.unsign.not-signed:'${stardustPlugin.getPluginPrefix()}'>"))
+            player.sendMessage(Component.translatable("commands.unsign.not-signed").arguments(stardustPlugin.getPluginPrefix()))
             return
         }
 
         giveItemStack(player, stardustPlugin.itemSignService.removeSignature(itemStack, player))
-        player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.unsign.success:'${stardustPlugin.getPluginPrefix()}'>"))
+        player.sendMessage(Component.translatable("commands.unsign.success").arguments(stardustPlugin.getPluginPrefix()))
     }
 
     @CommandMethod("sign <text>")
@@ -40,22 +41,22 @@ class SignCommand(private val stardustPlugin: StardustPlugin) : StringUtils, Pla
 
         val itemStack = player.inventory.itemInMainHand
         if (itemStack.type == Material.AIR) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.sign.no-item-in-hand:'${stardustPlugin.getPluginPrefix()}'>"))
+            player.sendMessage(Component.translatable("commands.sign.no-item-in-hand").arguments(stardustPlugin.getPluginPrefix()))
             return
         }
 
         val signService = stardustPlugin.itemSignService
         if (signService.hasSigned(itemStack, player) && !player.hasPermission("stardust.command.sign.override")) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.sign.already-signed:'${stardustPlugin.getPluginPrefix()}'>"))
+            player.sendMessage(Component.translatable("commands.sign.already-signed").arguments(stardustPlugin.getPluginPrefix()))
             return
         }
 
-        val message = MiniMessage.miniMessage().deserialize("<lang:commands.sign.item-lore-message:'${colorText(text)}':'${coloredDisplayName(player)}':'${DATE_FORMAT.format(System.currentTimeMillis())}'>")
+        val coloredText = colorText(text)
+        val formattedDate = DATE_FORMAT.format(System.currentTimeMillis())
+        val message = Component.translatable("commands.sign.item-lore-message").arguments(coloredText, Component.text(formattedDate))
 
-        giveItemStack(player, signService.sign(itemStack, listOf(GlobalTranslator.render(message, player.locale())), player))
-
-        player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.sign.signed:'${stardustPlugin.getPluginPrefix()}'>"))
-
+        giveItemStack(player, signService.sign(itemStack, listOf(message), player))
+        player.sendMessage(Component.translatable("commands.sign.signed").arguments(stardustPlugin.getPluginPrefix()))
     }
 
     private fun giveItemStack(player: Player, itemStack: ItemStack) {
@@ -65,7 +66,7 @@ class SignCommand(private val stardustPlugin: StardustPlugin) : StringUtils, Pla
             if (player.inventory.firstEmpty() != -1) {
                 player.inventory.setItem(player.inventory.firstEmpty(), itemStack)
             } else {
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.inventory-full:'${stardustPlugin.getPluginPrefix()}'>"))
+                player.sendMessage(Component.translatable("plugin.inventory-full").arguments(stardustPlugin.getPluginPrefix()))
             }
         }
     }

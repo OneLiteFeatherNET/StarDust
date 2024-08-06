@@ -5,7 +5,9 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.Tag
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.util.*
 import org.bukkit.attribute.Attribute
@@ -31,7 +33,7 @@ class HealCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
 
         try {
             if (target != commandSender && !commandSender.hasPermission("stardust.command.heal.others")) {
-                commandSender.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.not-enough-permissions:'${stardustPlugin.i18nService.getPluginPrefix()}'>"))
+                commandSender.sendMessage(Component.translatable("plugin.not-enough-permissions").arguments(stardustPlugin.getPluginPrefix()))
                 return
             }
 
@@ -45,13 +47,16 @@ class HealCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
             target.foodLevel = DEFAULT_PLAYER_FOOD_LEVEL
             target.saturation = DEFAULT_PLAYER_SATURATION_LEVEL
 
-            val message = "<lang:commands.heal.success:'${stardustPlugin.getPluginPrefix()}':'${coloredDisplayName(target)}':'${target.health}'>"
+            val message = Component.translatable("commands.heal.success").arguments(
+                stardustPlugin.getPluginPrefix(),
+                target.displayName(),
+                Component.text(target.health))
 
             if (commandSender != target) {
-                target.sendMessage(MiniMessage.miniMessage().deserialize(message))
+                target.sendMessage(message)
             }
 
-            commandSender.sendMessage(MiniMessage.miniMessage().deserialize(message))
+            commandSender.sendMessage(message)
         } catch (e: Exception) {
             this.stardustPlugin.getLogger().throwing(HealCommand::class.java.simpleName, "healPlayer", e)
         }

@@ -6,7 +6,6 @@ import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
 import org.bukkit.GameMode
 import org.bukkit.command.CommandSender
@@ -29,21 +28,21 @@ class GameModeCommand(private val stardustPlugin: StardustPlugin) {
             if (target == null) {
                 val player = commandSender as Player
                 player.gameMode = gameMode
-                commandSender.sendMessage(Component.translatable("commands.gamemode.success.self").args(gameModeName))
+                commandSender.sendMessage(Component.translatable("commands.gamemode.success.self").arguments(gameModeName))
             } else {
 
                 if (commandSender != target) {
                     if (!commandSender.hasPermission("stardust.command.gamemode.others")) {
-                        commandSender.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.not-enough-permissions:'${stardustPlugin.getPluginPrefix()}'>"))
+                        commandSender.sendMessage(Component.translatable("plugin.not-enough-permissions").arguments(stardustPlugin.getPluginPrefix()))
                         return
                     }
 
-                    target.sendMessage(Component.translatable("gameMode.changed").args(gameModeName))
+                    target.sendMessage(Component.translatable("gameMode.changed").arguments(gameModeName))
                 }
 
                 target.gameMode = gameMode
                 commandSender.sendMessage(
-                    Component.translatable("commands.gamemode.success.other").args(target.displayName(), gameModeName)
+                    Component.translatable("commands.gamemode.success.other").arguments(target.displayName(), gameModeName)
                 )
             }
         } catch (e: Exception) {

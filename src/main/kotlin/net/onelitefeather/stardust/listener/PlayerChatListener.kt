@@ -30,7 +30,7 @@ class PlayerChatListener(private val stardustPlugin: StardustPlugin) : Listener 
             if (!user.hasChatConfirmation(stardustPlugin.chatConfirmationKey)) {
                 user.confirmChatMessage(stardustPlugin.chatConfirmationKey, true)
                 event.isCancelled = true
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:vanish.confirm-chat-message:'${stardustPlugin.getPluginPrefix()}'>"))
+                player.sendMessage(Component.translatable("vanish.confirm-chat-message").arguments(stardustPlugin.getPluginPrefix()))
             } else {
                 user.confirmChatMessage(stardustPlugin.chatConfirmationKey, false)
             }

@@ -4,8 +4,9 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.Flag
-import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.util.COMPONENT_JOIN_CONFIG
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.SoundCategory
@@ -21,9 +22,16 @@ class RepairCommand(private val stardustPlugin: StardustPlugin) {
 
         if (null != repairAll) {
             if (player.hasPermission("stardust.command.repairall")) {
-                val repaired: List<String> = repairAll(player)
+                val repaired = repairAll(player)
                 if (repaired.isNotEmpty()) {
-                    player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.repair.all.success:'${stardustPlugin.getPluginPrefix()}':'${repaired.joinToString("<lang:commands.repair.repaired-items.separator>")}'>"))
+
+                    player.sendMessage(
+                        Component.translatable("commands.repair.all.success").arguments(
+                            stardustPlugin.getPluginPrefix(),
+                            Component.join(COMPONENT_JOIN_CONFIG, repaired)
+                        )
+                    )
+
                     player.playSound(player.location, Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f)
                 }
             } else {
@@ -38,12 +46,16 @@ class RepairCommand(private val stardustPlugin: StardustPlugin) {
 
         val itemStack = player.inventory.itemInMainHand
         if (itemStack.type == Material.AIR || itemStack.type.isBlock) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:plugin.no-item-in-hand:'${stardustPlugin.getPluginPrefix()}'>"))
+            player.sendMessage(
+                Component.translatable("plugin.no-item-in-hand").arguments(stardustPlugin.getPluginPrefix())
+            )
             return
         }
 
         if (itemStack.itemMeta !is Damageable) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.repair.invalid-item:'${stardustPlugin.getPluginPrefix()}'>"))
+            player.sendMessage(
+                Component.translatable("commands.repair.invalid-item").arguments(stardustPlugin.getPluginPrefix())
+            )
             return
         }
 
@@ -53,25 +65,26 @@ class RepairCommand(private val stardustPlugin: StardustPlugin) {
             itemStack.itemMeta = damageable
             player.updateInventory()
             player.playSound(player.location, Sound.BLOCK_ANVIL_USE, SoundCategory.BLOCKS, 1.0f, 1.0f)
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.repair.success:'${stardustPlugin.getPluginPrefix()}'>"))
+            player.sendMessage(
+                Component.translatable("commands.repair.success").arguments(stardustPlugin.getPluginPrefix())
+            )
         }
 
     }
 
-    private fun repairAll(player: Player): List<String> {
+    private fun repairAll(player: Player): List<Component> {
 
         val inventory = player.inventory
         val items = inventory.contents
 
-        val list = arrayListOf<String>()
-
-        for (itemStack in items) {
-            if (itemStack == null) continue
-            val itemMeta = itemStack.itemMeta
+        val list = arrayListOf<Component>()
+        items.forEach {
+            if (it == null) return@forEach
+            val itemMeta = it.itemMeta
             if (itemMeta is Damageable && itemMeta.damage > 0) {
                 itemMeta.damage = 0
-                itemStack.itemMeta = itemMeta
-                list.add(itemStack.type.name.lowercase())
+                it.itemMeta = itemMeta
+                Component.text(it.type.name.lowercase())
             }
         }
 
