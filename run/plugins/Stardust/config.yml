@@ -1,0 +1,11 @@
+# General plugin settings
+settings:
+  afk-kick-time: 600
+  auto-afk-time: 300
+  use-cooldown-bypass: true
+
+# Setting to enable cool down on some commands
+command-cooldowns:
+  skull:
+    timeunit: DAYS
+    time: 1
