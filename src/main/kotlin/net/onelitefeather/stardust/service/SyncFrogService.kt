@@ -137,7 +137,7 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtil
 
         itemMeta.displayName(MiniMessage.miniMessage().deserialize(frogBucketName))
 
-        itemMeta.addEnchant(Enchantment.DIG_SPEED, 1, false)
+        itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, false)
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
         itemMeta.lore(listOf(MiniMessage.miniMessage().deserialize(variant.name.lowercase())))
 
