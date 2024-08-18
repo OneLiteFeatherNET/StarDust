@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.8.20"
+    kotlin("jvm") version "2.0.0"
     id("net.minecrell.plugin-yml.paper") version "0.6.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("xyz.jpenilla.run-paper") version "2.1.0"
@@ -20,7 +20,7 @@ repositories {
 dependencies {
 
     // Paper
-    compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
     implementation("cloud.commandframework", "cloud-paper", "1.8.2")
     implementation("cloud.commandframework", "cloud-annotations", "1.8.2")
     implementation("cloud.commandframework", "cloud-minecraft-extras", "1.8.2")
@@ -37,6 +37,11 @@ dependencies {
     implementation("org.mariadb.jdbc:mariadb-java-client:3.0.6")
     implementation("org.hibernate.orm:hibernate-hikaricp:6.1.5.Final")
 
+    implementation("org.glassfish.jaxb:jaxb-runtime:4.0.2")
+    implementation("org.postgresql:postgresql:42.7.3")
+
+
+
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
@@ -44,17 +49,11 @@ dependencies {
 
 kotlin {
     jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
 tasks {
-
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = "17"
-        }
-    }
 
 //    getByName("sonar") {
 //        dependsOn(rootProject.tasks.test)
@@ -68,7 +67,7 @@ tasks {
 //    }
 
     runServer {
-        minecraftVersion("1.20.1")
+        minecraftVersion("1.20.6")
         jvmArgs("-DPaper.IgnoreJavaVersion=true", "-Dcom.mojang.eula.agree=true")
     }
 

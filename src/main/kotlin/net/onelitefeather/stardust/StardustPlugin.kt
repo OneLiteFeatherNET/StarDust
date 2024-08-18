@@ -86,16 +86,8 @@ class StardustPlugin : JavaPlugin() {
             luckPermsService = LuckPermsService(this)
             luckPermsService.init()
 
-            val jdbcUrl = config.getString("database.jdbcUrl")
-            val databaseDriver = config.getString("database.driver")
-            val username = config.getString("database.username")
-            val password = config.getString("database.password") ?: "IReallyKnowWhatIAmDoingISwear"
-
-            if (jdbcUrl != null && databaseDriver != null && username != null) {
-                databaseService = DatabaseService(jdbcUrl, username, password, databaseDriver)
-                databaseService.init()
-                commandCooldownService = BukkitCommandCooldownService(this)
-            }
+            databaseService = DatabaseService(this)
+            commandCooldownService = BukkitCommandCooldownService(this)
 
             initLuckPermsSupport()
             buildCommandSystem()
