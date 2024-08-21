@@ -5,6 +5,7 @@ import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Quoted
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.util.StringUtils
@@ -20,14 +21,23 @@ class RenameCommand(private val stardustPlugin: StardustPlugin) : StringUtils {
 
         val itemInHand = player.inventory.itemInMainHand
         if (itemInHand.type == Material.AIR) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.rename.invalid-item:'${stardustPlugin.getPluginPrefix()}'>"))
+            player.sendMessage(
+                Component.translatable("commands.rename.invalid-item").arguments(stardustPlugin.getPluginPrefix())
+            )
             return
         }
 
+        val itemDisplayName = secureComponent(player, colorText(text))
+
         val itemMeta = itemInHand.itemMeta
-        itemMeta.displayName(MiniMessage.miniMessage().deserialize(colorText(text)))
+        itemMeta.displayName(itemDisplayName)
         itemInHand.itemMeta = itemMeta
         player.updateInventory()
-        player.sendMessage(MiniMessage.miniMessage().deserialize("<lang:commands.rename.success:'${stardustPlugin.getPluginPrefix()}':'${colorText(text)}'>"))
+        player.sendMessage(
+            Component.translatable("commands.rename.success").arguments(
+                stardustPlugin.getPluginPrefix(),
+                secureComponent(player, itemDisplayName)
+            )
+        )
     }
 }

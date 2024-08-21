@@ -9,6 +9,7 @@ import cloud.commandframework.meta.CommandMeta
 import cloud.commandframework.minecraft.extras.MinecraftHelp
 import cloud.commandframework.paper.PaperCommandManager
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.translation.GlobalTranslator
 import net.kyori.adventure.translation.TranslationRegistry
@@ -18,7 +19,7 @@ import net.onelitefeather.stardust.api.ItemSignService
 import net.onelitefeather.stardust.command.commands.*
 import net.onelitefeather.stardust.listener.*
 import net.onelitefeather.stardust.service.*
-import net.onelitefeather.stardust.util.LynxWrapper
+import net.onelitefeather.stardust.translation.PluginTranslationRegistry
 import org.bukkit.NamespacedKey
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -39,7 +40,6 @@ class StardustPlugin : JavaPlugin() {
     private lateinit var annotationParser: AnnotationParser<CommandSender>
     lateinit var minecraftHelp: MinecraftHelp<CommandSender>
 
-    lateinit var i18nService: I18nService
     lateinit var databaseService: DatabaseService
     lateinit var userService: UserService
     lateinit var commandCooldownService: CommandCooldownService
@@ -74,14 +74,13 @@ class StardustPlugin : JavaPlugin() {
                 registry.registerAll(locale, bundle, false)
             }
             registry.defaultLocale(supportedLocals.first())
-            GlobalTranslator.translator().addSource(LynxWrapper(registry))
+            GlobalTranslator.translator().addSource(PluginTranslationRegistry(registry))
 
             vanishedMetadata = FixedMetadataValue(this, true)
             notVanishedMetadata = FixedMetadataValue(this, false)
 
             syncFrogService = SyncFrogService(this)
             itemSignService = BukkitItemSignService(this)
-            i18nService = I18nService(this)
 
             luckPermsService = LuckPermsService(this)
             luckPermsService.init()
@@ -218,7 +217,7 @@ class StardustPlugin : JavaPlugin() {
         )
     }
 
-    fun getPluginPrefix(): String {
-        return "<lang:plugin.prefix:${this.name}>"
+    fun getPluginPrefix(): Component {
+        return Component.translatable("plugin.prefix").arguments(Component.text(this.name))
     }
 }
