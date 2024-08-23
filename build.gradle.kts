@@ -3,7 +3,8 @@ plugins {
     id("net.minecrell.plugin-yml.paper") version "0.6.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("xyz.jpenilla.run-paper") version "2.1.0"
-
+    id("de.chojo.publishdata") version "1.4.0"
+    `maven-publish`
     // SonarQube
 //    id("org.sonarqube") version "4.2.1.3168"
 //    jacoco
@@ -88,7 +89,7 @@ paper {
     name = "Stardust"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
 
-    authors = listOf("UniqueGame", "OneLiteFeather", "TheMeinerLP")
+    authors = listOf("UniqueGame", "OneLiteFeather")
     serverDependencies {
         register("CloudNet-Bridge") {
             required = false
@@ -116,3 +117,35 @@ version = if (System.getenv().containsKey("CI")) {
     "$baseVersion-SNAPSHOT"
 }
 
+
+publishData {
+    addBuildData()
+    useGitlabReposForProject("78", "https://onelitefeather.dev/")
+    publishTask("shadowJar")
+}
+
+
+publishing {
+    publications.create<MavenPublication>("maven") {
+        // configure the publication as defined previously.
+        publishData.configurePublication(this)
+        version = publishData.getVersion(false)
+    }
+
+    repositories {
+        maven {
+            credentials(HttpHeaderCredentials::class) {
+                name = "Job-Token"
+                value = System.getenv("CI_JOB_TOKEN")
+            }
+            authentication {
+                create("header", HttpHeaderAuthentication::class)
+            }
+
+
+            name = "Gitlab"
+            // Get the detected repository from the publish data
+            url = uri(publishData.getRepository())
+        }
+    }
+}
