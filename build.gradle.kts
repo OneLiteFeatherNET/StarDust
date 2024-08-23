@@ -120,7 +120,7 @@ version = if (System.getenv().containsKey("CI")) {
 
 publishData {
     addBuildData()
-    useGitlabReposForProject("78", "https://onelitefeather.dev/")
+    useGitlabReposForProject("78", "https://gitlab.onelitefeather.dev/")
     publishTask("shadowJar")
 }
 
