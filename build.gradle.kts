@@ -37,7 +37,7 @@ dependencies {
     // Database
     implementation("org.hibernate:hibernate-core:6.6.0.Final")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.4.1")
-    implementation("org.hibernate.orm:hibernate-hikaricp:6.1.5.Final")
+    implementation("org.hibernate.orm:hibernate-hikaricp:6.6.0.Final")
 
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.2")
     implementation("org.postgresql:postgresql:42.7.3")
