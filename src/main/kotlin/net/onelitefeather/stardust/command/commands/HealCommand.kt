@@ -56,7 +56,7 @@ class HealCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
 
             commandSender.sendMessage(message)
         } catch (e: Exception) {
-            this.stardustPlugin.getLogger().throwing(HealCommand::class.java.simpleName, "healPlayer", e)
+            this.stardustPlugin.logger.throwing(HealCommand::class.java.simpleName, "healPlayer", e)
         }
     }
 }
