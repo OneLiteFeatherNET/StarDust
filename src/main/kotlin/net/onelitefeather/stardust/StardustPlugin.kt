@@ -54,16 +54,20 @@ class StardustPlugin : JavaPlugin() {
     lateinit var vanishedMetadata: MetadataValue
     lateinit var notVanishedMetadata: MetadataValue
 
-    lateinit var itemSignMessage: String
-
     @Suppress("kotlin:S1874")
     override fun onEnable() {
-
-        saveDefaultConfig()
-        config.options().copyDefaults(true)
-        saveConfig()
-
         try {
+
+            //Creating the default config
+            saveDefaultConfig()
+
+            //Saving the default config values
+            config.options().copyDefaults(true)
+
+
+            //Saving the config is needed
+            saveConfig()
+
             val registry = TranslationRegistry.create(Key.key("stardust", "localization"))
             supportedLocals.forEach { locale ->
                 val bundle = ResourceBundle.getBundle("stardust", locale, UTF8ResourceBundleControl.get())
@@ -106,7 +110,6 @@ class StardustPlugin : JavaPlugin() {
 
             signedNameSpacedKey = NamespacedKey(this, "signed")
             chatConfirmationKey = NamespacedKey(this, "chat_confirmation")
-            itemSignMessage = config.getString("item-signing.message")!!
         } catch (e: Exception) {
             this.logger.log(Level.SEVERE, "Could not load plugin", e)
         }
@@ -161,10 +164,10 @@ class StardustPlugin : JavaPlugin() {
     private fun buildCommandSystem() {
         try {
             paperCommandManager = PaperCommandManager(
-                this,
-                CommandExecutionCoordinator.simpleCoordinator(),
-                Function.identity(),
-                Function.identity()
+                    this,
+                    CommandExecutionCoordinator.simpleCoordinator(),
+                    Function.identity(),
+                    Function.identity()
             )
         } catch (e: Exception) {
             logger.log(Level.WARNING, "Failed to build command system", e)
@@ -184,16 +187,16 @@ class StardustPlugin : JavaPlugin() {
 
 
         val commandMetaFunction =
-            Function<ParserParameters, CommandMeta> { p: ParserParameters ->
-                CommandMeta.simple().with(
-                    CommandMeta.DESCRIPTION,
-                    p.get(StandardParameters.DESCRIPTION, "No description")
-                ).build()
-            }
+                Function<ParserParameters, CommandMeta> { p: ParserParameters ->
+                    CommandMeta.simple().with(
+                            CommandMeta.DESCRIPTION,
+                        p[StandardParameters.DESCRIPTION, "No description"]
+                    ).build()
+                }
 
         annotationParser = AnnotationParser(
-            paperCommandManager,
-            CommandSender::class.java, commandMetaFunction
+                paperCommandManager,
+                CommandSender::class.java, commandMetaFunction
         )
     }
 
@@ -202,16 +205,16 @@ class StardustPlugin : JavaPlugin() {
      */
     private fun buildHelpSystem() {
         minecraftHelp = MinecraftHelp.createNative(
-            "/stardust help",
-            paperCommandManager
+                "/stardust help",
+                paperCommandManager
         )
 
         minecraftHelp.helpColors = MinecraftHelp.HelpColors.of(
-            NamedTextColor.GOLD,
-            NamedTextColor.YELLOW,
-            NamedTextColor.GOLD,
-            NamedTextColor.GRAY,
-            NamedTextColor.GOLD
+                NamedTextColor.GOLD,
+                NamedTextColor.YELLOW,
+                NamedTextColor.GOLD,
+                NamedTextColor.GRAY,
+                NamedTextColor.GOLD
         )
     }
 
