@@ -190,7 +190,7 @@ class StardustPlugin : JavaPlugin() {
                 Function<ParserParameters, CommandMeta> { p: ParserParameters ->
                     CommandMeta.simple().with(
                             CommandMeta.DESCRIPTION,
-                            p.get(StandardParameters.DESCRIPTION, "No description")
+                        p[StandardParameters.DESCRIPTION, "No description"]
                     ).build()
                 }
 
