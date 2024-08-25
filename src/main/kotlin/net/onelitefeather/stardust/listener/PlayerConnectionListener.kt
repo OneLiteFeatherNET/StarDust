@@ -1,7 +1,6 @@
 package net.onelitefeather.stardust.listener
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.util.PlayerUtils
 import org.bukkit.GameMode
@@ -64,7 +63,7 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
 
             )
         } catch (e: Exception) {
-            this.stardustPlugin.getLogger()
+            this.stardustPlugin.logger
                 .throwing(PlayerConnectionListener::class.java.simpleName, "onPlayerQuit", e)
         }
     }
