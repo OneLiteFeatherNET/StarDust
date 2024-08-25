@@ -7,7 +7,6 @@ import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import com.google.common.base.Preconditions
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.user.UserPropertyType
 import net.onelitefeather.stardust.util.PlayerUtils
@@ -139,7 +138,7 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, P
                 target.sendMessage(if (state) targetEnable else targetDisable)
             }
         } catch (e: Exception) {
-            this.stardustPlugin.getLogger().throwing(VanishCommand::class.java.simpleName, "toggleVanish", e)
+            this.stardustPlugin.logger.throwing(VanishCommand::class.java.simpleName, "toggleVanish", e)
         }
     }
 }
