@@ -60,7 +60,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
                 val user = stardustPlugin.userService.getUser(player.uniqueId)
                 event.isCancelled = user != null && (user.properties.isVanished() || player.isInvulnerable)
             } catch (e: Exception) {
-                this.stardustPlugin.getLogger()
+                this.stardustPlugin.logger
                     .throwing(PlayerVanishListener::class.java.simpleName, "onFoodLevelChange", e)
             }
         }
@@ -77,7 +77,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
                         .getValue<Boolean>() == true
 
             } catch (e: Exception) {
-                this.stardustPlugin.getLogger()
+                this.stardustPlugin.logger
                     .throwing(PlayerVanishListener::class.java.simpleName, "onPickUp", e)
             }
         }
@@ -92,7 +92,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
                 user.properties.isVanished() && user.properties.getProperty(UserPropertyType.VANISH_DISABLE_ITEM_DROP)
                     .getValue<Boolean>() == true
         } catch (e: Exception) {
-            this.stardustPlugin.getLogger()
+            this.stardustPlugin.logger
                 .throwing(PlayerVanishListener::class.java.simpleName, "onDrop", e)
         }
     }
@@ -106,7 +106,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
                 user.properties.isVanished() && user.properties.getProperty(UserPropertyType.VANISH_DISABLE_ITEM_COLLECT)
                     .getValue<Boolean>() == true
         } catch (e: Exception) {
-            this.stardustPlugin.getLogger()
+            this.stardustPlugin.logger
                 .throwing(PlayerVanishListener::class.java.simpleName, "onPlayerPickupExp", e)
         }
     }
@@ -125,7 +125,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
                 event.setShouldPlayDeathSound(false)
             }
         } catch (e: Exception) {
-            this.stardustPlugin.getLogger()
+            this.stardustPlugin.logger
                 .throwing(PlayerVanishListener::class.java.simpleName, "onPlayerDeath", e)
         }
     }
