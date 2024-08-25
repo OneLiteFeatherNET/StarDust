@@ -6,8 +6,6 @@ import cloud.commandframework.annotations.CommandMethod
 import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Greedy
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.minimessage.MiniMessage
-import net.kyori.adventure.text.minimessage.tag.Tag
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.util.*
 import org.bukkit.attribute.Attribute
