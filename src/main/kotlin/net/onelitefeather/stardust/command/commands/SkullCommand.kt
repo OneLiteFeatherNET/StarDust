@@ -43,7 +43,7 @@ class SkullCommand(private val stardustPlugin: StardustPlugin) {
             )
 
         } catch (e: Exception) {
-            this.stardustPlugin.getLogger().throwing(SkullCommand::class.java.simpleName, "handleCommand", e)
+            this.stardustPlugin.logger.throwing(SkullCommand::class.java.simpleName, "handleCommand", e)
         }
     }
 }
