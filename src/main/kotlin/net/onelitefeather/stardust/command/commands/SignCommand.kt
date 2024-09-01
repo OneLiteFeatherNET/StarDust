@@ -7,7 +7,7 @@ import cloud.commandframework.annotations.CommandPermission
 import cloud.commandframework.annotations.specifier.Quoted
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
-import net.kyori.adventure.translation.GlobalTranslator
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.util.DATE_FORMAT
 import net.onelitefeather.stardust.util.PlayerUtils
@@ -51,9 +51,12 @@ class SignCommand(private val stardustPlugin: StardustPlugin) : StringUtils, Pla
             return
         }
 
-        val coloredText = colorText(text)
         val formattedDate = DATE_FORMAT.format(System.currentTimeMillis())
-        val message = Component.translatable("commands.sign.item-lore-message").arguments(coloredText, Component.text(formattedDate))
+
+        val message = MiniMessage.miniMessage().deserialize(stardustPlugin.itemSignMessage,
+            Placeholder.component("text", MiniMessage.miniMessage().deserialize(text)),
+                Placeholder.component("player", player.displayName()),
+                Placeholder.unparsed("date", formattedDate))
 
         giveItemStack(player, signService.sign(itemStack, listOf(message), player))
         player.sendMessage(Component.translatable("commands.sign.signed").arguments(stardustPlugin.getPluginPrefix()))
