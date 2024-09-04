@@ -63,7 +63,11 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtil
         if (!isFrogInBucket(itemStack)) return
         if (deserializeFrogData(itemStack, clickedBlock.location.add(0.0, 1.0, 0.0))) {
             removeFrogBucket(player, player.inventory.itemInMainHand, true)
-            player.sendMessage(Component.translatable("frog-bucket-spawn-success").arguments(stardustPlugin.getPluginPrefix()))
+            player.sendMessage(
+                Component.translatable("frog-bucket-spawn-success").arguments(stardustPlugin.getPluginPrefix())
+            )
+        } else {
+            player.sendMessage(Component.translatable("frog-cannot-be-spawned").arguments(stardustPlugin.getPluginPrefix()))
         }
     }
 
@@ -113,6 +117,7 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtil
     private fun deserializeFrogData(itemStack: ItemStack, location: Location): Boolean {
 
         val frog = location.world.spawn(location, Frog::class.java)
+        if (!frog.isInWorld) return false
         val itemMeta = itemStack.itemMeta
         val container = itemMeta.persistentDataContainer
         if (!container.has(frogCustomNameKey) || !container.has(frogVariantKey)) return false
@@ -163,7 +168,9 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtil
 
         //If the slot returns -1 the inventory of the player is full
         if (slot == -1) {
-            player.sendMessage(Component.translatable("plugin.inventory-full").arguments(stardustPlugin.getPluginPrefix()))
+            player.sendMessage(
+                Component.translatable("plugin.inventory-full").arguments(stardustPlugin.getPluginPrefix())
+            )
             return
         }
 
@@ -171,9 +178,10 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtil
         player.inventory.setItem(slot, itemStack)
         val message = Component.translatable("frog-bucket-added-to-inventory").arguments(
             stardustPlugin.getPluginPrefix(),
+            Component.text(frogBucketName),
             Component.text(amount),
-            Component.text(frogInBucket),
-            player.displayName())
+            player.displayName()
+        )
 
         if (!actionBarMessage) {
             player.sendMessage(message)
