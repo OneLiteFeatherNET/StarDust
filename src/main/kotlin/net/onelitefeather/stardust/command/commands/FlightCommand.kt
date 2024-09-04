@@ -58,7 +58,7 @@ class FlightCommand(val stardustPlugin: StardustPlugin) : PlayerUtils {
                 target.sendMessage(if (target.allowFlight) enabledMessage else disabledMessage )
             }
         } catch (e: Exception) {
-            this.stardustPlugin.getLogger().throwing(FlightCommand::class.java.simpleName, "handleFlight", e)
+            this.stardustPlugin.logger.throwing(FlightCommand::class.java.simpleName, "handleFlight", e)
         }
     }
 }

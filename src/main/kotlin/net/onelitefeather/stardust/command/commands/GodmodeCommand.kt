@@ -40,7 +40,7 @@ class GodmodeCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
                 commandSender.sendMessage(if (target.isInvulnerable) enabledMessage else disabledMessage)
             }
         } catch (e: Exception) {
-            this.stardustPlugin.getLogger().throwing(GodmodeCommand::class.java.simpleName, "handleInvulnerability", e)
+            this.stardustPlugin.logger.throwing(GodmodeCommand::class.java.simpleName, "handleInvulnerability", e)
         }
     }
 }
