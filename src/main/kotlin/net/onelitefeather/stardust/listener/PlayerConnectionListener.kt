@@ -33,7 +33,7 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                 stardustPlugin.userService.updateUser(user.copy(name = player.name))
             }
 
-            stardustPlugin.userService.playerVanishService.onPlayerJoin(player)
+            stardustPlugin.server.onlinePlayers.forEach { stardustPlugin.userService.playerVanishService.handlePlayerJoin(it) }
 
             player.allowFlight =
                 user.properties.isFlying() && !player.allowFlight || player.gameMode == GameMode.CREATIVE || player.gameMode == GameMode.SPECTATOR
