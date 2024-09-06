@@ -71,12 +71,7 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
         userService.setUserProperty(user, UserPropertyType.VANISHED, vanished)
     }
 
-    override fun onPlayerJoin(player: Player) {
-        handlePlayerJoin(player)
-        stardustPlugin.server.onlinePlayers.forEach { handlePlayerJoin(it) }
-    }
-
-    private fun handlePlayerJoin(player: Player) {
+    override fun handlePlayerJoin(player: Player) {
         val user = userService.getUser(player.uniqueId) ?: return
         if (isVanished(player)) {
 
