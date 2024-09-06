@@ -44,7 +44,7 @@ class GlowCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
             commandSender.sendMessage(if (target.isGlowing) enabledMessage else disabledMessage)
 
         } catch (e: Exception) {
-            this.stardustPlugin.getLogger().throwing(GlowCommand::class.java.simpleName, "handleGlow", e)
+            this.stardustPlugin.logger.throwing(GlowCommand::class.java.simpleName, "handleGlow", e)
         }
     }
 }

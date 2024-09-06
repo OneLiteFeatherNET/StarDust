@@ -76,7 +76,7 @@ interface CommandCooldownService {
             TimeUnit.HOURS -> 1000 * 60 * 60 * time
             TimeUnit.MINUTES -> 1000 * 60 * time
             TimeUnit.SECONDS -> 1000 * time
-            else -> throw IllegalStateException(
+            else -> throw IllegalArgumentException(
                 "The TimeUnit " + timeUnit.name.lowercase() + " is not allowed here"
             )
         }

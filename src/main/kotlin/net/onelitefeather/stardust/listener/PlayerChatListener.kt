@@ -1,12 +1,9 @@
 package net.onelitefeather.stardust.listener
 
 import io.papermc.paper.event.player.AsyncChatEvent
-import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.user.UserPropertyType
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
@@ -16,14 +13,6 @@ class PlayerChatListener(private val stardustPlugin: StardustPlugin) : Listener 
     fun onAsyncChat(event: AsyncChatEvent) {
         val player = event.player
         val user = stardustPlugin.userService.getUser(player.uniqueId)
-
-        event.renderer { _: Player, sourceDisplayName: Component, _: Component, _: Audience ->
-            Component.text()
-                .append(sourceDisplayName)
-                .append(Component.text(": "))
-                .append(event.message())
-                .build()
-        }
 
         if (user != null && user.properties.getProperty(UserPropertyType.VANISHED).getValue<Boolean>() == true) {
 

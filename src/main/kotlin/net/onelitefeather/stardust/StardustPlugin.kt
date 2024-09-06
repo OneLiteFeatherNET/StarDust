@@ -184,12 +184,12 @@ class StardustPlugin : JavaPlugin() {
 
 
         val commandMetaFunction =
-            Function<ParserParameters, CommandMeta> { p: ParserParameters ->
-                CommandMeta.simple().with(
-                    CommandMeta.DESCRIPTION,
-                    p.get(StandardParameters.DESCRIPTION, "No description")
-                ).build()
-            }
+                Function<ParserParameters, CommandMeta> { p: ParserParameters ->
+                    CommandMeta.simple().with(
+                            CommandMeta.DESCRIPTION,
+                        p[StandardParameters.DESCRIPTION, "No description"]
+                    ).build()
+                }
 
         annotationParser = AnnotationParser(
             paperCommandManager,

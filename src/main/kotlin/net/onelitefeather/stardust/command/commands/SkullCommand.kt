@@ -20,20 +20,20 @@ class SkullCommand(private val stardustPlugin: StardustPlugin) {
         try {
             val skullOwner = name ?: player.name
 
-            val skullItem = ItemStack(Material.PLAYER_HEAD)
-            val skullMeta = skullItem.itemMeta as SkullMeta
+            stardustPlugin.server.asyncScheduler.runNow(stardustPlugin) {
+                val skullItem = ItemStack(Material.PLAYER_HEAD)
+                val skullMeta = skullItem.itemMeta as SkullMeta
+                val skullOwnerId = stardustPlugin.server.getPlayerUniqueId(skullOwner) ?: player.uniqueId
+                val offlinePlayer = stardustPlugin.server.getOfflinePlayer(skullOwnerId)
+                if (!offlinePlayer.hasPlayedBefore()) {
+                    skullMeta.playerProfile = stardustPlugin.server.createProfile(skullOwnerId)
+                } else {
+                    skullMeta.owningPlayer = offlinePlayer
+                }
 
-            val skullOwnerId = player.server.getPlayerUniqueId(skullOwner) ?: player.uniqueId
-            val offlinePlayer = player.server.getOfflinePlayer(skullOwnerId)
-
-            if (!offlinePlayer.hasPlayedBefore()) {
-                skullMeta.playerProfile = player.server.createProfile(skullOwnerId, skullOwner)
-            } else {
-                skullMeta.owningPlayer = offlinePlayer
+                skullItem.itemMeta = skullMeta
+                player.inventory.addItem(skullItem)
             }
-
-            skullItem.itemMeta = skullMeta
-            player.inventory.addItem(skullItem)
 
             player.sendMessage(
                 Component.translatable("commands.skull.success").arguments(
@@ -43,7 +43,7 @@ class SkullCommand(private val stardustPlugin: StardustPlugin) {
             )
 
         } catch (e: Exception) {
-            this.stardustPlugin.getLogger().throwing(SkullCommand::class.java.simpleName, "handleCommand", e)
+            this.stardustPlugin.logger.throwing(SkullCommand::class.java.simpleName, "handleCommand", e)
         }
     }
 }
