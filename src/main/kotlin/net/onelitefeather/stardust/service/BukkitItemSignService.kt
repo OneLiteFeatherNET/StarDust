@@ -31,7 +31,7 @@ class BukkitItemSignService(private val stardustPlugin: StardustPlugin) :
         val isInCreative = player.gameMode == GameMode.CREATIVE
         if (!isInCreative) {
             if (base.amount > 1) {
-                base.amount = base.amount - 1
+                base.amount -= 1
             } else {
                 player.inventory.remove(base)
             }

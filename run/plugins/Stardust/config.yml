@@ -1,3 +1,5 @@
+item-signing:
+  message: <text> <gray>(</gray><player> <gray>-</gray> <gold><date></gold><gray>)</gray>
 # General plugin settings
 settings:
   afk-kick-time: 600

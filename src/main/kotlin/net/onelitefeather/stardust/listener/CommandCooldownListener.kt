@@ -2,7 +2,6 @@ package net.onelitefeather.stardust.listener
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslationArgument
-import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -52,7 +51,7 @@ class CommandCooldownListener(private val stardustPlugin: StardustPlugin) : List
                 }
             }
         } catch (e: Exception) {
-            this.stardustPlugin.getLogger()
+            this.stardustPlugin.logger
                 .throwing(CommandCooldownListener::class.java.simpleName, "handlePlayerCommandPreprocess", e)
         }
     }
