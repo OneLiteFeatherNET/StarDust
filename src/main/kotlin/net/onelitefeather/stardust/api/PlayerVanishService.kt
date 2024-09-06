@@ -41,8 +41,8 @@ interface PlayerVanishService<P : Player> {
     fun setVanished(user: User, vanished: Boolean)
 
     /**
-     * Handles if a player joinin the server
+     * Handles if a player joining the server
      * @param player be affected
      */
-    fun onPlayerJoin(player: P)
+    fun handlePlayerJoin(player: P)
 }
