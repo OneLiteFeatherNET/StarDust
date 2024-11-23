@@ -7,6 +7,7 @@ import net.kyori.adventure.translation.TranslationRegistry
 import net.kyori.adventure.util.UTF8ResourceBundleControl
 import net.onelitefeather.stardust.api.CommandCooldownService
 import net.onelitefeather.stardust.api.ItemSignService
+import net.onelitefeather.stardust.configuration.PluginConfiguration
 import net.onelitefeather.stardust.listener.*
 import net.onelitefeather.stardust.service.*
 import net.onelitefeather.stardust.translation.PluginTranslationRegistry
@@ -31,9 +32,7 @@ class StardustPlugin : JavaPlugin() {
 
     //Third parties plugins
     lateinit var packetListener: PacketListener
-
-    //Config
-    lateinit var itemSignMessage: String
+    lateinit var pluginConfig: PluginConfiguration
 
     @Suppress("kotlin:S1874")
     override fun onEnable() {
@@ -51,6 +50,7 @@ class StardustPlugin : JavaPlugin() {
             registry.defaultLocale(supportedLocals.first())
             GlobalTranslator.translator().addSource(PluginTranslationRegistry(registry))
 
+            pluginConfig = PluginConfiguration(config)
             syncFrogService = SyncFrogService(this)
             itemSignService = BukkitItemSignService(this)
 
@@ -79,7 +79,7 @@ class StardustPlugin : JavaPlugin() {
             server.pluginManager.registerEvents(PlayerConnectionListener(this), this)
             server.pluginManager.registerEvents(PlayerVanishListener(this), this)
             server.pluginManager.registerEvents(PlayerAdvancementListener(this), this)
-            itemSignMessage = config.getString("item-signing.message")!!
+
         } catch (e: Exception) {
             this.logger.log(Level.SEVERE, "Could not load plugin", e)
         }

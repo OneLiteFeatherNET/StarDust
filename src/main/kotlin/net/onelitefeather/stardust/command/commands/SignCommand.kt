@@ -53,7 +53,7 @@ class SignCommand(private val stardustPlugin: StardustPlugin) : StringUtils, Pla
 
         val formattedDate = DATE_FORMAT.format(System.currentTimeMillis())
 
-        val message = MiniMessage.miniMessage().deserialize(stardustPlugin.itemSignMessage,
+        val message = MiniMessage.miniMessage().deserialize(stardustPlugin.pluginConfig.itemSignMessage(),
             Placeholder.component("text", MiniMessage.miniMessage().deserialize(text)),
                 Placeholder.component("player", player.displayName()),
                 Placeholder.unparsed("date", formattedDate))
