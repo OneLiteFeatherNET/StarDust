@@ -8,9 +8,10 @@ class UserTask(val stardustPlugin: StardustPlugin) : Runnable {
 
     override fun run() {
         try {
+
             stardustPlugin.server.onlinePlayers.forEach {
                 val user = stardustPlugin.userService.getUser(it.uniqueId) ?: return
-                if (user.properties.isVanished()) {
+                if (user.isVanished()) {
                     it.sendActionBar(Component.translatable("plugin.vanish-actionbar"))
                 }
             }
