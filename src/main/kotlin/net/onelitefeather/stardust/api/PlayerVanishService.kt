@@ -1,6 +1,5 @@
 package net.onelitefeather.stardust.api
 
-import net.onelitefeather.stardust.user.User
 import org.bukkit.entity.Player
 
 /**
@@ -36,13 +35,20 @@ interface PlayerVanishService<P : Player> {
     /**
      * Set a user explicit the vanish status
      * @param vanished status of the user
-     * @param user to be affected
+     * @param player to be affected
      */
-    fun setVanished(user: User, vanished: Boolean)
+    fun setVanished(player: P, vanished: Boolean)
 
     /**
      * Handles if a player joining the server
      * @param player be affected
+     * @return true if the player is vanished
      */
-    fun handlePlayerJoin(player: P)
+    fun handlePlayerJoin(player: P): Boolean
+
+    /**
+     * Handles if a player quits the server
+     * @param player be affected
+     */
+    fun handlePlayerQuit(player: P)
 }
