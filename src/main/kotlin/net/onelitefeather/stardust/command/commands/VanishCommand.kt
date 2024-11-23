@@ -1,10 +1,5 @@
 package net.onelitefeather.stardust.command.commands
 
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
-import cloud.commandframework.annotations.specifier.Greedy
 import com.google.common.base.Preconditions
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
@@ -14,12 +9,17 @@ import net.onelitefeather.stardust.util.StringUtils
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.incendo.cloud.annotation.specifier.Greedy
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
 
 @Suppress("unused")
 class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, PlayerUtils {
 
-    @CommandMethod("vanish|v fakejoin [player]")
-    @CommandPermission("stardust.command.vanish.fakejoin")
+    @Command("vanish|v fakejoin [player]")
+    @Permission("stardust.command.vanish.fakejoin")
     @CommandDescription("Allows to perform a fake join")
     fun commandFakeJoin(
         commandSender: Player,
@@ -33,8 +33,8 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, P
         Bukkit.broadcast(Component.translatable("listener.join-message").arguments(target.displayName()))
     }
 
-    @CommandMethod("vanish|v fakequit [player]")
-    @CommandPermission("stardust.command.vanish.fakequit")
+    @Command("vanish|v fakequit [player]")
+    @Permission("stardust.command.vanish.fakequit")
     @CommandDescription("Allows to perform a fake quit")
     fun commandFakeQuit(
         commandSender: Player,
@@ -48,8 +48,8 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, P
         Bukkit.broadcast(Component.translatable("listener.quit-message").arguments(target.displayName()))
     }
 
-    @CommandMethod("vanish|v nodrop [player]")
-    @CommandPermission("stardust.command.vanish.nodrop")
+    @Command("vanish|v nodrop [player]")
+    @Permission("stardust.command.vanish.nodrop")
     @CommandDescription("Disable the ability to drop items")
     fun commandVanishNoDrop(
         commandSender: CommandSender,
@@ -66,8 +66,8 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, P
         toggleProperty(commandSender, target, UserPropertyType.VANISH_DISABLE_ITEM_DROP)
     }
 
-    @CommandMethod("vanish|v noCollect [player]")
-    @CommandPermission("stardust.command.vanish.nocollect")
+    @Command("vanish|v noCollect [player]")
+    @Permission("stardust.command.vanish.nocollect")
     @CommandDescription("Disable the ability to collect items")
     fun commandVanishNoCollect(
         commandSender: CommandSender,
@@ -84,8 +84,8 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, P
         toggleProperty(commandSender, target, UserPropertyType.VANISH_DISABLE_ITEM_COLLECT)
     }
 
-    @CommandMethod("vanish|v [player]")
-    @CommandPermission("stardust.command.vanish")
+    @Command("vanish|v [player]")
+    @Permission("stardust.command.vanish")
     @CommandDescription("Make a player invisible for other players")
     fun handleCommand(commandSender: CommandSender, @Greedy @Argument(value = "player") target: Player?) {
         if (target == null) {
@@ -98,12 +98,13 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, P
     fun toggleProperty(commandSender: CommandSender, target: Player, propertyType: UserPropertyType) {
 
         Preconditions.checkArgument(
-            propertyType == UserPropertyType.VANISH_DISABLE_ITEM_COLLECT || propertyType == UserPropertyType.VANISH_DISABLE_ITEM_DROP,
+            propertyType == UserPropertyType.VANISH_DISABLE_ITEM_COLLECT
+                    || propertyType == UserPropertyType.VANISH_DISABLE_ITEM_DROP,
             "Invalid UserProperty type"
         )
 
         val user = stardustPlugin.userService.getUser(target.uniqueId) ?: return
-        val property = stardustPlugin.userService.getUserProperty(user.properties, propertyType)
+        val property = user.getProperty(propertyType) ?: return
         val currentValue = property.getValue<Boolean>() ?: return
 
         stardustPlugin.userService.setUserProperty(user, propertyType, !currentValue)
@@ -118,25 +119,12 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, P
     fun toggleVanish(commandSender: CommandSender, target: Player) {
 
         try {
-            if (target != commandSender && !commandSender.hasPermission("stardust.command.vanish.others")) {
+            if (target != commandSender && !commandSender.hasPermission("stardust.vanish.others")) {
                 commandSender.sendMessage(Component.translatable("plugin.not-enough-permissions").arguments(stardustPlugin.getPluginPrefix()))
                 return
             }
 
-            val user = stardustPlugin.userService.getUser(target.uniqueId)
-            if (user != null) {
-
-                val state = stardustPlugin.userService.playerVanishService.toggle(target)
-
-                val targetEnable = Component.translatable("commands.vanish.enable").arguments(stardustPlugin.getPluginPrefix(), target.displayName())
-                val targetDisable = Component.translatable("commands.vanish.disable").arguments(stardustPlugin.getPluginPrefix(), target.displayName())
-
-                if (commandSender != target) {
-                    commandSender.sendMessage(if (state) targetEnable else targetDisable)
-                }
-
-                target.sendMessage(if (state) targetEnable else targetDisable)
-            }
+            stardustPlugin.userService.playerVanishService.toggle(target)
         } catch (e: Exception) {
             this.stardustPlugin.logger.throwing(VanishCommand::class.java.simpleName, "toggleVanish", e)
         }
