@@ -1,9 +1,5 @@
 package net.onelitefeather.stardust.command.commands
 
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
-import cloud.commandframework.annotations.Flag
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.util.COMPONENT_JOIN_CONFIG
@@ -12,13 +8,16 @@ import org.bukkit.Sound
 import org.bukkit.SoundCategory
 import org.bukkit.entity.Player
 import org.bukkit.inventory.meta.Damageable
+import org.incendo.cloud.annotations.*
 
 class RepairCommand(private val stardustPlugin: StardustPlugin) {
 
-    @CommandMethod("repair")
-    @CommandPermission("stardust.command.repair")
+    @Command("repair")
+    @Permission("stardust.command.repair")
     @CommandDescription("Repair the Item in your Hand!")
-    fun handleCommand(player: Player, @Flag(value = "all") repairAll: Boolean?) {
+    fun handleCommand(player: Player,
+                      @Default(value = "false")
+                      @Flag(value = "all") repairAll: Boolean?) {
 
         if (null != repairAll) {
             if (player.hasPermission("stardust.command.repairall")) {
@@ -84,7 +83,7 @@ class RepairCommand(private val stardustPlugin: StardustPlugin) {
             if (itemMeta is Damageable && itemMeta.damage > 0) {
                 itemMeta.damage = 0
                 it.itemMeta = itemMeta
-                Component.text(it.type.name.lowercase())
+                list.add(Component.text(it.type.name.lowercase()))
             }
         }
 

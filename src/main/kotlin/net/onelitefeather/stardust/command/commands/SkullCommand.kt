@@ -1,20 +1,20 @@
 package net.onelitefeather.stardust.command.commands
 
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
-import cloud.commandframework.annotations.specifier.Greedy
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
+import org.incendo.cloud.annotation.specifier.Greedy
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
 
 class SkullCommand(private val stardustPlugin: StardustPlugin) {
 
-    @CommandMethod("skull [name]")
-    @CommandPermission("stardust.command.skull")
+    @Command("skull [name]")
+    @Permission("stardust.command.skull")
     fun handleCommand(player: Player, @Greedy @Argument(value = "name") name: String?) {
 
         try {
