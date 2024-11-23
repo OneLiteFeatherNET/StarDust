@@ -6,6 +6,7 @@ import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.api.ItemSignService
 import net.onelitefeather.stardust.user.User
 import org.bukkit.GameMode
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
@@ -14,6 +15,8 @@ import org.bukkit.persistence.PersistentDataType
 class BukkitItemSignService(private val stardustPlugin: StardustPlugin) :
     ItemSignService<ItemStack, Player> {
 
+    private val signedNameSpacedKey = NamespacedKey(stardustPlugin, "signed")
+
     override fun sign(baseItemStack: ItemStack, lore: List<Component>, player: Player): ItemStack {
         return getItemStack(baseItemStack, player, lore, true)
     }
@@ -21,8 +24,8 @@ class BukkitItemSignService(private val stardustPlugin: StardustPlugin) :
     override fun hasSigned(itemStack: ItemStack, player: Player): Boolean {
         val itemMeta = itemStack.itemMeta ?: return false
         val container = itemMeta.persistentDataContainer
-        if (!container.has(stardustPlugin.signedNameSpacedKey, PersistentDataType.LONG_ARRAY)) return false
-        val array = container[stardustPlugin.signedNameSpacedKey, PersistentDataType.LONG_ARRAY]
+        if (!container.has(signedNameSpacedKey, PersistentDataType.LONG_ARRAY)) return false
+        val array = container[signedNameSpacedKey, PersistentDataType.LONG_ARRAY]
         return array != null && array.any { it == stardustPlugin.userService.getUser(player.uniqueId)?.id }
     }
 
@@ -57,11 +60,11 @@ class BukkitItemSignService(private val stardustPlugin: StardustPlugin) :
 
         if (sign) {
             if (!hasSigned(itemStack, player)) {
-                itemMeta.persistentDataContainer[stardustPlugin.signedNameSpacedKey, PersistentDataType.LONG_ARRAY] =
+                itemMeta.persistentDataContainer[signedNameSpacedKey, PersistentDataType.LONG_ARRAY] =
                     addPlayerSign(itemStack, user)
             }
         } else {
-            itemMeta.persistentDataContainer[stardustPlugin.signedNameSpacedKey, PersistentDataType.LONG_ARRAY] =
+            itemMeta.persistentDataContainer[signedNameSpacedKey, PersistentDataType.LONG_ARRAY] =
                 removePlayerSign(itemStack, user)
         }
 
@@ -108,7 +111,7 @@ class BukkitItemSignService(private val stardustPlugin: StardustPlugin) :
     private fun getSignedPlayers(itemStack: ItemStack): LongArray? {
         val itemMeta = itemStack.itemMeta ?: return null
         val container = itemMeta.persistentDataContainer
-        if (!container.has(stardustPlugin.signedNameSpacedKey, PersistentDataType.LONG_ARRAY)) return null
-        return container[stardustPlugin.signedNameSpacedKey, PersistentDataType.LONG_ARRAY]
+        if (!container.has(signedNameSpacedKey, PersistentDataType.LONG_ARRAY)) return null
+        return container[signedNameSpacedKey, PersistentDataType.LONG_ARRAY]
     }
 }
