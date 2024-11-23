@@ -12,10 +12,8 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
 
-            version("cloud", "1.8.4")
             version("hibernate", "6.6.0.Final")
-            version("commodore", "2.2")
-            version("paper", "1.20.6-R0.1-SNAPSHOT")
+            version("paper", "1.21.1-R0.1-SNAPSHOT")
             version("luckperms", "5.4")
             version("protocolLib", "5.0.0")
             version("jaxbRuntime", "4.0.2")
@@ -33,10 +31,9 @@ dependencyResolutionManagement {
             library("luckperms", "net.luckperms", "api").versionRef("luckperms")
             library("protocolLib", "com.comphenix.protocol", "ProtocolLib").versionRef("protocolLib")
 
-            library("cloudPaper", "cloud.commandframework", "cloud-paper").versionRef("cloud")
-            library("cloudAnnotations", "cloud.commandframework", "cloud-annotations").versionRef("cloud")
-            library("cloudExtras", "cloud.commandframework", "cloud-minecraft-extras").versionRef("cloud")
-            library("commodore", "me.lucko", "commodore").versionRef("commodore")
+            library("cloudPaper", "org.incendo", "cloud-paper").version("2.0.0-beta.10")
+            library("cloudAnnotations", "org.incendo", "cloud-annotations").version("2.0.0")
+            library("cloudExtras", "org.incendo", "cloud-minecraft-extras").version("2.0.0-beta.10")
 
             //Database
             library("hibernateCore", "org.hibernate", "hibernate-core").versionRef("hibernate")
