@@ -1,15 +1,10 @@
 package net.onelitefeather.stardust.user
 
 import jakarta.persistence.*
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.minimessage.MiniMessage
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import net.onelitefeather.stardust.util.PlayerUtils
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.persistence.PersistentDataType
-import org.hibernate.Hibernate
 import java.util.*
 
 @Entity
@@ -25,44 +20,33 @@ data class User(
     @Column
     val name: String = "",
 
-    @OneToOne
-    val properties: UserProperties = UserProperties(),
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    val properties: List<UserProperty> = arrayListOf()
+) {
 
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "ignoredUser")
-    val ignoredUsers: List<User> = emptyList(),
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    val ignoredUser: User? = null
-) : PlayerUtils {
     constructor() : this(null)
 
-
-    fun setDisplayName(displayName: String) {
-        val base = getBase() ?: return
-        base.displayName(
-            MiniMessage.miniMessage().deserialize(
-                MiniMessage.miniMessage()
-                    .serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(displayName))
-            )
-        )
+    fun getProperty(propertyType: UserPropertyType): UserProperty? {
+        return properties.firstOrNull { it.name == propertyType.name.lowercase() }
     }
+
+    fun isItemDropDisabled(): Boolean {
+        val property = getProperty(UserPropertyType.VANISH_DISABLE_ITEM_DROP) ?: return true
+        return property.getValue<Boolean>() == false
+    }
+
+    fun isItemCollectDisabled(): Boolean {
+        val property = getProperty(UserPropertyType.VANISH_DISABLE_ITEM_COLLECT) ?: return true
+        return property.getValue<Boolean>() == false
+    }
+
+    fun isVanished(): Boolean = getProperty(UserPropertyType.VANISHED)?.getValue() ?: false
+
+    fun isFlying(): Boolean = getProperty(UserPropertyType.FLYING)?.getValue() ?: false
 
     fun getUniqueId(): UUID = UUID.fromString(uuid)
 
-    fun getDisplayName(): String {
-        val base = getBase() ?: return name
-        return coloredDisplayName(base)
-    }
-
     fun getBase(): Player? = Bukkit.getPlayer(getUniqueId())
-
-    fun kick(message: Component): Boolean {
-        val player = getBase() ?: return false
-        player.kick(message)
-        return true
-    }
 
     fun confirmChatMessage(namespacedKey: NamespacedKey, value: Boolean) {
         val player = getBase() ?: return
@@ -78,19 +62,30 @@ data class User(
         return value == 1
     }
 
+
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-        other as User
+        if (other !is User) return false
 
-        return id != null && id == other.id
+        if (id != other.id) return false
+        if (uuid != other.uuid) return false
+        if (name != other.name) return false
+        if (properties != other.properties) return false
+        return true
     }
 
-    override fun hashCode(): Int = javaClass.hashCode()
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + uuid.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + properties.hashCode()
+        return result
+    }
 
-    @Override
     override fun toString(): String {
-        return this::class.simpleName + "(id = $id , uuid = $uuid , lastKnownName = $name )"
+        return "User(id=$id, uuid='$uuid', name='$name', properties=$properties)"
     }
+
 
 }
