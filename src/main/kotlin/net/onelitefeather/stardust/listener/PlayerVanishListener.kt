@@ -4,17 +4,28 @@ import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.user.User
-import net.onelitefeather.stardust.user.UserPropertyType
+import org.bukkit.GameEvent
+import org.bukkit.Material
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
+import org.bukkit.event.block.BlockReceiveGameEvent
 import org.bukkit.event.entity.*
 import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.permissions.Permissible
 
 class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listener {
+
+    private val physicalBlocks: List<Material> = listOf(
+        Material.SCULK_SENSOR,
+        Material.CALIBRATED_SCULK_SENSOR,
+        Material.SCULK_SHRIEKER,
+        Material.BIG_DRIPLEAF
+    )
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onEntityDamageByBlock(event: EntityDamageByBlockEvent) {
@@ -23,7 +34,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
         val attacker = event.damager
         val targetUser = stardustPlugin.userService.getUser(target.uniqueId)
         if (attacker is Permissible) {
-            event.isCancelled = if (targetUser != null && targetUser.properties.isVanished()) {
+            event.isCancelled = if (targetUser != null && targetUser.isVanished()) {
                 !attacker.hasPermission("stardust.bypass.damage.vanish")
             } else if (targetUser != null && target.isInvulnerable) {
                 !attacker.hasPermission("stardust.bypass.damage.invulnerable")
@@ -47,7 +58,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
             entity = event.target
         }
 
-        if (user != null && user.properties.isVanished() || entity != null && entity.isInvulnerable) {
+        if (user != null && user.isVanished() || entity != null && entity.isInvulnerable) {
             event.isCancelled = true
         }
     }
@@ -58,7 +69,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
             val player = event.entity as Player
             try {
                 val user = stardustPlugin.userService.getUser(player.uniqueId)
-                event.isCancelled = user != null && (user.properties.isVanished() || player.isInvulnerable)
+                event.isCancelled = user != null && (user.isVanished() || player.isInvulnerable)
             } catch (e: Exception) {
                 this.stardustPlugin.logger
                     .throwing(PlayerVanishListener::class.java.simpleName, "onFoodLevelChange", e)
@@ -72,10 +83,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
             val player = event.entity as Player
             try {
                 val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
-                event.isCancelled =
-                    user.properties.isVanished() && user.properties.getProperty(UserPropertyType.VANISH_DISABLE_ITEM_COLLECT)
-                        .getValue<Boolean>() == true
-
+                event.isCancelled = user.isVanished() && !user.isItemCollectDisabled()
             } catch (e: Exception) {
                 this.stardustPlugin.logger
                     .throwing(PlayerVanishListener::class.java.simpleName, "onPickUp", e)
@@ -88,9 +96,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
         val player = event.player
         try {
             val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
-            event.isCancelled =
-                user.properties.isVanished() && user.properties.getProperty(UserPropertyType.VANISH_DISABLE_ITEM_DROP)
-                    .getValue<Boolean>() == true
+            event.isCancelled = user.isVanished() && !user.isItemDropDisabled()
         } catch (e: Exception) {
             this.stardustPlugin.logger
                 .throwing(PlayerVanishListener::class.java.simpleName, "onDrop", e)
@@ -102,9 +108,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
         val player = event.player
         val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
         try {
-            event.isCancelled =
-                user.properties.isVanished() && user.properties.getProperty(UserPropertyType.VANISH_DISABLE_ITEM_COLLECT)
-                    .getValue<Boolean>() == true
+            event.isCancelled = user.isVanished() && !user.isItemCollectDisabled()
         } catch (e: Exception) {
             this.stardustPlugin.logger
                 .throwing(PlayerVanishListener::class.java.simpleName, "onPlayerPickupExp", e)
@@ -116,9 +120,9 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
         val player = event.entity
         try {
             val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
-            if (user.properties.isVanished()) {
+            if (user.isVanished()) {
                 event.drops.clear()
-                event.deathMessage(Component.text(""))
+                event.deathMessage(Component.empty())
                 event.keepInventory = true
                 event.keepLevel = true
                 event.setShouldDropExperience(false)
@@ -129,4 +133,24 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
                 .throwing(PlayerVanishListener::class.java.simpleName, "onPlayerDeath", e)
         }
     }
+
+    @EventHandler
+    fun handlePhysicalInteract(event: PlayerInteractEvent) {
+
+        if (event.action != Action.PHYSICAL) return
+        val player = event.player
+
+        val block = event.clickedBlock ?: return
+        if (!stardustPlugin.userService.playerVanishService.isVanished(player)) return
+        event.isCancelled = physicalBlocks.contains(block.type)
+    }
+
+    @EventHandler
+    fun handleGameEvent(event: BlockReceiveGameEvent) {
+        if(event.entity !is Player) return
+        val player = event.entity as Player
+        if(event.event != GameEvent.SCULK_SENSOR_TENDRILS_CLICKING) return
+        event.isCancelled = stardustPlugin.userService.playerVanishService.isVanished(player)
+    }
+
 }
