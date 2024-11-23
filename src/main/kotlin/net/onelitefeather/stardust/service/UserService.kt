@@ -3,7 +3,10 @@ package net.onelitefeather.stardust.service
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.api.PlayerVanishService
 import net.onelitefeather.stardust.tasks.UserTask
-import net.onelitefeather.stardust.user.*
+import net.onelitefeather.stardust.user.User
+import net.onelitefeather.stardust.user.UserProperty
+import net.onelitefeather.stardust.user.UserPropertyType
+import net.onelitefeather.stardust.user.getDefaultUserProperties
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import org.hibernate.HibernateException
@@ -46,7 +49,7 @@ class UserService(private val stardustPlugin: StardustPlugin) {
     fun getUser(uuid: UUID): User? {
         try {
             stardustPlugin.databaseService.sessionFactory.openSession().use {
-                val query = it.createQuery("SELECT u FROM User u WHERE u.uuid = :uuid", User::class.java)
+                val query = it.createQuery("SELECT u FROM User u JOIN FETCH u.properties WHERE u.uuid = :uuid", User::class.java)
                 query.setParameter("uuid", uuid.toString())
                 return query.uniqueResult()
             }
@@ -84,18 +87,10 @@ class UserService(private val stardustPlugin: StardustPlugin) {
                 stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
 
                     transaction = session.beginTransaction()
-                    val userProperties = UserProperties(null)
 
-                    session.persist(userProperties)
-
-                    getDefaultUserProperties().forEach {
-                        session.persist(it.copy(userProperties = userProperties))
-                    }
-
-                    val user = User(null, uuid.toString(), name, userProperties)
-
+                    val user = User(null, uuid.toString(), name, getDefaultUserProperties())
+                    user.properties.forEach { session.persist(it.copy(user = user)) }
                     session.persist(user)
-
                     transaction?.commit()
                     consumer.accept(user)
                 }
@@ -106,51 +101,6 @@ class UserService(private val stardustPlugin: StardustPlugin) {
     }
 
     fun isUserCreated(uuid: UUID): Boolean = getUser(uuid) != null
-
-    fun updateUserProperties(uuid: UUID, userproperties: UserProperties) {
-
-        val user = getUser(uuid) ?: return
-        var transaction: Transaction? = null
-        try {
-            stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
-                transaction = session.beginTransaction()
-
-                val userProperties = getUserProperties(user)
-                if (userProperties == null) {
-                    session.persist(userproperties)
-                } else {
-                    session.merge(
-                        userProperties.copy(
-                            values = userproperties.values
-                        )
-                    )
-                }
-
-                transaction?.commit()
-            }
-        } catch (e: HibernateException) {
-            stardustPlugin.logger.log(Level.SEVERE, "Cannot update user properties", e)
-            transaction?.rollback()
-        }
-    }
-
-    fun getUserProperties(user: User): UserProperties? {
-
-        try {
-            stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
-                val query = session.createQuery(
-                    "SELECT p FROM User u JOIN u.properties p WHERE p.id = :id",
-                    UserProperties::class.java
-                )
-                query.setParameter("id", user.id)
-                return query.uniqueResult()
-            }
-        } catch (e: HibernateException) {
-            stardustPlugin.logger.log(Level.SEVERE, "Could not user properties for player ${user.name}", e)
-        }
-
-        return null
-    }
 
     fun updateUser(user: User): User? {
         var transaction: Transaction? = null
@@ -179,64 +129,26 @@ class UserService(private val stardustPlugin: StardustPlugin) {
     fun deleteUser(uuid: UUID, consumer: Consumer<Boolean>) {
 
         val cachedUser = getUser(uuid)
-        var success: Boolean
+
+        if (cachedUser == null) {
+            consumer.accept(false)
+            return
+        }
+
         var transaction: Transaction? = null
         try {
             stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
                 transaction = session.beginTransaction()
+                cachedUser.properties.forEach { session.remove(it) }
                 session.remove(cachedUser)
                 transaction?.commit()
-                success = true
+                consumer.accept(true)
             }
         } catch (e: HibernateException) {
-            success = false
+            consumer.accept(false)
             stardustPlugin.logger.log(Level.SEVERE, "Something went wrong!", e)
             transaction?.rollback()
         }
-
-        consumer.accept(success)
-    }
-
-    fun existsUserProperty(userProperties: UserProperties, type: UserPropertyType): Boolean {
-        try {
-            stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
-                val query = session.createQuery(
-                    "SELECT u FROM UserProperty u JOIN FETCH u.userProperties up WHERE up.id = :id AND u.name = :type",
-                    UserProperty::class.java
-                )
-                query.setParameter("id", userProperties.id)
-                query.setParameter("type", type.name.lowercase())
-                return query.list().isNotEmpty()
-            }
-        } catch (e: HibernateException) {
-            stardustPlugin.logger.log(Level.SEVERE, "Could not find user property $type", e)
-        }
-
-        return false
-    }
-
-    fun getUserProperty(userProperties: UserProperties, type: UserPropertyType): UserProperty {
-
-        val defaultProperty =
-            UserProperty(null, type.name.lowercase(), type.defaultValue.toString(), type.type, userProperties)
-
-        if (!existsUserProperty(userProperties, type)) return defaultProperty
-
-        try {
-            stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
-                val query = session.createQuery(
-                    "SELECT u FROM UserProperty u JOIN FETCH u.userProperties up WHERE up.id = :id AND u.name = :type",
-                    UserProperty::class.java
-                )
-                query.setParameter("id", userProperties.id)
-                query.setParameter("type", type.name.lowercase())
-                return query.uniqueResult()
-            }
-        } catch (e: HibernateException) {
-            stardustPlugin.logger.log(Level.SEVERE, "Could not find user property $type", e)
-        }
-
-        return defaultProperty
     }
 
     fun setUserProperty(user: User, type: UserPropertyType, value: Any) {
@@ -245,17 +157,9 @@ class UserService(private val stardustPlugin: StardustPlugin) {
         try {
             stardustPlugin.databaseService.sessionFactory.openSession().use { session ->
                 transaction = session.beginTransaction()
-                val userProperty = getUserProperty(user.properties, type)
-                if (!existsUserProperty(user.properties, type)) {
-                    session.persist(
-                        UserProperty(
-                            null,
-                            type.name.lowercase(),
-                            value.toString(),
-                            type.type,
-                            user.properties
-                        )
-                    )
+                val userProperty = user.getProperty(type)
+                if (userProperty == null) {
+                    session.persist(UserProperty(null, type.name.lowercase(), value.toString(), type.type))
                 } else {
                     session.merge(userProperty.copy(value = value.toString()))
                 }

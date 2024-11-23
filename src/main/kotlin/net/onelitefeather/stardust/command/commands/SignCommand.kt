@@ -1,10 +1,5 @@
 package net.onelitefeather.stardust.command.commands
 
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
-import cloud.commandframework.annotations.specifier.Quoted
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
@@ -16,11 +11,16 @@ import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.incendo.cloud.annotation.specifier.Quoted
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
 
 class SignCommand(private val stardustPlugin: StardustPlugin) : StringUtils, PlayerUtils {
 
-    @CommandMethod("unsign")
-    @CommandPermission("stardust.command.unsign")
+    @Command("unsign")
+    @Permission("stardust.command.unsign")
     @CommandDescription("Remove your signature from a Item")
     fun execute(player: Player) {
 
@@ -34,8 +34,8 @@ class SignCommand(private val stardustPlugin: StardustPlugin) : StringUtils, Pla
         player.sendMessage(Component.translatable("commands.unsign.success").arguments(stardustPlugin.getPluginPrefix()))
     }
 
-    @CommandMethod("sign <text>")
-    @CommandPermission("stardust.command.sign")
+    @Command("sign <text>")
+    @Permission("stardust.command.sign")
     @CommandDescription("Signature the Item in your Hand.")
     fun handleCommand(player: Player, @Argument(value = "text") @Quoted text: String) {
 
@@ -53,7 +53,7 @@ class SignCommand(private val stardustPlugin: StardustPlugin) : StringUtils, Pla
 
         val formattedDate = DATE_FORMAT.format(System.currentTimeMillis())
 
-        val message = MiniMessage.miniMessage().deserialize(stardustPlugin.itemSignMessage,
+        val message = MiniMessage.miniMessage().deserialize(stardustPlugin.pluginConfig.itemSignMessage(),
             Placeholder.component("text", MiniMessage.miniMessage().deserialize(text)),
                 Placeholder.component("player", player.displayName()),
                 Placeholder.unparsed("date", formattedDate))

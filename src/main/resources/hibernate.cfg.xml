@@ -6,7 +6,6 @@
     <session-factory>
         <!-- - Mapping files or annotated classes -->
         <mapping class="net.onelitefeather.stardust.user.User" />
-        <mapping class="net.onelitefeather.stardust.user.UserProperties" />
         <mapping class="net.onelitefeather.stardust.user.UserProperty" />
         <mapping class="net.onelitefeather.stardust.command.CommandCooldown" />
 

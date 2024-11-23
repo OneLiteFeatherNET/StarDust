@@ -1,21 +1,21 @@
 package net.onelitefeather.stardust.command.commands
 
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
-import cloud.commandframework.annotations.specifier.Greedy
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.util.PlayerUtils
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.incendo.cloud.annotation.specifier.Greedy
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
 
 class GlowCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
 
-    @CommandMethod("glow [player]")
-    @CommandPermission("stardust.command.glow")
-    @CommandDescription("Makes a player glowing in his scoreboard team color.")
+    @Command("glow [player]")
+    @Permission("stardust.command.glow")
+    @CommandDescription("Makes a player glowing depending on his team color")
     fun handleCommand(commandSender: CommandSender, @Greedy @Argument(value = "player") target: Player?) {
         if (target == null) {
             handleGlow(commandSender, commandSender as Player)

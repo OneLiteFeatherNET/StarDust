@@ -20,9 +20,6 @@ dependencies {
 
     compileOnly(libs.paper)
     implementation(libs.bundles.cloud)
-    implementation(libs.commodore) {
-        isTransitive = false
-    }
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC.2")
     compileOnly(libs.luckperms)
     compileOnly(libs.protocolLib)
@@ -46,8 +43,8 @@ kotlin {
 tasks {
 
     runServer {
-        minecraftVersion("1.20.6")
-        jvmArgs("-DPaper.IgnoreJavaVersion=true", "-Dcom.mojang.eula.agree=true")
+        minecraftVersion("1.21.1")
+        jvmArgs("-Dcom.mojang.eula.agree=true")
     }
 
     test {
@@ -62,7 +59,7 @@ tasks {
 
 paper {
     main = "${rootProject.group}.stardust.StardustPlugin"
-    apiVersion = "1.19"
+    apiVersion = "1.21"
     name = "Stardust"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
 

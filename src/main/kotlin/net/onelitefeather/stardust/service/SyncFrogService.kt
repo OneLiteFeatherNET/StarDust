@@ -1,20 +1,13 @@
 package net.onelitefeather.stardust.service
 
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
-import cloud.commandframework.annotations.specifier.Quoted
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.util.PlayerUtils
 import net.onelitefeather.stardust.util.StringUtils
-import org.bukkit.GameMode
-import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.NamespacedKey
+import org.bukkit.*
+import org.bukkit.command.CommandSender
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Frog
 import org.bukkit.entity.Frog.Variant
@@ -26,6 +19,15 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import org.bukkit.util.StringUtil
+import org.incendo.cloud.annotation.specifier.Quoted
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.suggestion.Suggestions
+import org.incendo.cloud.context.CommandContext
+import org.incendo.cloud.context.CommandInput
 
 class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtils, PlayerUtils {
 
@@ -39,16 +41,16 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtil
         stardustPlugin.server.pluginManager.registerEvents(this, stardustPlugin)
     }
 
-    @CommandMethod("frogbucket <customName> <variant> <amount>")
+    @Command("frogbucket <customName> <variant> <amount>")
     @CommandDescription("Gives you a Frog bucket with the given amount!")
-    @CommandPermission("stardust.command.frogbucket")
+    @Permission("stardust.command.frogbucket")
     fun executeCommand(
         player: Player,
         @Quoted @Argument(value = "customName") customName: String,
-        @Argument(value = "variant") variant: Variant,
+        @Argument(value = "variant", suggestions = "frogVariants") variant: String,
         @Argument(value = "amount") amount: Int
     ) {
-        addFrogBucketToPlayer(player, amount, MiniMessage.miniMessage().deserialize(customName), variant, false)
+        addFrogBucketToPlayer(player, amount, MiniMessage.miniMessage().deserialize(customName), frogVariant(variant), false)
     }
 
     @EventHandler
@@ -123,13 +125,13 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtil
         if (!container.has(frogCustomNameKey) || !container.has(frogVariantKey)) return false
 
         val customName = container[frogCustomNameKey, PersistentDataType.STRING]
-        val variant = container[frogVariantKey, PersistentDataType.STRING] ?: Variant.TEMPERATE.name
+        val variant = container[frogVariantKey, PersistentDataType.STRING] ?: frogVariantName(Variant.TEMPERATE)
 
         if (customName != null) {
             frog.customName(colorText(customName))
         }
 
-        frog.variant = Variant.valueOf(variant.uppercase())
+        frog.variant = frogVariant(variant)
         return true
     }
 
@@ -142,7 +144,7 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtil
 
         itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, false)
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
-        itemMeta.lore(listOf(MiniMessage.miniMessage().deserialize(variant.name.lowercase())))
+        itemMeta.lore(listOf(MiniMessage.miniMessage().deserialize(frogVariantName(variant))))
 
         val container = itemMeta.persistentDataContainer
 
@@ -150,7 +152,7 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtil
             container[frogCustomNameKey, PersistentDataType.STRING] = convertComponentToString(customName)
         }
         container[frogNameSpacedKey, PersistentDataType.INTEGER] = frogInBucket
-        container[frogVariantKey, PersistentDataType.STRING] = variant.name
+        container[frogVariantKey, PersistentDataType.STRING] = variant.key().value()
 
         itemStack.itemMeta = itemMeta
         return itemStack
@@ -188,5 +190,17 @@ class SyncFrogService(val stardustPlugin: StardustPlugin) : Listener, StringUtil
         } else {
             player.sendActionBar(message)
         }
+    }
+
+    private fun frogVariantName(variant: Variant): String = variant.key().value()
+
+    private fun frogVariant(key: String): Variant {
+        return Registry.FROG_VARIANT[NamespacedKey.fromString(key.lowercase())!!] as Variant
+    }
+
+    @Suggestions(value = "frogVariants")
+    fun frogVariants(context: CommandContext<CommandSender>, input: String): MutableList<String> {
+        val variants = Registry.FROG_VARIANT.stream().map { it.key.value() }.toList()
+        return StringUtil.copyPartialMatches(input, variants, variants)
     }
 }

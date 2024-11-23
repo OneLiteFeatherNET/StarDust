@@ -3,7 +3,6 @@ package net.onelitefeather.stardust.listener
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.util.PlayerUtils
-import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -33,22 +32,13 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                 stardustPlugin.userService.updateUser(user.copy(name = player.name))
             }
 
-            stardustPlugin.server.onlinePlayers.forEach { stardustPlugin.userService.playerVanishService.handlePlayerJoin(it) }
-
-            player.allowFlight =
-                user.properties.isFlying() && !player.allowFlight || player.gameMode == GameMode.CREATIVE || player.gameMode == GameMode.SPECTATOR
-
-            if (!player.hasPermission("stardust.join.gamemode")) {
-                player.gameMode = player.server.defaultGameMode
-            }
-
+            val isVanished = stardustPlugin.userService.playerVanishService.handlePlayerJoin(player)
             event.joinMessage(
-                if (user.properties.isVanished()) null else
+                if (isVanished) null else
                 Component.translatable("listener.join-message").arguments(player.displayName()))
 
         } catch (e: Exception) {
-            this.stardustPlugin.getLogger()
-                .throwing(PlayerConnectionListener::class.java.simpleName, "handlePlayerJoin", e)
+            this.stardustPlugin.logger.log(Level.SEVERE, "Something went wrong during the join process", e)
         }
     }
 
@@ -58,13 +48,13 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
         try {
             val user = stardustPlugin.userService.getUser(player.uniqueId)
             event.quitMessage(
-                if (user?.properties?.isVanished() == true) null else
+                if (user?.isVanished() == true) null else
                     Component.translatable("listener.quit-message").arguments(player.displayName())
 
             )
+            stardustPlugin.userService.playerVanishService.handlePlayerQuit(player)
         } catch (e: Exception) {
-            this.stardustPlugin.logger
-                .throwing(PlayerConnectionListener::class.java.simpleName, "onPlayerQuit", e)
+            this.stardustPlugin.logger.log(Level.SEVERE, "Something went wrong during the quit process", e)
         }
     }
 }
