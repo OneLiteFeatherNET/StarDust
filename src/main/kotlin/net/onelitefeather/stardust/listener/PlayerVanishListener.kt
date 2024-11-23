@@ -4,9 +4,9 @@ import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.user.User
-import org.bukkit.GameEvent
-import org.bukkit.Material
+import org.bukkit.Bukkit
 import org.bukkit.entity.Entity
+import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -19,13 +19,6 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.permissions.Permissible
 
 class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listener {
-
-    private val physicalBlocks: List<Material> = listOf(
-        Material.SCULK_SENSOR,
-        Material.CALIBRATED_SCULK_SENSOR,
-        Material.SCULK_SHRIEKER,
-        Material.BIG_DRIPLEAF
-    )
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onEntityDamageByBlock(event: EntityDamageByBlockEvent) {
@@ -142,15 +135,22 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
 
         val block = event.clickedBlock ?: return
         if (!stardustPlugin.userService.playerVanishService.isVanished(player)) return
-        event.isCancelled = physicalBlocks.contains(block.type)
+        event.isCancelled = stardustPlugin.pluginConfig.physicalBlocks().contains(block.type)
     }
 
     @EventHandler
     fun handleGameEvent(event: BlockReceiveGameEvent) {
-        if(event.entity !is Player) return
-        val player = event.entity as Player
-        if(event.event != GameEvent.SCULK_SENSOR_TENDRILS_CLICKING) return
+
+        val player = if (event.entity is Player) {
+            event.entity as Player
+        } else if (event.entity is Item) {
+            val thrower = (event.entity as Item).thrower
+            if (thrower != null) Bukkit.getPlayer(thrower) else null
+        } else {
+            null
+        }
+
+        if(player == null) return
         event.isCancelled = stardustPlugin.userService.playerVanishService.isVanished(player)
     }
-
 }

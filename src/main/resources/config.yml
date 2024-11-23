@@ -7,6 +7,13 @@ settings:
 item-signing:
   message: '<text> <gray>(</gray><player> <gray>-</gray> <gold><date></gold><gray>)</gray>'
 
+physicalBlocks:
+  - 'SCULK_SENSOR'
+  - 'CALIBRATED_SCULK_SENSOR'
+  - 'SCULK_SHRIEKER'
+  - 'BIG_DRIPLEAF'
+  - 'TURTLE_EGG'
+
 vanish:
   group-weight-based-visibility: true
 

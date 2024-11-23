@@ -6,6 +6,13 @@ settings:
   auto-afk-time: 300
   use-cooldown-bypass: true
 
+physicalBlocks:
+- SCULK_SENSOR
+- CALIBRATED_SCULK_SENSOR
+- SCULK_SHRIEKER
+- BIG_DRIPLEAF
+- TURTLE_EGG
+
 # Group weight visibility for players
 vanish:
   group-weight-based-visibility: true
