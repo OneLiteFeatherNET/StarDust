@@ -1,7 +1,6 @@
 package net.onelitefeather.stardust.user
 
 import jakarta.persistence.*
-import org.hibernate.Hibernate
 
 @Entity
 @Table
@@ -20,8 +19,8 @@ data class UserProperty(
     val type: Byte = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id")
-    val userProperties: UserProperties? = null) {
+    @JoinColumn(name = "user_id")
+    val user: User? = null) {
 
     constructor() : this(null)
 
@@ -39,19 +38,30 @@ data class UserProperty(
         return result as T?
     }
 
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-        other as UserProperty
-
-        return id != null && id == other.id
-    }
-
-    override fun hashCode(): Int = javaClass.hashCode()
-
     @Override
     override fun toString(): String {
         return this::class.simpleName + "(id = $id , key = $name , value = $value )"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is UserProperty) return false
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (value != other.value) return false
+        if (type != other.type) return false
+        if (user != other.user) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + name.hashCode()
+        result = 31 * result + value.hashCode()
+        result = 31 * result + type
+        result = 31 * result + (user?.hashCode() ?: 0)
+        return result
     }
 }
