@@ -6,6 +6,10 @@ settings:
   auto-afk-time: 300
   use-cooldown-bypass: true
 
+# Group weight visibility for players
+vanish:
+  group-weight-based-visibility: true
+
 # Setting to enable cool down on some commands
 command-cooldowns:
   skull:

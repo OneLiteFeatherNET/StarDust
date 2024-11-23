@@ -7,6 +7,9 @@ settings:
 item-signing:
   message: '<text> <gray>(</gray><player> <gray>-</gray> <gold><date></gold><gray>)</gray>'
 
+vanish:
+  group-weight-based-visibility: true
+
 # Setting to enable cool down on some commands
 command-cooldowns:
   skull:
