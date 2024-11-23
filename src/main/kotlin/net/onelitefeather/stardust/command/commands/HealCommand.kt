@@ -1,10 +1,5 @@
 package net.onelitefeather.stardust.command.commands
 
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
-import cloud.commandframework.annotations.specifier.Greedy
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.util.*
@@ -12,11 +7,16 @@ import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeInstance
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.incendo.cloud.annotation.specifier.Greedy
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
 
 class HealCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
 
-    @CommandMethod("heal [player]")
-    @CommandPermission("stardust.command.heal")
+    @Command("heal [player]")
+    @Permission("stardust.command.heal")
     @CommandDescription("Heal a player.")
     fun onCommand(commandSender: CommandSender, @Greedy @Argument(value = "player") target: Player?) {
         if (commandSender is Player) {
@@ -45,16 +45,17 @@ class HealCommand(private val stardustPlugin: StardustPlugin) : PlayerUtils {
             target.foodLevel = DEFAULT_PLAYER_FOOD_LEVEL
             target.saturation = DEFAULT_PLAYER_SATURATION_LEVEL
 
-            val message = Component.translatable("commands.heal.success").arguments(
-                stardustPlugin.getPluginPrefix(),
-                target.displayName(),
-                Component.text(target.health))
+            if (commandSender == target) {
+                target.sendMessage(Component.translatable("commands.heal.target").arguments(stardustPlugin.getPluginPrefix()))
+            } else {
 
-            if (commandSender != target) {
-                target.sendMessage(message)
+                target.sendMessage(Component.translatable("commands.heal.target").arguments(
+                    stardustPlugin.getPluginPrefix()))
+
+                commandSender.sendMessage(Component.translatable("commands.heal.success").arguments(
+                    stardustPlugin.getPluginPrefix(), target.displayName()))
             }
 
-            commandSender.sendMessage(message)
         } catch (e: Exception) {
             this.stardustPlugin.logger.throwing(HealCommand::class.java.simpleName, "healPlayer", e)
         }
