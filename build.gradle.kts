@@ -7,7 +7,7 @@ plugins {
     `maven-publish`
 }
 
-val baseVersion = "1.1.0"
+version = "1.1.0"
 group = "net.onelitefeather"
 
 repositories {
@@ -73,20 +73,6 @@ paper {
         }
     }
 }
-
-version = if (System.getenv().containsKey("CI")) {
-    val releaseOrSnapshot = if (System.getenv("CI_COMMIT_BRANCH").equals("main", true)) {
-        ""
-    } else if(System.getenv("CI_COMMIT_BRANCH").equals("test", true)) {
-        "-PREVIEW"
-    } else {
-        "-SNAPSHOT"
-    }
-    "$baseVersion$releaseOrSnapshot+${System.getenv("CI_COMMIT_SHORT_SHA")}"
-} else {
-    "$baseVersion-SNAPSHOT"
-}
-
 
 publishData {
     addBuildData()
