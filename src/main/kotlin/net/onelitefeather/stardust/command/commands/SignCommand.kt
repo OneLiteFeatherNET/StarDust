@@ -1,77 +1,65 @@
 package net.onelitefeather.stardust.command.commands
 
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandDescription
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
-import cloud.commandframework.annotations.specifier.Quoted
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.colorText
-import net.onelitefeather.stardust.extenstions.coloredDisplayName
-import net.onelitefeather.stardust.extenstions.miniMessage
 import net.onelitefeather.stardust.util.DATE_FORMAT
+import net.onelitefeather.stardust.util.PlayerUtils
+import net.onelitefeather.stardust.util.StringUtils
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.incendo.cloud.annotation.specifier.Quoted
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
+import org.incendo.cloud.annotations.Permission
 
-class SignCommand(private val stardustPlugin: StardustPlugin) {
+class SignCommand(private val stardustPlugin: StardustPlugin) : StringUtils, PlayerUtils {
 
-    @CommandMethod("unsign")
-    @CommandPermission("stardust.command.unsign")
+    @Command("unsign")
+    @Permission("stardust.command.unsign")
     @CommandDescription("Remove your signature from a Item")
     fun execute(player: Player) {
 
         val itemStack = player.inventory.itemInMainHand
         if (!stardustPlugin.itemSignService.hasSigned(itemStack, player)) {
-            player.sendMessage(miniMessage { stardustPlugin.i18nService.getMessage("commands.unsign.not-signed", stardustPlugin.i18nService.getPluginPrefix()) })
+            player.sendMessage(Component.translatable("commands.unsign.not-signed").arguments(stardustPlugin.getPluginPrefix()))
             return
         }
 
         giveItemStack(player, stardustPlugin.itemSignService.removeSignature(itemStack, player))
-        player.sendMessage(miniMessage { stardustPlugin.i18nService.getMessage("commands.unsign.success", stardustPlugin.i18nService.getPluginPrefix()) })
+        player.sendMessage(Component.translatable("commands.unsign.success").arguments(stardustPlugin.getPluginPrefix()))
     }
 
-    @CommandMethod("sign <text>")
-    @CommandPermission("stardust.command.sign")
+    @Command("sign <text>")
+    @Permission("stardust.command.sign")
     @CommandDescription("Signature the Item in your Hand.")
     fun handleCommand(player: Player, @Argument(value = "text") @Quoted text: String) {
 
         val itemStack = player.inventory.itemInMainHand
         if (itemStack.type == Material.AIR) {
-            player.sendMessage(miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "commands.sign.no-item-in-hand", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                )
-            })
+            player.sendMessage(Component.translatable("commands.sign.no-item-in-hand").arguments(stardustPlugin.getPluginPrefix()))
             return
         }
 
         val signService = stardustPlugin.itemSignService
         if (signService.hasSigned(itemStack, player) && !player.hasPermission("stardust.command.sign.override")) {
-            player.sendMessage(miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "commands.sign.already-signed", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                )
-            })
-
+            player.sendMessage(Component.translatable("commands.sign.already-signed").arguments(stardustPlugin.getPluginPrefix()))
             return
         }
 
-        val message = miniMessage {
-            stardustPlugin.i18nService.getMessage(
-                "commands.sign.item-lore-message",
-                *arrayOf(text.colorText(), player.coloredDisplayName(), DATE_FORMAT.format(System.currentTimeMillis()))
-            )
-        }
+        val formattedDate = DATE_FORMAT.format(System.currentTimeMillis())
+
+        val message = MiniMessage.miniMessage().deserialize(stardustPlugin.pluginConfig.itemSignMessage(),
+            Placeholder.component("text", MiniMessage.miniMessage().deserialize(text)),
+                Placeholder.component("player", player.displayName()),
+                Placeholder.unparsed("date", formattedDate))
 
         giveItemStack(player, signService.sign(itemStack, listOf(message), player))
-
-        player.sendMessage(miniMessage {
-            stardustPlugin.i18nService.getMessage(
-                "commands.sign.signed", *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-            )
-        })
+        player.sendMessage(Component.translatable("commands.sign.signed").arguments(stardustPlugin.getPluginPrefix()))
     }
 
     private fun giveItemStack(player: Player, itemStack: ItemStack) {
@@ -81,12 +69,7 @@ class SignCommand(private val stardustPlugin: StardustPlugin) {
             if (player.inventory.firstEmpty() != -1) {
                 player.inventory.setItem(player.inventory.firstEmpty(), itemStack)
             } else {
-                player.sendMessage(miniMessage {
-                    stardustPlugin.i18nService.getMessage(
-                        "plugin.inventory-full",
-                        *arrayOf(stardustPlugin.i18nService.getPluginPrefix())
-                    )
-                })
+                player.sendMessage(Component.translatable("plugin.inventory-full").arguments(stardustPlugin.getPluginPrefix()))
             }
         }
     }

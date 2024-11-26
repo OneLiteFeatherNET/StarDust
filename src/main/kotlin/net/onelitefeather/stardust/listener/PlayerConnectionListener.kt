@@ -1,9 +1,8 @@
 package net.onelitefeather.stardust.listener
 
-import io.sentry.Sentry
+import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.*
-import org.bukkit.GameMode
+import net.onelitefeather.stardust.util.PlayerUtils
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -11,7 +10,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.logging.Level
 
-class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Listener {
+class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Listener, PlayerUtils {
 
     @EventHandler
     fun handlePlayerJoin(event: PlayerJoinEvent) {
@@ -23,46 +22,23 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
 
                 //Register a new User
                 stardustPlugin.userService.registerUser(player) {
-                    player.sendMessage(miniMessage {
-                        stardustPlugin.i18nService.getMessage(
-                            "plugin.first-join", *arrayOf(
-                                stardustPlugin.i18nService.getPluginPrefix(), player.coloredDisplayName()
-                            )
-                        )
-                    })
+                    player.sendMessage(Component.translatable("plugin.first-join").arguments(stardustPlugin.getPluginPrefix(), player.displayName()))
                 }
-
-                event.joinMessage(miniMessage {
-                    stardustPlugin.i18nService.getMessage(
-                        "listener.join-message", *arrayOf(player.coloredDisplayName())
-                    )
-                })
                 return
             }
 
-            if(!player.name.equals(user.name, true)) {
+            if (!player.name.equals(user.name, true)) {
                 stardustPlugin.logger.log(Level.INFO, "Updating Username from %s to %s".format(user.name, player.name))
                 stardustPlugin.userService.updateUser(user.copy(name = player.name))
             }
 
-            stardustPlugin.userService.playerVanishService.onPlayerJoin(player)
+            val isVanished = stardustPlugin.userService.playerVanishService.handlePlayerJoin(player)
+            event.joinMessage(
+                if (isVanished) null else
+                Component.translatable("listener.join-message").arguments(player.displayName()))
 
-            player.allowFlight =
-                user.properties.isFlying() && !player.allowFlight || player.gameMode == GameMode.CREATIVE || player.gameMode == GameMode.SPECTATOR
-
-            if (!player.hasPermission("stardust.join.gamemode")) {
-                player.gameMode = player.server.defaultGameMode
-            }
-            event.joinMessage(if (user.properties.isVanished()) null else miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "listener.join-message", *arrayOf(player.coloredDisplayName())
-                )
-            })
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
+            this.stardustPlugin.logger.log(Level.SEVERE, "Something went wrong during the join process", e)
         }
     }
 
@@ -71,16 +47,14 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
         val player = event.player
         try {
             val user = stardustPlugin.userService.getUser(player.uniqueId)
-            event.quitMessage(if (user?.properties?.isVanished() == true) null else miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "listener.quit-message", *arrayOf(player.coloredDisplayName())
-                )
-            })
+            event.quitMessage(
+                if (user?.isVanished() == true) null else
+                    Component.translatable("listener.quit-message").arguments(player.displayName())
+
+            )
+            stardustPlugin.userService.playerVanishService.handlePlayerQuit(player)
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
+            this.stardustPlugin.logger.log(Level.SEVERE, "Something went wrong during the quit process", e)
         }
     }
 }

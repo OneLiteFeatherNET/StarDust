@@ -51,7 +51,7 @@ class VanishSilentContainerFeature(private val stardustPlugin: StardustPlugin) :
                 player.velocity = DUMMY_VECTOR
                 player.gameMode = GameMode.SPECTATOR
                 player.server.scheduler.runTaskLater(stardustPlugin, Runnable {
-                    val previousGameMode = player.previousGameMode ?: return@Runnable
+                    val previousGameMode = player.previousGameMode ?: player.server.defaultGameMode
                     player.gameMode = previousGameMode
                 }, 20L)
             } else {

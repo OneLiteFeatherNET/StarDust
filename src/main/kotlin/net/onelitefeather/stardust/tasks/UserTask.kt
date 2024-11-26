@@ -1,21 +1,22 @@
 package net.onelitefeather.stardust.tasks
 
-import io.sentry.Sentry
+import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.miniMessage
+import java.util.logging.Level
 
 class UserTask(val stardustPlugin: StardustPlugin) : Runnable {
 
     override fun run() {
         try {
+
             stardustPlugin.server.onlinePlayers.forEach {
                 val user = stardustPlugin.userService.getUser(it.uniqueId) ?: return
-                if (user.properties.isVanished()) {
-                    it.sendActionBar(miniMessage { stardustPlugin.i18nService.getMessage("plugin.vanish-actionbar") })
+                if (user.isVanished()) {
+                    it.sendActionBar(Component.translatable("plugin.vanish-actionbar"))
                 }
             }
         } catch (e: Exception) {
-            Sentry.captureException(e)
+            stardustPlugin.logger.log(Level.SEVERE, "Could not run for loop", e)
         }
     }
 }

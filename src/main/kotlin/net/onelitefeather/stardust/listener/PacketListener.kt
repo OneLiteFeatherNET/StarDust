@@ -33,7 +33,7 @@ class PacketListener(private val stardustPlugin: StardustPlugin) {
                     val playerInfoDataList = packetContainer.playerInfoDataLists.read(0)
 
                     playerInfoDataList.removeIf {
-                        stardustPlugin.userService.getUser(it.profile.uuid)?.properties?.isVanished() == true
+                        stardustPlugin.userService.getUser(it.profile.uuid)?.isVanished() == true
                     }
 
                     packetContainer.playerInfoDataLists.write(0, playerInfoDataList)

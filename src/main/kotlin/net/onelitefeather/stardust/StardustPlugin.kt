@@ -1,108 +1,69 @@
 package net.onelitefeather.stardust
 
-import cloud.commandframework.annotations.AnnotationParser
-import cloud.commandframework.minecraft.extras.MinecraftHelp
-import cloud.commandframework.paper.PaperCommandManager
-import io.sentry.Sentry
-import io.sentry.protocol.Device
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.translation.GlobalTranslator
+import net.kyori.adventure.translation.TranslationRegistry
+import net.kyori.adventure.util.UTF8ResourceBundleControl
 import net.onelitefeather.stardust.api.CommandCooldownService
 import net.onelitefeather.stardust.api.ItemSignService
-import net.onelitefeather.stardust.extenstions.buildCommandSystem
-import net.onelitefeather.stardust.extenstions.buildHelpSystem
-import net.onelitefeather.stardust.extenstions.initLuckPermsSupport
-import net.onelitefeather.stardust.extenstions.registerCommands
+import net.onelitefeather.stardust.configuration.PluginConfiguration
 import net.onelitefeather.stardust.listener.*
 import net.onelitefeather.stardust.service.*
-import org.bukkit.NamespacedKey
-import org.bukkit.command.CommandSender
+import net.onelitefeather.stardust.translation.PluginTranslationRegistry
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
-import org.bukkit.metadata.MetadataValue
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.*
+import java.util.logging.Level
 
 class StardustPlugin : JavaPlugin() {
 
-    lateinit var paperCommandManager: PaperCommandManager<CommandSender>
-    lateinit var annotationParser: AnnotationParser<CommandSender>
-    lateinit var minecraftHelp: MinecraftHelp<CommandSender>
+    private val supportedLocals: Array<Locale> = arrayOf(Locale.US, Locale.GERMANY)
 
-    lateinit var i18nService: I18nService
+    //Services
     lateinit var databaseService: DatabaseService
     lateinit var userService: UserService
     lateinit var commandCooldownService: CommandCooldownService
     lateinit var luckPermsService: LuckPermsService
     lateinit var itemSignService: ItemSignService<ItemStack, Player>
-    lateinit var packetListener: PacketListener
     lateinit var syncFrogService: SyncFrogService
-    lateinit var context: StardustPlugin
+    lateinit var paperCommandService: PaperCommandService
 
-    lateinit var chatConfirmationKey: NamespacedKey
-    lateinit var signedNameSpacedKey: NamespacedKey
-
-    lateinit var vanishedMetadata: MetadataValue
-    lateinit var notVanishedMetadata: MetadataValue
+    //Third parties plugins
+    lateinit var packetListener: PacketListener
+    lateinit var pluginConfig: PluginConfiguration
 
     @Suppress("kotlin:S1874")
     override fun onEnable() {
 
-        Sentry.init {
-            it.release = description.version
-            it.environment = if (description.version.contains("-SNAPSHOT", true)) "development" else "production"
-            it.tracesSampleRate = 1.0
-            it.dsn = "https://81a5e07ea4b54399a4cfd0b9710e0310@sentry.themeinerlp.dev/3"
-        }
-
-        Sentry.configureScope {
-            Device().apply {
-                name = server.name
-                model = server.version
-                modelId = server.bukkitVersion
-            }.also { device ->
-                it.setContexts("device", device)
-            }
-        }
-
-        Sentry.startSession()
+        saveDefaultConfig()
+        config.options().copyDefaults(true)
+        saveConfig()
 
         try {
-            context = this
+            val registry = TranslationRegistry.create(Key.key("stardust", "localization"))
+            supportedLocals.forEach { locale ->
+                val bundle = ResourceBundle.getBundle("stardust", locale, UTF8ResourceBundleControl.get())
+                registry.registerAll(locale, bundle, false)
+            }
+            registry.defaultLocale(supportedLocals.first())
+            GlobalTranslator.translator().addSource(PluginTranslationRegistry(registry))
 
-            //Creating the default config
-            saveDefaultConfig()
-
-            //Saving the default config values
-            config.options().copyDefaults(true)
-
-
-            //Saving the config is needed
-            saveConfig()
-
-            vanishedMetadata = FixedMetadataValue(this, true)
-            notVanishedMetadata = FixedMetadataValue(this, false)
-
+            pluginConfig = PluginConfiguration(config)
             syncFrogService = SyncFrogService(this)
             itemSignService = BukkitItemSignService(this)
-            i18nService = I18nService(this)
 
             luckPermsService = LuckPermsService(this)
             luckPermsService.init()
 
-            val jdbcUrl = config.getString("database.jdbcUrl")
-            val databaseDriver = config.getString("database.driver")
-            val username = config.getString("database.username")
-            val password = config.getString("database.password") ?: "IReallyKnowWhatIAmDoingISwear"
+            databaseService = DatabaseService(this)
+            commandCooldownService = BukkitCommandCooldownService(this)
 
-            if (jdbcUrl != null && databaseDriver != null && username != null) {
-                databaseService = DatabaseService(jdbcUrl, username, password, databaseDriver)
-                databaseService.init()
-                commandCooldownService = BukkitCommandCooldownService(this)
-            }
+            paperCommandService = PaperCommandService(this)
+            paperCommandService.enable()
 
             initLuckPermsSupport()
-            buildCommandSystem()
-            buildHelpSystem()
-            registerCommands()
 
             userService = UserService(this)
             userService.startUserTask()
@@ -117,26 +78,31 @@ class StardustPlugin : JavaPlugin() {
             server.pluginManager.registerEvents(PlayerChatListener(this), this)
             server.pluginManager.registerEvents(PlayerConnectionListener(this), this)
             server.pluginManager.registerEvents(PlayerVanishListener(this), this)
+            server.pluginManager.registerEvents(PlayerAdvancementListener(this), this)
 
-            signedNameSpacedKey = NamespacedKey(this, "signed")
-            chatConfirmationKey = NamespacedKey(this, "chat_confirmation")
         } catch (e: Exception) {
-            Sentry.captureException(e)
+            this.logger.log(Level.SEVERE, "Could not load plugin", e)
         }
     }
 
     override fun onDisable() {
+        userService.stopUserTask()
+        databaseService.shutdown()
+        packetListener.unregister()
+        luckPermsService.unsubscribeEvents()
+    }
 
-        if (this::userService.isInitialized) {
-            userService.stopUserTask()
+    /**
+     * Enables luckperms support and dependency
+     */
+    private fun initLuckPermsSupport() {
+        if (server.pluginManager.isPluginEnabled("LuckPerms")) {
+            luckPermsService = LuckPermsService(this)
+            luckPermsService.init()
         }
+    }
 
-        if (this::databaseService.isInitialized) {
-            databaseService.shutdown()
-        }
-
-        if (this::packetListener.isInitialized) {
-            packetListener.unregister()
-        }
+    fun getPluginPrefix(): Component {
+        return Component.translatable("plugin.prefix")
     }
 }

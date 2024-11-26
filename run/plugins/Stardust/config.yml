@@ -1,19 +1,19 @@
+item-signing:
+  message: <text> <gray>(</gray><player> <gray>-</gray> <gold><date></gold><gray>)</gray>
 # General plugin settings
 settings:
   afk-kick-time: 600
   auto-afk-time: 300
   use-cooldown-bypass: true
 
-item-signing:
-  message: '<text> <gray>(</gray><player> <gray>-</gray> <gold><date></gold><gray>)</gray>'
-
 physicalBlocks:
-  - 'SCULK_SENSOR'
-  - 'CALIBRATED_SCULK_SENSOR'
-  - 'SCULK_SHRIEKER'
-  - 'BIG_DRIPLEAF'
-  - 'TURTLE_EGG'
+- SCULK_SENSOR
+- CALIBRATED_SCULK_SENSOR
+- SCULK_SHRIEKER
+- BIG_DRIPLEAF
+- TURTLE_EGG
 
+# Group weight visibility for players
 vanish:
   group-weight-based-visibility: true
 

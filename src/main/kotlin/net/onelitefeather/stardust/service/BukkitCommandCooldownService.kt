@@ -1,6 +1,5 @@
 package net.onelitefeather.stardust.service
 
-import io.sentry.Sentry
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.api.CommandCooldownService
 import net.onelitefeather.stardust.command.CommandCooldown
@@ -33,7 +32,6 @@ class BukkitCommandCooldownService(private val stardustPlugin: StardustPlugin) :
                 "Could not get command cooldown by the given sender $commandSender and command $command",
                 e
             )
-            Sentry.captureException(e)
         }
 
         return null
@@ -71,7 +69,6 @@ class BukkitCommandCooldownService(private val stardustPlugin: StardustPlugin) :
             }
         } catch (e: HibernateException) {
             stardustPlugin.logger.log(Level.SEVERE, "Could not add command cooldown", e)
-            Sentry.captureException(e)
             if (transaction != null) {
                 transaction?.rollback()
             }
@@ -89,7 +86,6 @@ class BukkitCommandCooldownService(private val stardustPlugin: StardustPlugin) :
             }
         } catch (e: HibernateException) {
             stardustPlugin.logger.log(Level.SEVERE, "Could not remove command cooldown", e)
-            Sentry.captureException(e)
             if (transaction != null) {
                 transaction?.rollback()
             }
@@ -102,7 +98,7 @@ class BukkitCommandCooldownService(private val stardustPlugin: StardustPlugin) :
     override fun isCooldownOver(commandSender: UUID, command: String): Boolean =
         getCommandCooldown(commandSender, command)?.isOver() == true
 
-    override fun hasCommandCooldown(commandLabel: String): Boolean = getCooldownData(commandLabel) != null
+    override fun hasCommandCooldown(commandOrLabel: String): Boolean = getCooldownData(commandOrLabel) != null
 
     override fun getCooldownDataList(): List<CooldownData> {
         val section = stardustPlugin.config.getConfigurationSection("command-cooldowns") ?: return emptyList()

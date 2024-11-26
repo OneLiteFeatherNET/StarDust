@@ -1,17 +1,63 @@
 include:
-  - project: onelitefeather/ci-template
-    ref: Better-Pipelines
-    file: s3-upload.yaml
-  - project: onelitefeather/ci-template
-    ref: Better-Pipelines
-    file: sonarqube.yaml
-
-
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+  - component: $CI_SERVER_FQDN/onelitefeather/ci-components/core-stages@0.3.9
+  - component: $CI_SERVER_FQDN/onelitefeather/ci-components/gradle-build-cache@0.3.9
+  - component: $CI_SERVER_FQDN/onelitefeather/ci-components/gradle-java-pipeline-versions-rules@0.3.9
+  - component: $CI_SERVER_FQDN/onelitefeather/ci-components/basic-rules@0.3.9
 variables:
-  JAR_FILE: "Stardust.jar"
-  BUCKET: "olf-dev"
-  TEMPLATE: "default"
+  SECURE_ANALYZERS_PREFIX: "${HTL_NEXUS_PROXY}/security-products"
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  GRADLE_OPTS: "-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
+  GRADLE_IMAGE: "${HTL_NEXUS_PROXY}/gradle:8.10.2-jdk21"
 
-deploy:
+build:
+  stage: build
+  image: $GRADLE_IMAGE
+  tags:
+    - saas-linux-medium-amd64
+  extends:
+    - .gradle-project-cache
+  rules:
+    - !reference [.gradle-java-image-rules, rules]
+    - !reference [.workflow-rules-run-on-merge-request, rules]
+    - !reference [.workflow-rules-run-on-default-branch, rules]
+    - !reference [.workflow-rules-run-on-main, rules]
+    - !reference [ .workflow-rules-run-on-label-publish, rules ]
+    - !reference [ .workflow-rules-run-on-tags, rules ]
   script:
-    - gradle shadowJar
+    - gradle build -x test
+
+test:
+  stage: test
+  image: $GRADLE_IMAGE
+  tags:
+    - saas-linux-medium-amd64
+  extends:
+    - .gradle-project-cache
+  rules:
+    - !reference [ .gradle-java-image-rules, rules ]
+    - !reference [ .workflow-rules-run-on-merge-request, rules ]
+    - !reference [ .workflow-rules-run-on-default-branch, rules ]
+    - !reference [ .workflow-rules-run-on-main, rules ]
+    - !reference [ .workflow-rules-run-on-label-publish, rules ]
+    - !reference [ .workflow-rules-run-on-tags, rules ]
+  script:
+    - gradle test
+
+publish gradle:
+  stage: publish
+  image: $GRADLE_IMAGE
+  tags:
+    - saas-linux-medium-amd64
+  extends:
+    - .gradle-project-cache
+  rules:
+    - !reference [ .gradle-java-image-rules, rules ]
+    - !reference [ .workflow-rules-run-on-merge-request, rules ]
+    - !reference [ .workflow-rules-run-on-default-branch, rules ]
+    - !reference [ .workflow-rules-run-on-main, rules ]
+    - !reference [ .workflow-rules-run-on-label-publish, rules ]
+    - !reference [ .workflow-rules-run-on-tags, rules ]
+  script:
+    - gradle publish

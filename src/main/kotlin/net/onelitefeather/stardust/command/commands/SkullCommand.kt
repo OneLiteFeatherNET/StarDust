@@ -1,54 +1,49 @@
 package net.onelitefeather.stardust.command.commands
 
-import cloud.commandframework.annotations.Argument
-import cloud.commandframework.annotations.CommandMethod
-import cloud.commandframework.annotations.CommandPermission
-import cloud.commandframework.annotations.specifier.Greedy
-import io.sentry.Sentry
+import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.extenstions.addClient
-import net.onelitefeather.stardust.extenstions.miniMessage
-import net.onelitefeather.stardust.extenstions.toSentryUser
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
+import org.incendo.cloud.annotation.specifier.Greedy
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
 
 class SkullCommand(private val stardustPlugin: StardustPlugin) {
 
-    @CommandMethod("skull [name]")
-    @CommandPermission("stardust.command.skull")
+    @Command("skull [name]")
+    @Permission("stardust.command.skull")
     fun handleCommand(player: Player, @Greedy @Argument(value = "name") name: String?) {
 
         try {
             val skullOwner = name ?: player.name
 
-            val skullItem = ItemStack(Material.PLAYER_HEAD)
-            val skullMeta = skullItem.itemMeta as SkullMeta
+            stardustPlugin.server.asyncScheduler.runNow(stardustPlugin) {
+                val skullItem = ItemStack(Material.PLAYER_HEAD)
+                val skullMeta = skullItem.itemMeta as SkullMeta
+                val skullOwnerId = stardustPlugin.server.getPlayerUniqueId(skullOwner) ?: player.uniqueId
+                val offlinePlayer = stardustPlugin.server.getOfflinePlayer(skullOwnerId)
+                if (!offlinePlayer.hasPlayedBefore()) {
+                    skullMeta.playerProfile = stardustPlugin.server.createProfile(skullOwnerId)
+                } else {
+                    skullMeta.owningPlayer = offlinePlayer
+                }
 
-            val skullOwnerId = player.server.getPlayerUniqueId(skullOwner) ?: player.uniqueId
-            val offlinePlayer = player.server.getOfflinePlayer(skullOwnerId)
-
-            if (!offlinePlayer.hasPlayedBefore()) {
-                skullMeta.playerProfile = player.server.createProfile(skullOwnerId, skullOwner)
-            } else {
-                skullMeta.owningPlayer = offlinePlayer
+                skullItem.itemMeta = skullMeta
+                player.inventory.addItem(skullItem)
             }
 
-            skullItem.itemMeta = skullMeta
-            player.inventory.addItem(skullItem)
-
-            player.sendMessage(miniMessage {
-                stardustPlugin.i18nService.getMessage(
-                    "commands.skull.success",
-                    *arrayOf(stardustPlugin.i18nService.getPluginPrefix(), skullOwner)
+            player.sendMessage(
+                Component.translatable("commands.skull.success").arguments(
+                    stardustPlugin.getPluginPrefix(),
+                    Component.text(skullOwner)
                 )
-            })
+            )
+
         } catch (e: Exception) {
-            Sentry.captureException(e) {
-                it.user = player.toSentryUser()
-                player.addClient(it)
-            }
+            this.stardustPlugin.logger.throwing(SkullCommand::class.java.simpleName, "handleCommand", e)
         }
     }
 }
