@@ -24,7 +24,9 @@ class UserTask(val stardustPlugin: StardustPlugin) : Runnable, PlayerUtils {
                     return
                 }
 
-                player.allowFlight = user.isFlying()
+                if(!canEnterFlyMode(player)) {
+                    player.allowFlight = user.isFlying()
+                }
             }
         } catch (e: Exception) {
             stardustPlugin.logger.log(Level.SEVERE, "Could not run for loop", e)
