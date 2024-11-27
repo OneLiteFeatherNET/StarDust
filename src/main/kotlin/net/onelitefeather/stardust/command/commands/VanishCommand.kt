@@ -1,23 +1,27 @@
 package net.onelitefeather.stardust.command.commands
 
-import com.google.common.base.Preconditions
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
+import net.onelitefeather.stardust.user.USER_PROPERTY_TYPE_VALUES
 import net.onelitefeather.stardust.user.UserPropertyType
 import net.onelitefeather.stardust.util.PlayerUtils
 import net.onelitefeather.stardust.util.StringUtils
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.util.StringUtil
 import org.incendo.cloud.annotation.specifier.Greedy
 import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.CommandDescription
 import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.suggestion.Suggestions
+import org.incendo.cloud.context.CommandContext
 
 @Suppress("unused")
 class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, PlayerUtils {
 
+    private val vanishProperties = USER_PROPERTY_TYPE_VALUES.filter(this::startsWith).map { it.toString() }
     @Command("vanish|v fakejoin [player]")
     @Permission("stardust.command.vanish.fakejoin")
     @CommandDescription("Allows to perform a fake join")
@@ -48,40 +52,29 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, P
         Bukkit.broadcast(Component.translatable("listener.quit-message").arguments(target.displayName()))
     }
 
-    @Command("vanish|v nodrop [player]")
-    @Permission("stardust.command.vanish.nodrop")
-    @CommandDescription("Disable the ability to drop items")
-    fun commandVanishNoDrop(
-        commandSender: CommandSender,
-        @Greedy @Argument(value = "player") target: Player?
-    ) {
-
+    @Command("vanish|v toggleProperty <property> [player]")
+    @Permission("stardust.command.vanish.toggleproperty")
+    @CommandDescription("Toggling vanish properties for yourself or someone else")
+    fun commandVanishToggleProperty(commandSender: CommandSender,
+                                    @Argument(value = "property", suggestions = "vanishProperties") property: UserPropertyType,
+                                    @Greedy @Argument(value = "player") target: Player?) {
         if (target == null) {
-            if (commandSender is Player) {
-                toggleProperty(commandSender, commandSender, UserPropertyType.VANISH_DISABLE_ITEM_DROP)
+            toggleProperty(commandSender, commandSender as Player, property)
+        } else {
+
+            val isSenderPlayer = commandSender is Player
+
+            if(!isSenderPlayer) {
+                //The commandSender is the console or a CommandBlock
+                toggleProperty(commandSender, target, property)
+                return
             }
-            return
-        }
 
-        toggleProperty(commandSender, target, UserPropertyType.VANISH_DISABLE_ITEM_DROP)
-    }
-
-    @Command("vanish|v noCollect [player]")
-    @Permission("stardust.command.vanish.nocollect")
-    @CommandDescription("Disable the ability to collect items")
-    fun commandVanishNoCollect(
-        commandSender: CommandSender,
-        @Greedy @Argument(value = "player") target: Player?
-    ) {
-
-        if (target == null) {
-            if (commandSender is Player) {
-                toggleProperty(commandSender, commandSender, UserPropertyType.VANISH_DISABLE_ITEM_COLLECT)
+            //The commandSender is another player.
+            if(stardustPlugin.userService.playerVanishService.canSee(commandSender as Player, target)) {
+                toggleProperty(commandSender, target, property)
             }
-            return
         }
-
-        toggleProperty(commandSender, target, UserPropertyType.VANISH_DISABLE_ITEM_COLLECT)
     }
 
     @Command("vanish|v [player]")
@@ -95,24 +88,27 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, P
         }
     }
 
-    fun toggleProperty(commandSender: CommandSender, target: Player, propertyType: UserPropertyType) {
-
-        Preconditions.checkArgument(
-            propertyType == UserPropertyType.VANISH_DISABLE_ITEM_COLLECT
-                    || propertyType == UserPropertyType.VANISH_DISABLE_ITEM_DROP,
-            "Invalid UserProperty type"
-        )
+    private fun toggleProperty(commandSender: CommandSender, target: Player, propertyType: UserPropertyType) {
 
         val user = stardustPlugin.userService.getUser(target.uniqueId) ?: return
-        val property = user.getProperty(propertyType) ?: return
-        val currentValue = property.getValue<Boolean>() ?: return
 
-        stardustPlugin.userService.setUserProperty(user, propertyType, !currentValue)
+        val property = user.getProperty(propertyType)
+
+        //Get the default state of the boolean property
+        val defaultState = propertyType.defaultValue as Boolean
+
+        //Get the current state of the property
+        val currentValue = if(property != null) property.getValue() else defaultState
+
+        //The new value for the property
+        val value = if(currentValue != null) !currentValue else defaultState
+
+        stardustPlugin.userService.setUserProperty(user, propertyType, value)
 
         commandSender.sendMessage(Component.translatable("commands.vanish.property-set").arguments(
             stardustPlugin.getPluginPrefix(),
             Component.text(propertyType.friendlyName),
-            Component.text(!currentValue),
+            Component.text(value),
             Component.text(target.name)))
     }
 
@@ -128,5 +124,14 @@ class VanishCommand(private val stardustPlugin: StardustPlugin) : StringUtils, P
         } catch (e: Exception) {
             this.stardustPlugin.logger.throwing(VanishCommand::class.java.simpleName, "toggleVanish", e)
         }
+    }
+
+    @Suggestions("vanishProperties")
+    fun vanishProperties(context: CommandContext<CommandSender>, input: String): List<String> {
+        return StringUtil.copyPartialMatches(input, vanishProperties, ArrayList(vanishProperties.size));
+    }
+
+    private fun startsWith(userPropertyType: UserPropertyType): Boolean {
+        return userPropertyType.toString().startsWith("vanish_", true)
     }
 }
