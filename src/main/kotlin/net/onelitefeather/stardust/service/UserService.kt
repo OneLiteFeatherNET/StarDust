@@ -159,7 +159,7 @@ class UserService(private val stardustPlugin: StardustPlugin) {
                 transaction = session.beginTransaction()
                 val userProperty = user.getProperty(type)
                 if (userProperty == null) {
-                    session.persist(UserProperty(null, type.name.lowercase(), value.toString(), type.type))
+                    session.persist(UserProperty(null, type.name.lowercase(), value.toString(), type.type, user))
                 } else {
                     session.merge(userProperty.copy(value = value.toString()))
                 }

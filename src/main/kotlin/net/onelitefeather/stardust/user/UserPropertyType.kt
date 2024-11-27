@@ -13,6 +13,8 @@ enum class UserPropertyType(val friendlyName: String, val defaultValue: Any, val
     VANISHED("Vanished", false, 2),
     VANISH_DISABLE_ITEM_DROP("No-Drop", true, 2),
     VANISH_DISABLE_ITEM_COLLECT("No-Collect", true, 2),
+    VANISH_ALLOW_BUILDING("Allow Building", false, 2),
+    VANISH_ALLOW_PVP("Allow PvP", false, 2)
 }
 
 val USER_PROPERTY_TYPE_VALUES = UserPropertyType.values()
