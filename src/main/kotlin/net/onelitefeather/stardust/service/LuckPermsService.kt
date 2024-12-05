@@ -45,7 +45,7 @@ class LuckPermsService(val stardustPlugin: StardustPlugin) {
         luckPermsEvents.clear()
     }
 
-    fun isEnabled(): Boolean = this::luckPerms.isInitialized
+    fun isEnabled(): Boolean = stardustPlugin.server.pluginManager.isPluginEnabled("LuckPerms")
 
     fun getPrimaryGroup(player: Player): Group {
         val user = luckPerms.userManager.getUser(player.uniqueId) ?: return getDefaultGroup()

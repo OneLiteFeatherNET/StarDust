@@ -31,13 +31,29 @@ data class User(
     }
 
     fun isItemDropDisabled(): Boolean {
-        val property = getProperty(UserPropertyType.VANISH_DISABLE_ITEM_DROP) ?: return true
+        val propertyType = UserPropertyType.VANISH_DISABLE_ITEM_DROP
+        val property = getProperty(propertyType) ?: return getDefaultValue(propertyType)
         return property.getValue<Boolean>() == false
     }
 
     fun isItemCollectDisabled(): Boolean {
-        val property = getProperty(UserPropertyType.VANISH_DISABLE_ITEM_COLLECT) ?: return true
+        val propertyType = UserPropertyType.VANISH_DISABLE_ITEM_COLLECT
+        val property = getProperty(propertyType) ?: return getDefaultValue(propertyType)
         return property.getValue<Boolean>() == false
+    }
+
+    fun isBuildingAllowed(): Boolean {
+        if(!isVanished()) return true
+        val propertyType = UserPropertyType.VANISH_ALLOW_BUILDING
+        val property = getProperty(propertyType) ?: return getDefaultValue(propertyType)
+        return property.getValue<Boolean>() == true
+    }
+
+    fun isPvPAllowed(): Boolean {
+        if(!isVanished()) return true
+        val propertyType = UserPropertyType.VANISH_ALLOW_PVP
+        val property = getProperty(propertyType) ?: return getDefaultValue(propertyType)
+        return property.getValue<Boolean>() == true
     }
 
     fun isVanished(): Boolean = getProperty(UserPropertyType.VANISHED)?.getValue() ?: false
@@ -87,5 +103,8 @@ data class User(
         return "User(id=$id, uuid='$uuid', name='$name', properties=$properties)"
     }
 
+    private fun getDefaultValue(type: UserPropertyType): Boolean {
+        return type.type.toInt() == 2 && type.defaultValue as Boolean
+    }
 
 }
