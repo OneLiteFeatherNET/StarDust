@@ -23,7 +23,7 @@ dependencyResolutionManagement {
 
             plugin("pluginYaml", "net.minecrell.plugin-yml.paper").version("0.6.0")
             plugin("shadow", "com.github.johnrengelman.shadow").version("8.1.1")
-            plugin("runServer", "xyz.jpenilla.run-paper").version("2.1.0")
+            plugin("runServer", "xyz.jpenilla.run-paper").version("2.3.1")
             plugin("publishData", "de.chojo.publishdata").version("1.4.0")
 
 
