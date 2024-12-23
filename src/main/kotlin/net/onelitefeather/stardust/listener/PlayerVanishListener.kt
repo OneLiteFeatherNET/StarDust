@@ -1,40 +1,102 @@
 package net.onelitefeather.stardust.listener
 
+import com.destroystokyo.paper.event.entity.SkeletonHorseTrapEvent
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.user.User
+import net.onelitefeather.stardust.util.PlayerUtils
 import org.bukkit.Bukkit
-import org.bukkit.entity.Entity
-import org.bukkit.entity.Item
-import org.bukkit.entity.Player
+import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
+import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.BlockReceiveGameEvent
 import org.bukkit.event.entity.*
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.permissions.Permissible
+import org.bukkit.event.raid.RaidTriggerEvent
 
-class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listener {
+
+class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listener, PlayerUtils {
+
+    private val vanishService = stardustPlugin.userService.playerVanishService
+    private val possibleEntityAttackCauses = listOf(
+        DamageCause.ENTITY_ATTACK,
+        DamageCause.ENTITY_SWEEP_ATTACK,
+        DamageCause.PROJECTILE
+    )
+
+    @EventHandler
+    fun handleBlockBreak(event: BlockBreakEvent) {
+        val player = event.player
+        val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
+        event.isCancelled = vanishService.isVanished(player) && !user.isBuildingAllowed()
+    }
+
+    @EventHandler
+    fun handleBlockPlace(event: BlockPlaceEvent) {
+        val player = event.player
+        val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
+        event.isCancelled = vanishService.isVanished(player) && !user.isBuildingAllowed()
+    }
+
+    @EventHandler
+    fun handleEntityDamage(event: EntityDamageEvent) {
+        if (possibleEntityAttackCauses.contains(event.cause)) return
+        if (event.entity is Player) {
+
+            val player = event.entity as Player
+            val user = stardustPlugin.userService.getUser(player.uniqueId)
+            val isDamageAllowed = user?.isPvPAllowed() ?: false
+
+            event.isCancelled = vanishService.isVanished(player) && !isDamageAllowed
+        }
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    fun onEntityDamageByBlock(event: EntityDamageByBlockEvent) {
+    fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
 
         val target = event.entity
         val attacker = event.damager
+        if (attacker is Projectile) return
+
+        val attackerUser = stardustPlugin.userService.getUser(attacker.uniqueId) ?: return
         val targetUser = stardustPlugin.userService.getUser(target.uniqueId)
-        if (attacker is Permissible) {
-            event.isCancelled = if (targetUser != null && targetUser.isVanished()) {
-                !attacker.hasPermission("stardust.bypass.damage.vanish")
-            } else if (targetUser != null && target.isInvulnerable) {
-                !attacker.hasPermission("stardust.bypass.damage.invulnerable")
-            } else {
-                false
-            }
+
+        val canAttack = attackerUser.isVanished() && attackerUser.isPvPAllowed()
+
+        event.isCancelled = when {
+            attacker is Player && vanishService.isVanished(attacker) -> !canAttack
+            targetUser != null && targetUser.isVanished() -> !canAttack
+            target !is Player -> canAttack
+            target.isInvulnerable -> !attacker.hasPermission("stardust.bypass.damage.invulnerable")
+            else -> false
         }
+    }
+
+    @EventHandler
+    fun handleProjectileLaunch(event: ProjectileLaunchEvent) {
+        if (event.entity !is ThrownPotion) return
+        val entity = event.entity
+        if (entity.shooter !is Entity) return
+        val shooter = entity.shooter as Entity
+        val user = stardustPlugin.userService.getUser(shooter.uniqueId) ?: return
+        event.isCancelled = user.isVanished() && !user.isPvPAllowed()
+    }
+
+    @EventHandler
+    fun handleProjectileEntityHit(event: ProjectileHitEvent) {
+        if (event.hitEntity == null) return
+        val entity = event.entity
+        if (entity.shooter !is Entity) return
+        val shooter = entity.shooter as Entity
+        val user = stardustPlugin.userService.getUser(shooter.uniqueId) ?: return
+        event.isCancelled = user.isVanished() && !user.isPvPAllowed()
     }
 
     @EventHandler
@@ -150,7 +212,19 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
             null
         }
 
-        if(player == null) return
+        if (player == null) return
         event.isCancelled = stardustPlugin.userService.playerVanishService.isVanished(player)
+    }
+
+    @EventHandler
+    fun handleRaidTrigger(event: RaidTriggerEvent) {
+        val player = event.player
+        event.isCancelled = vanishService.isVanished(player)
+    }
+
+    @EventHandler
+    fun handleRaidTrigger(event: SkeletonHorseTrapEvent) {
+        val notVanishedSize = event.eligibleHumans.filterIsInstance<Player>().filterNot(vanishService::isVanished).size
+        event.isCancelled = notVanishedSize == 0
     }
 }

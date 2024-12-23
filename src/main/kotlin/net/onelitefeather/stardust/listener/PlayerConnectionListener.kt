@@ -24,6 +24,8 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                 stardustPlugin.userService.registerUser(player) {
                     player.sendMessage(Component.translatable("plugin.first-join").arguments(stardustPlugin.getPluginPrefix(), player.displayName()))
                 }
+
+                joinMessage(event)
                 return
             }
 
@@ -32,11 +34,7 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
                 stardustPlugin.userService.updateUser(user.copy(name = player.name))
             }
 
-            val isVanished = stardustPlugin.userService.playerVanishService.handlePlayerJoin(player)
-            event.joinMessage(
-                if (isVanished) null else
-                Component.translatable("listener.join-message").arguments(player.displayName()))
-
+            joinMessage(event)
         } catch (e: Exception) {
             this.stardustPlugin.logger.log(Level.SEVERE, "Something went wrong during the join process", e)
         }
@@ -56,5 +54,13 @@ class PlayerConnectionListener(private val stardustPlugin: StardustPlugin) : Lis
         } catch (e: Exception) {
             this.stardustPlugin.logger.log(Level.SEVERE, "Something went wrong during the quit process", e)
         }
+    }
+
+    private fun joinMessage(event: PlayerJoinEvent) {
+        val player = event.player
+        val isVanished = stardustPlugin.userService.playerVanishService.handlePlayerJoin(player)
+        event.joinMessage(
+            if (isVanished) null else
+                Component.translatable("listener.join-message").arguments(player.displayName()))
     }
 }

@@ -7,11 +7,14 @@ import net.onelitefeather.stardust.api.PlayerVanishService
 import net.onelitefeather.stardust.user.UserPropertyType
 import net.onelitefeather.stardust.util.PlayerUtils
 import net.onelitefeather.stardust.util.RADIUS_REMOVE_ENEMIES
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
+import org.bukkit.persistence.PersistentDataType
 
 class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, private val userService: UserService) :
     PlayerVanishService<Player>, PlayerUtils {
 
+    private val vanishedKey = NamespacedKey(stardustPlugin, "vanished")
     private val vanishSeeOthersPermission = "stardust.vanish.others"
 
     override fun hidePlayer(player: Player) {
@@ -41,46 +44,50 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
         if (currentState) {
             showPlayer(player)
             sendReappearedMessage(player)
-            player.allowFlight = canEnterFlyMode(player)
+            togglePlayerProperties(player, false)
         } else {
             hidePlayer(player)
-            removeEnemies(player, RADIUS_REMOVE_ENEMIES)
             sendDisappearedMessage(player)
-            player.allowFlight = true
+            togglePlayerProperties(player, true)
         }
-
         setVanished(player, !currentState)
         return isVanished(player)
     }
 
     override fun isVanished(player: Player): Boolean {
-        val user = userService.getUser(player.uniqueId) ?: return false
+        val vanished = player.persistentDataContainer[vanishedKey, PersistentDataType.BOOLEAN] ?: false
+        val user = userService.getUser(player.uniqueId) ?: return vanished
         return user.isVanished()
     }
 
     override fun setVanished(player: Player, vanished: Boolean) {
         val user = userService.getUser(player.uniqueId) ?: return
         userService.setUserProperty(user, UserPropertyType.VANISHED, vanished)
+        player.persistentDataContainer[vanishedKey, PersistentDataType.BOOLEAN] = vanished
     }
 
     override fun handlePlayerJoin(player: Player): Boolean {
 
         player.server.onlinePlayers.filter(this::isVanished).forEach(this::hidePlayer)
 
-        if(handleAutoVanish(player)) return true
+        if (handleAutoVanish(player)) return true
 
         if (isVanished(player)) {
 
             if (!player.hasPermission("stardust.command.vanish")) {
                 setVanished(player, false)
                 showPlayer(player)
-                player.allowFlight = !canEnterFlyMode(player)
+                togglePlayerProperties(player, false)
                 return true
             }
 
             player.sendMessage(Component.translatable("vanish.join.self").arguments(stardustPlugin.getPluginPrefix()))
-            broadcastMessage(player, Component.translatable("vanish.join.silently").arguments(vanishDisplayName(player)))
+            broadcastMessage(
+                player,
+                Component.translatable("vanish.join.silently").arguments(vanishDisplayName(player))
+            )
             hidePlayer(player)
+            togglePlayerProperties(player, true)
         }
 
         return false
@@ -95,10 +102,21 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
         )
     }
 
+    override fun canSee(player: Player, target: Player): Boolean {
+        if (!isGroupWeightBased()) return player.hasPermission(vanishSeeOthersPermission)
+        val playerGroupPriority = stardustPlugin.luckPermsService.getGroupPriority(player)
+        val targetGroupPriority = stardustPlugin.luckPermsService.getGroupPriority(target)
+        return playerGroupPriority >= targetGroupPriority
+    }
+
     private fun sendDisappearedMessage(player: Player) {
-        player.sendMessage(Component.translatable("vanish.self.disappeared").arguments(stardustPlugin.getPluginPrefix()))
-        broadcastMessage(player, Component.translatable("vanish.disappeared").arguments
-            (stardustPlugin.getPluginPrefix(), vanishDisplayName(player)))
+        player.sendMessage(
+            Component.translatable("vanish.self.disappeared").arguments(stardustPlugin.getPluginPrefix())
+        )
+        broadcastMessage(
+            player, Component.translatable("vanish.disappeared").arguments
+                (stardustPlugin.getPluginPrefix(), vanishDisplayName(player))
+        )
 
         player.server.onlinePlayers.filterNot { it.hasPermission(vanishSeeOthersPermission) }.forEach {
             it.sendMessage(Component.translatable("listener.quit-message").arguments(player.displayName()))
@@ -108,8 +126,10 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
     private fun sendReappearedMessage(player: Player) {
         player.sendMessage(Component.translatable("vanish.self.reappeared").arguments(stardustPlugin.getPluginPrefix()))
 
-        broadcastMessage(player, Component.translatable("vanish.reappeared").arguments(
-            stardustPlugin.getPluginPrefix(), vanishDisplayName(player))
+        broadcastMessage(
+            player, Component.translatable("vanish.reappeared").arguments(
+                stardustPlugin.getPluginPrefix(), vanishDisplayName(player)
+            )
         )
     }
 
@@ -120,8 +140,7 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
 
             setVanished(player, true)
             hidePlayer(player)
-            removeEnemies(player, RADIUS_REMOVE_ENEMIES)
-            player.allowFlight = true
+            togglePlayerProperties(player, true)
             player.sendMessage(Component.translatable("vanish.join.self").arguments(stardustPlugin.getPluginPrefix()))
 
             broadcastMessage(
@@ -148,12 +167,21 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
         return MiniMessage.miniMessage().deserialize(player.name).color(team.color())
     }
 
-    private fun canSee(player: Player, target: Player): Boolean {
-        if (!isGroupWeightBased()) return player.hasPermission(vanishSeeOthersPermission)
-        val playerGroupPriority = stardustPlugin.luckPermsService.getGroupPriority(player)
-        val targetGroupPriority = stardustPlugin.luckPermsService.getGroupPriority(target)
-        return playerGroupPriority >= targetGroupPriority
+    private fun isGroupWeightBased(): Boolean {
+        if(!stardustPlugin.luckPermsService.isEnabled()) return false
+        return stardustPlugin.config.getBoolean("group-weight-based-visibility", true)
     }
 
-    private fun isGroupWeightBased() = stardustPlugin.config.getBoolean("group-weight-based-visibility", true)
+    private fun togglePlayerProperties(player: Player, vanished: Boolean) {
+        if (vanished) {
+            removeEnemies(player, RADIUS_REMOVE_ENEMIES)
+            player.allowFlight = true
+            player.isSleepingIgnored = true
+            player.affectsSpawning = false
+        } else {
+            player.allowFlight = canEnterFlyMode(player)
+            player.isSleepingIgnored = false
+            player.affectsSpawning = true
+        }
+    }
 }

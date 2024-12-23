@@ -51,4 +51,6 @@ interface PlayerVanishService<P : Player> {
      * @param player be affected
      */
     fun handlePlayerQuit(player: P)
+
+    fun canSee(player: P, target: P): Boolean
 }
