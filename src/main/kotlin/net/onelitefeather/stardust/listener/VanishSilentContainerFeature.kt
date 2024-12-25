@@ -4,6 +4,7 @@ import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.util.DUMMY_VECTOR
 import org.bukkit.GameMode
 import org.bukkit.block.Container
+import org.bukkit.block.EnderChest
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -14,7 +15,7 @@ import org.bukkit.inventory.Inventory
 
 class VanishSilentContainerFeature(private val stardustPlugin: StardustPlugin) : Listener {
 
-    val silentContainerLooter: MutableMap<Player, Inventory> = HashMap()
+    private val silentContainerLooter: MutableMap<Player, Inventory> = HashMap()
 
     @EventHandler
     fun handleInventoryClose(event: InventoryCloseEvent) {
@@ -41,9 +42,16 @@ class VanishSilentContainerFeature(private val stardustPlugin: StardustPlugin) :
         val player = event.player
         val clickedBlock = event.clickedBlock ?: return
         val blockState = clickedBlock.state
-        if (blockState !is Container) return
 
         val vanished = stardustPlugin.userService.playerVanishService.isVanished(player)
+        if(vanished && blockState is EnderChest) {
+            event.isCancelled = true
+            player.openInventory(player.enderChest)
+            return
+        }
+
+        if (blockState !is Container) return
+
         if (vanished) {
             if (player.hasPermission("stardust.vanish.silentopen") && player.isSneaking && event.action.isRightClick) {
                 silentContainerLooter[player] = blockState.inventory
