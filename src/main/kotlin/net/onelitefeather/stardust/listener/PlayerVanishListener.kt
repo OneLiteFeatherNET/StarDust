@@ -200,15 +200,15 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
         val block = event.clickedBlock ?: return
         val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
         if (!user.isVanished()) return
-        if (user.getProperty(UserPropertyType.VANISH_ALLOW_BUILDING)?.getValue<Boolean>() == true) return
 
+        val isBuildingDenied = user.getProperty(UserPropertyType.VANISH_ALLOW_BUILDING)?.getValue<Boolean>() == false
         val isBlockPowerable = block.blockData is Powerable
 
         if (event.action == Action.PHYSICAL) {
-            val isBlockPhysical = stardustPlugin.pluginConfig.physicalBlocks().contains(block.type)
 
+            val isBlockPhysical = stardustPlugin.pluginConfig.physicalBlocks().contains(block.type)
             event.isCancelled = if (isBlockPhysical || isBlockPowerable) {
-                true
+                isBuildingDenied
             } else {
                 event.useInteractedBlock() == Event.Result.DENY
             }
@@ -217,7 +217,7 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
         }
 
         event.isCancelled = if (isBlockPowerable) {
-            !player.isSneaking
+            isBuildingDenied
         } else {
             event.useInteractedBlock() == Event.Result.DENY
         }
