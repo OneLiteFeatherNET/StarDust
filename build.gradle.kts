@@ -12,7 +12,7 @@ group = "net.onelitefeather"
 
 repositories {
     mavenCentral()
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     maven("https://repo.dmulloy2.net/repository/public/")
 }
