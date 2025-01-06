@@ -5,6 +5,7 @@ import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.user.User
+import net.onelitefeather.stardust.user.UserPropertyType
 import net.onelitefeather.stardust.util.PlayerUtils
 import org.bukkit.Bukkit
 import org.bukkit.block.data.Powerable
@@ -197,8 +198,10 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
         val player = event.player
 
         val block = event.clickedBlock ?: return
-        val notVanished = !stardustPlugin.userService.playerVanishService.isVanished(player)
-        if (notVanished) return
+        val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
+        if (!user.isVanished()) return
+        if (user.getProperty(UserPropertyType.VANISH_ALLOW_BUILDING)?.getValue<Boolean>() == true) return
+
         val isBlockPowerable = block.blockData is Powerable
 
         if (event.action == Action.PHYSICAL) {
