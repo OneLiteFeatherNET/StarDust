@@ -17,7 +17,7 @@ dependencyResolutionManagement {
             version("luckperms", "5.4")
             version("protocolLib", "5.0.0")
             version("jaxbRuntime", "4.0.5")
-            version("postgresql", "42.7.3")
+            version("postgresql", "42.7.5")
             version("apacheCommons", "3.17.0")
             version("junitApi", "5.11.0")
 
