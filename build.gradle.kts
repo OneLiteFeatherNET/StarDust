@@ -20,7 +20,7 @@ dependencies {
 
     compileOnly(libs.paper)
     implementation(libs.bundles.cloud)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
     compileOnly(libs.luckperms)
     compileOnly(libs.protocolLib)
 
