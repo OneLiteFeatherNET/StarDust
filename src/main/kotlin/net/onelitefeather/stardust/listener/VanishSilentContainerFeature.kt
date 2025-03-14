@@ -1,7 +1,6 @@
 package net.onelitefeather.stardust.listener
 
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.util.DUMMY_VECTOR
 import org.bukkit.GameMode
 import org.bukkit.block.Container
 import org.bukkit.block.EnderChest
@@ -46,9 +45,19 @@ class VanishSilentContainerFeature(private val stardustPlugin: StardustPlugin) :
         val hasPermission = player.hasPermission("stardust.vanish.silentopen")
 
         val vanished = stardustPlugin.userService.playerVanishService.isVanished(player)
-        if (vanished && hasPermission && blockState is EnderChest) {
-            event.isCancelled = true
-            player.openInventory(player.enderChest)
+        if (blockState is EnderChest) {
+
+            val useInteractBlock = if (vanished && !player.isSneaking) {
+                true
+            } else {
+                player.isSneaking
+            }
+
+            if (vanished && player.isSneaking) {
+                player.openInventory(player.enderChest)
+            }
+
+            event.isCancelled = useInteractBlock
             return
         }
 
@@ -58,7 +67,7 @@ class VanishSilentContainerFeature(private val stardustPlugin: StardustPlugin) :
             if (hasPermission && player.isSneaking && event.action.isRightClick) {
                 silentContainerLooter[player] = blockState.inventory
 
-                player.velocity = DUMMY_VECTOR
+                player.velocity.setY(player.location.blockY + 1.5)
                 player.gameMode = GameMode.SPECTATOR
                 player.server.scheduler.runTaskLater(stardustPlugin, Runnable {
                     val previousGameMode = player.previousGameMode ?: player.server.defaultGameMode
