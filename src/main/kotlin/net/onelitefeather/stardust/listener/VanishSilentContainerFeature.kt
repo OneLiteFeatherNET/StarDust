@@ -63,8 +63,8 @@ class VanishSilentContainerFeature(private val stardustPlugin: StardustPlugin) :
 
         if (blockState !is Container) return
 
-        if (vanished) {
-            if (hasPermission && player.isSneaking && event.action.isRightClick) {
+        if (vanished && event.action.isRightClick) {
+            if (hasPermission && player.isSneaking) {
                 openContainer(player, blockState.inventory)
             } else {
                 event.isCancelled = true
