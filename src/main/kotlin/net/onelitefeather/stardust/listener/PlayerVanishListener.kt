@@ -5,9 +5,12 @@ import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import net.kyori.adventure.text.Component
 import net.onelitefeather.stardust.StardustPlugin
 import net.onelitefeather.stardust.user.User
+import net.onelitefeather.stardust.user.UserPropertyType
 import net.onelitefeather.stardust.util.PlayerUtils
 import org.bukkit.Bukkit
+import org.bukkit.block.data.Powerable
 import org.bukkit.entity.*
+import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -192,12 +195,32 @@ class PlayerVanishListener(private val stardustPlugin: StardustPlugin) : Listene
     @EventHandler
     fun handlePhysicalInteract(event: PlayerInteractEvent) {
 
-        if (event.action != Action.PHYSICAL) return
         val player = event.player
 
         val block = event.clickedBlock ?: return
-        if (!stardustPlugin.userService.playerVanishService.isVanished(player)) return
-        event.isCancelled = stardustPlugin.pluginConfig.physicalBlocks().contains(block.type)
+        val user = stardustPlugin.userService.getUser(player.uniqueId) ?: return
+        if (!user.isVanished()) return
+
+        val isBuildingDenied = user.getProperty(UserPropertyType.VANISH_ALLOW_BUILDING)?.getValue<Boolean>() == false
+        val isBlockPowerable = block.blockData is Powerable
+
+        if (event.action == Action.PHYSICAL) {
+
+            val isBlockPhysical = stardustPlugin.pluginConfig.physicalBlocks().contains(block.type)
+            event.isCancelled = if (isBlockPhysical || isBlockPowerable) {
+                isBuildingDenied
+            } else {
+                event.useInteractedBlock() == Event.Result.DENY
+            }
+
+            return
+        }
+
+        event.isCancelled = if (isBlockPowerable) {
+            isBuildingDenied
+        } else {
+            event.useInteractedBlock() == Event.Result.DENY
+        }
     }
 
     @EventHandler

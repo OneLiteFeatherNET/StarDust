@@ -1,9 +1,9 @@
 package net.onelitefeather.stardust.listener
 
 import net.onelitefeather.stardust.StardustPlugin
-import net.onelitefeather.stardust.util.DUMMY_VECTOR
 import org.bukkit.GameMode
 import org.bukkit.block.Container
+import org.bukkit.block.EnderChest
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -14,7 +14,7 @@ import org.bukkit.inventory.Inventory
 
 class VanishSilentContainerFeature(private val stardustPlugin: StardustPlugin) : Listener {
 
-    val silentContainerLooter: MutableMap<Player, Inventory> = HashMap()
+    private val silentContainerLooter: MutableMap<Player, Inventory> = HashMap()
 
     @EventHandler
     fun handleInventoryClose(event: InventoryCloseEvent) {
@@ -41,22 +41,50 @@ class VanishSilentContainerFeature(private val stardustPlugin: StardustPlugin) :
         val player = event.player
         val clickedBlock = event.clickedBlock ?: return
         val blockState = clickedBlock.state
-        if (blockState !is Container) return
+
+        val hasPermission = player.hasPermission("stardust.vanish.silentopen")
 
         val vanished = stardustPlugin.userService.playerVanishService.isVanished(player)
-        if (vanished) {
-            if (player.hasPermission("stardust.vanish.silentopen") && player.isSneaking && event.action.isRightClick) {
-                silentContainerLooter[player] = blockState.inventory
+        if (blockState is EnderChest) {
 
-                player.velocity = DUMMY_VECTOR
-                player.gameMode = GameMode.SPECTATOR
-                player.server.scheduler.runTaskLater(stardustPlugin, Runnable {
-                    val previousGameMode = player.previousGameMode ?: player.server.defaultGameMode
-                    player.gameMode = previousGameMode
-                }, 20L)
+            val useInteractBlock = if (vanished && !player.isSneaking) {
+                true
+            } else {
+                player.isSneaking
+            }
+
+            if (vanished && player.isSneaking) {
+                openContainer(player, player.enderChest)
+            }
+
+            event.isCancelled = useInteractBlock
+            return
+        }
+
+        if (blockState !is Container) return
+
+        if (vanished && event.action.isRightClick) {
+            if (hasPermission && player.isSneaking) {
+                openContainer(player, blockState.inventory)
             } else {
                 event.isCancelled = true
             }
         }
+    }
+
+    private fun openContainer(player: Player, inventory: Inventory) {
+        silentContainerLooter[player] = inventory
+
+        //Check if the inventory is the player's EnderChest to prevent double opening the inventory
+        if(inventory == player.enderChest) {
+            player.openInventory(inventory)
+        }
+
+        player.velocity.setY(player.location.blockY + 1.5)
+        player.gameMode = GameMode.SPECTATOR
+        player.server.scheduler.runTaskLater(stardustPlugin, Runnable {
+            val previousGameMode = player.previousGameMode ?: player.server.defaultGameMode
+            player.gameMode = previousGameMode
+        }, 20L)
     }
 }

@@ -1,7 +1,5 @@
 # General plugin settings
 settings:
-  afk-kick-time: 600
-  auto-afk-time: 300
   use-cooldown-bypass: true
 
 item-signing:
@@ -13,6 +11,7 @@ physicalBlocks:
   - 'SCULK_SHRIEKER'
   - 'BIG_DRIPLEAF'
   - 'TURTLE_EGG'
+  - 'FARMLAND'
 
 vanish:
   group-weight-based-visibility: true
