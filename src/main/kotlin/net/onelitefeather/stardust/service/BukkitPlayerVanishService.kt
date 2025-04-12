@@ -169,7 +169,7 @@ class BukkitPlayerVanishService(private val stardustPlugin: StardustPlugin, priv
 
     private fun isGroupWeightBased(): Boolean {
         if(!stardustPlugin.luckPermsService.isEnabled()) return false
-        return stardustPlugin.config.getBoolean("group-weight-based-visibility", true)
+        return stardustPlugin.config.getBoolean("vanish.group-weight-based-visibility", false)
     }
 
     private fun togglePlayerProperties(player: Player, vanished: Boolean) {
