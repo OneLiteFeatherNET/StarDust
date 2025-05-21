@@ -2,8 +2,6 @@ item-signing:
   message: <text> <gray>(</gray><player> <gray>-</gray> <gold><date></gold><gray>)</gray>
 # General plugin settings
 settings:
-  afk-kick-time: 600
-  auto-afk-time: 300
   use-cooldown-bypass: true
 
 physicalBlocks:
@@ -12,6 +10,7 @@ physicalBlocks:
 - SCULK_SHRIEKER
 - BIG_DRIPLEAF
 - TURTLE_EGG
+- FARMLAND
 
 # Group weight visibility for players
 vanish:
