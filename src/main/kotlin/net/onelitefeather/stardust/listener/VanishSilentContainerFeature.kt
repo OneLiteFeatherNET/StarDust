@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.Inventory
+import java.util.HashMap
 
 class VanishSilentContainerFeature(private val stardustPlugin: StardustPlugin) : Listener {
 
@@ -18,7 +19,7 @@ class VanishSilentContainerFeature(private val stardustPlugin: StardustPlugin) :
 
     @EventHandler
     fun handleInventoryClose(event: InventoryCloseEvent) {
-        silentContainerLooter.remove(event.player)
+        silentContainerLooter.remove(event.player as Player)
     }
 
     @EventHandler
@@ -73,7 +74,7 @@ class VanishSilentContainerFeature(private val stardustPlugin: StardustPlugin) :
     }
 
     private fun openContainer(player: Player, inventory: Inventory) {
-        silentContainerLooter[player] = inventory
+        silentContainerLooter.putIfAbsent(player, inventory)
 
         //Check if the inventory is the player's EnderChest to prevent double opening the inventory
         if(inventory == player.enderChest) {
