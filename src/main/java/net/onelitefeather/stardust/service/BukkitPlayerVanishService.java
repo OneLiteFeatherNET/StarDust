@@ -117,8 +117,8 @@ public class BukkitPlayerVanishService implements PlayerVanishService<Player> {
     @Override
     public boolean canSee(Player player, Player target) {
         if (!isGroupWeightBased()) return player.hasPermission(VANISH_SEE_OTHERS_PERMISSION);
-        var playerGroupPriority = plugin.luckPermsService.getGroupPriority(player);
-        var targetGroupPriority = plugin.luckPermsService.getGroupPriority(target);
+        var playerGroupPriority = plugin.getLuckPermsService().getGroupPriority(player);
+        var targetGroupPriority = plugin.getLuckPermsService().getGroupPriority(target);
         return playerGroupPriority >= targetGroupPriority;
     }
 
