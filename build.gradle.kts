@@ -1,4 +1,5 @@
 plugins {
+    id("java")
     kotlin("jvm") version "2.1.0"
     alias(libs.plugins.pluginYaml)
     alias(libs.plugins.shadow)
@@ -34,13 +35,18 @@ dependencies {
     testRuntimeOnly(libs.junitEngine)
 }
 
-kotlin {
-    jvmToolchain {
+java {
+    toolchain {
         languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
 tasks {
+
+    compileJava {
+        options.encoding = "UTF-8"
+        options.release.set(21)
+    }
 
     runServer {
         minecraftVersion("1.21.1")
