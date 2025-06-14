@@ -217,11 +217,10 @@ public class SyncFrogService implements Listener {
 
     @Suggestions(value = "frogVariants")
     public List<String> frogVariants(CommandContext<CommandSender> context, String input) {
-        var variants = Registry.FROG_VARIANT.stream()
+        return Registry.FROG_VARIANT.stream()
                 .map(Frog.Variant::getKey)
-                .map(NamespacedKey::toString)
-                .filter(key -> key.startsWith(input.toLowerCase()))
+                .map(NamespacedKey::value)
+                .filter(s -> s.startsWith(input))
                 .toList();
-        return StringUtil.copyPartialMatches(input, variants, variants);
     }
 }
