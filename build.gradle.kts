@@ -43,6 +43,10 @@ java {
 
 tasks {
 
+    build {
+        dependsOn(shadowJar)
+    }
+
     compileJava {
         options.encoding = "UTF-8"
         options.release.set(21)
@@ -59,7 +63,7 @@ tasks {
     }
 
     shadowJar {
-        archiveFileName.set("${rootProject.name}.${archiveExtension.getOrElse("jar")}")
+        archiveFileName.set("${rootProject.name}-${rootProject.version}.${archiveExtension.getOrElse("jar")}")
     }
 }
 
