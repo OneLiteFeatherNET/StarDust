@@ -50,6 +50,16 @@ public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, Comm
         public Entity getExecutor() {
             return null;
         }
+
+        @Override
+        public @NotNull CommandSourceStack withLocation(@NotNull Location location) {
+            return this;
+        }
+
+        @Override
+        public @NotNull CommandSourceStack withExecutor(@NotNull Entity entity) {
+            return this;
+        }
     }
 
     @SuppressWarnings({"UnstableApiUsage", "NonExtendableApiUsage"})
@@ -67,6 +77,16 @@ public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, Comm
         @Override
         public Entity getExecutor() {
             return null;
+        }
+
+        @Override
+        public @NotNull CommandSourceStack withLocation(@NotNull Location location) {
+            return this;
+        }
+
+        @Override
+        public @NotNull CommandSourceStack withExecutor(@NotNull Entity entity) {
+            return this;
         }
     }
 
@@ -86,6 +106,16 @@ public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, Comm
         @Override
         public Entity getExecutor() {
             return this.player;
+        }
+
+        @Override
+        public @NotNull CommandSourceStack withLocation(@NotNull Location location) {
+            return this;
+        }
+
+        @Override
+        public @NotNull CommandSourceStack withExecutor(@NotNull Entity entity) {
+            return this;
         }
     }
 }
