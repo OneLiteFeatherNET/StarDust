@@ -39,8 +39,11 @@ public class BukkitCommandCooldownService implements CommandCooldownService {
     public void addCommandCooldown(UUID commandSender, String command, long time, TimeUnit timeUnit) {
         this.databaseService.getSessionFactory().map(SessionFactory::openSession).ifPresent(session -> {
             var transaction = session.beginTransaction();
+
+            var cooldown = System.currentTimeMillis() + timeUnit.toMillis(time);
+
             try (session) {
-                session.persist(new CommandCooldown(null, commandSender, command, time));
+                session.persist(new CommandCooldown(null, commandSender, command, cooldown));
                 transaction.commit();
             } catch (Exception e) {
                 if (transaction != null) transaction.rollback();
