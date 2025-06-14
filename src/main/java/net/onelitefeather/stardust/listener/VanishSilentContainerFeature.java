@@ -83,7 +83,6 @@ public class VanishSilentContainerFeature implements Listener {
             player.openInventory(inventory);
         }
 
-        player.setVelocity(player.getVelocity().setY(player.getLocation().getBlockY() + 1.5));
         player.setGameMode(GameMode.SPECTATOR);
 
         player.getServer().getScheduler().getMainThreadExecutor(stardustPlugin).execute(() -> {
