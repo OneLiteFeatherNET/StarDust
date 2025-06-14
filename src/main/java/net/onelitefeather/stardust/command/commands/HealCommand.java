@@ -47,7 +47,7 @@ public class HealCommand {
             return;
         }
 
-        AttributeInstance healthAttribute = target.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        AttributeInstance healthAttribute = target.getAttribute(Attribute.MAX_HEALTH);
         if (healthAttribute != null) {
             target.setHealth(healthAttribute.getValue());
         }
