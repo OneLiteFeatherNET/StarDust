@@ -67,7 +67,12 @@ public class BukkitPlayerVanishService implements PlayerVanishService<Player> {
 
     @Override
     public boolean isVanished(Player player) {
-        return false;
+        var vanished = player.getPersistentDataContainer().get(vanishedKey, PersistentDataType.BOOLEAN);
+        if (vanished == null) return false;
+
+        var user = userService.getUser(player.getUniqueId());
+        if (user == null) return false;
+        return user.isVanished() || vanished;
     }
 
     @Override
