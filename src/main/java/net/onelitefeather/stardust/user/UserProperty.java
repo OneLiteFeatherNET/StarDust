@@ -10,20 +10,24 @@ public class UserProperty {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private final Long id;
+    private Long id;
 
     @Column
-    private final String name;
+    private String name;
 
     @Column
     private String value;
 
     @Column
-    private final Byte type;
+    private Byte type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public UserProperty() {
+        //Empty constructor for hibernate
+    }
 
     public UserProperty(Long id, String name, String value, Byte type, User user) {
         this.id = id;
@@ -66,8 +70,8 @@ public class UserProperty {
     @SuppressWarnings("unchecked")
     public <T> T getValue() {
         return switch (type) {
-            case 1 -> (T) Boolean.valueOf(value);
-            case 2 -> (T) Integer.valueOf(value);
+            case 1 -> (T) Integer.valueOf(value);
+            case 2 -> (T) Boolean.valueOf(value);
             case 3 -> (T) Long.valueOf(value);
             case 4 -> (T) Double.valueOf(value);
             case 5 -> (T) String.valueOf(value);

@@ -16,16 +16,20 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private final Long id;
+    private Long id;
 
     @Column
-    private final String uuid;
+    private String uuid;
 
     @Column
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<UserProperty> properties;
+
+    public User() {
+        //Empty constructor for hibernate
+    }
 
     public User(@Nullable Long id) {
         this(id, UUID.randomUUID(), "null", null);
@@ -102,7 +106,14 @@ public class User {
         var base = getBase();
         if (base == null) return false;
 
-        var value = base.getPersistentDataContainer().get(key, PersistentDataType.BOOLEAN);
+        //Remove old data from the persistent container.
+        var container = base.getPersistentDataContainer();
+        if (container.has(key, PersistentDataType.INTEGER)) {
+            container.remove(key);
+            return false;
+        }
+
+        var value = container.get(key, PersistentDataType.BOOLEAN);
         if (value == null) return false;
 
         return value;
