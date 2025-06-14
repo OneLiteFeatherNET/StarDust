@@ -2,8 +2,9 @@ package net.onelitefeather.stardust.service;
 
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.event.EventSubscription;
-import net.luckperms.api.event.user.track.UserDemoteEvent;
+import net.luckperms.api.event.user.UserLoadEvent;
 import net.luckperms.api.model.group.Group;
+import net.luckperms.api.model.user.User;
 import net.onelitefeather.stardust.StardustPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -39,12 +40,14 @@ public class LuckPermsService {
     }
 
     private void subscribeToEvents() {
-        luckPermsEvents.add(luckPerms.getEventBus().subscribe(UserDemoteEvent.class, event -> {
-            Player player = Bukkit.getPlayer(event.getUser().getUniqueId());
-            if (player == null) return;
-            if (!plugin.getUserService().getVanishService().isVanished(player)) return;
-            plugin.getUserService().getVanishService().toggle(player);
-        }));
+        luckPermsEvents.add(luckPerms.getEventBus().subscribe(UserLoadEvent.class, event -> disableVanish(event.getUser())));
+    }
+
+    private void disableVanish(User user) {
+        Player player = Bukkit.getPlayer(user.getUniqueId());
+        if (player == null) return;
+        if (!plugin.getUserService().getVanishService().isVanished(player)) return;
+        plugin.getUserService().getVanishService().toggle(player);
     }
 
     public void unsubscribeEvents() {
