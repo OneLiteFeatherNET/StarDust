@@ -1,6 +1,5 @@
 plugins {
     id("java")
-    kotlin("jvm") version "2.1.0"
     alias(libs.plugins.pluginYaml)
     alias(libs.plugins.shadow)
     alias(libs.plugins.runServer)
@@ -21,7 +20,6 @@ dependencies {
 
     compileOnly(libs.paper)
     implementation(libs.bundles.cloud)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC.2")
     compileOnly(libs.luckperms)
     compileOnly(libs.protocolLib)
 
