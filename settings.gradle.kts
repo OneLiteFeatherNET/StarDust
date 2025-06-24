@@ -19,7 +19,7 @@ dependencyResolutionManagement {
             version("jaxbRuntime", "4.0.5")
             version("postgresql", "42.7.3")
             version("apacheCommons", "3.17.0")
-            version("junitApi", "5.11.0")
+            version("junitApi", "5.13.2")
 
             plugin("pluginYaml", "net.minecrell.plugin-yml.paper").version("0.6.0")
             plugin("shadow", "com.github.johnrengelman.shadow").version("8.1.1")
