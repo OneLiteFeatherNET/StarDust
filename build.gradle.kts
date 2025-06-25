@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.1.0"
+    id("java")
     alias(libs.plugins.pluginYaml)
     alias(libs.plugins.shadow)
     alias(libs.plugins.runServer)
@@ -20,7 +20,6 @@ dependencies {
 
     compileOnly(libs.paper)
     implementation(libs.bundles.cloud)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC.2")
     compileOnly(libs.luckperms)
     compileOnly(libs.protocolLib)
 
@@ -34,16 +33,25 @@ dependencies {
     testRuntimeOnly(libs.junitEngine)
 }
 
-kotlin {
-    jvmToolchain {
+java {
+    toolchain {
         languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
 tasks {
 
+    build {
+        dependsOn(shadowJar)
+    }
+
+    compileJava {
+        options.encoding = "UTF-8"
+        options.release.set(21)
+    }
+
     runServer {
-        minecraftVersion("1.21.1")
+        minecraftVersion("1.21.4")
         jvmArgs("-Dcom.mojang.eula.agree=true")
     }
 
@@ -53,7 +61,7 @@ tasks {
     }
 
     shadowJar {
-        archiveFileName.set("${rootProject.name}.${archiveExtension.getOrElse("jar")}")
+        archiveFileName.set("${rootProject.name}-${rootProject.version}.${archiveExtension.getOrElse("jar")}")
     }
 }
 
