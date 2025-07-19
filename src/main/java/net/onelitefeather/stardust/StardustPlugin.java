@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+@SuppressWarnings("removal")
 public class StardustPlugin extends JavaPlugin {
 
     public StardustPlugin() {

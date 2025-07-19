@@ -19,9 +19,10 @@ class IPSameCommandTest {
     private ServerMock server;
 
     private StardustPlugin plugin;
-    
+
     private IPSameCommand ipSameCommand;
 
+    @SuppressWarnings("removal")
     public static class MockStardustPlugin extends StardustPlugin {
 
         public MockStardustPlugin() {
