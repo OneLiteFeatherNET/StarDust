@@ -30,7 +30,7 @@ dependencyResolutionManagement {
 
             version("hibernate", "7.0.6.Final")
             version("paper", "1.21.4-R0.1-SNAPSHOT")
-            version("luckperms", "5.4")
+            version("luckperms", "5.5")
             version("protocolLib", "5.0.0")
             version("jaxbRuntime", "4.0.5")
             version("postgresql", "42.7.7")
