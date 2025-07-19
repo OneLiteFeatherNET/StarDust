@@ -13,13 +13,23 @@ import net.onelitefeather.stardust.service.*;
 import net.onelitefeather.stardust.translation.PluginTranslationRegistry;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class StardustPlugin extends JavaPlugin {
+
+    public StardustPlugin() {
+    }
+
+    public StardustPlugin(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
+    }
 
     private final List<Locale> supportedLocals = List.of(Locale.US, Locale.GERMANY);
 

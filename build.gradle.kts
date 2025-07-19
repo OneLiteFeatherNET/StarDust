@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.runServer)
     `maven-publish`
 }
+
 dependencies {
 
     compileOnly(libs.paper)
@@ -18,8 +19,11 @@ dependencies {
     implementation(libs.apacheCommons)
 
     // Testing
-    testImplementation(libs.junitApi)
-    testRuntimeOnly(libs.junitEngine)
+    testImplementation(platform(libs.mycelium.bom))
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit.platform.launcher)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(libs.mockbukkit)
 }
 
 java {
@@ -42,6 +46,9 @@ tasks {
     }
     test {
         useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+        }
     }
     runServer {
         minecraftVersion("1.21.4")

@@ -34,6 +34,9 @@ public final class IPSameCommand {
             if (onlinePlayer.getAddress() == null) {
                 continue;
             }
+            if (!onlinePlayer.getAddress().getHostString().equals(target.getAddress().getHostString())) {
+                continue;
+            }
             player.sendMessage(Component.translatable("commands.ipsame.show").arguments(plugin.getPrefix(), target.displayName(), onlinePlayer.displayName()));
         }
     }

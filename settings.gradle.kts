@@ -36,12 +36,15 @@ dependencyResolutionManagement {
             version("postgresql", "42.7.3")
             version("apacheCommons", "3.17.0")
             version("junitApi", "5.11.0")
+            version("bom", "1.4.2")
+            version("mockbukit", "4.72.2")
 
             plugin("pluginYaml", "net.minecrell.plugin-yml.paper").version("0.6.0")
             plugin("shadow", "com.github.johnrengelman.shadow").version("8.1.1")
             plugin("runServer", "xyz.jpenilla.run-paper").version("2.3.1")
 
 
+            library("mycelium.bom", "net.onelitefeather", "mycelium-bom").versionRef("bom")
             library("paper", "io.papermc.paper", "paper-api").versionRef("paper")
             library("luckperms", "net.luckperms", "api").versionRef("luckperms")
             library("protocolLib", "com.comphenix.protocol", "ProtocolLib").versionRef("protocolLib")
@@ -58,8 +61,10 @@ dependencyResolutionManagement {
 
             library("apacheCommons", "org.apache.commons", "commons-lang3").versionRef("apacheCommons")
 
-            library("junitApi", "org.junit.jupiter", "junit-jupiter-api").versionRef("junitApi")
-            library("junitEngine", "org.junit.jupiter", "junit-jupiter-engine").withoutVersion()
+            library("junit-jupiter", "org.junit.jupiter", "junit-jupiter").withoutVersion()
+            library("junit-jupiter-engine", "org.junit.jupiter", "junit-jupiter-engine").withoutVersion()
+            library("junit.platform.launcher", "org.junit.platform", "junit-platform-launcher").withoutVersion()
+            library("mockbukkit", "org.mockbukkit.mockbukkit", "mockbukkit-v1.21").versionRef("mockbukit")
 
             bundle("cloud", listOf("cloudPaper", "cloudAnnotations", "cloudExtras"))
             bundle("hibernate", listOf("hibernateCore", "hibernateHikariCP"))
