@@ -74,6 +74,17 @@ public class SkullCommandTest {
                 "Player should have a player head in their inventory.");
         Assertions.assertEquals(player.nextComponentMessage(), Component.translatable("commands.skull.success")
                 .arguments(plugin.getPrefix(), Component.text("Seelenretterin")));
+        Assertions.assertTrue(player.getInventory().getItemInMainHand().getItemMeta() instanceof org.bukkit.inventory.meta.SkullMeta,
+                "The item in hand should be a player head.");
+        Assertions.assertEquals("Seelenretterin", player.getInventory().getItemInMainHand().getItemMeta().displayName().toString(),
+                "The player head should have the correct display name.");
+        Assertions.assertNotNull(((org.bukkit.inventory.meta.SkullMeta) player.getInventory().getItemInMainHand().getItemMeta()).getOwningPlayer(),
+                "The player head should have an owning player set.");
+        Assertions.assertEquals("Seelenretterin",
+                ((org.bukkit.inventory.meta.SkullMeta) player.getInventory().getItemInMainHand().getItemMeta()).getOwningPlayer().getName(),
+                "The owning player of the skull should match the requested name.");
+        Assertions.assertNotNull(((org.bukkit.inventory.meta.SkullMeta) player.getInventory().getItemInMainHand().getItemMeta()).getPlayerProfile(),
+                "The player head should have a player profile set.");
     }
     @Test
     void testCommandWithPlayerSkullSelf() {
