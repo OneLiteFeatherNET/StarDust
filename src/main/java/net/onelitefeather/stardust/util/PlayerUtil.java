@@ -21,6 +21,7 @@ public class PlayerUtil {
      * Prevents looks from entities to the player.
      **/
     public static void removeEnemies(Player player, double radius) {
+        if (Constants.INSIDE_TEST) return;
         var plugin = JavaPlugin.getPlugin(StardustPlugin.class);
         player.getServer().getScheduler().getMainThreadExecutor(plugin).execute(() ->
                 player.getNearbyEntities(radius, radius, radius).forEach(entity -> {

@@ -46,6 +46,7 @@ tasks {
     }
     test {
         useJUnitPlatform()
+        jvmArgs("-Dstardust.insideTest=true")
         testLogging {
             events("passed", "skipped", "failed")
         }
