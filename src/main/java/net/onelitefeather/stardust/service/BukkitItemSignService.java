@@ -5,6 +5,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.onelitefeather.stardust.StardustPlugin;
 import net.onelitefeather.stardust.api.ItemSignService;
 import net.onelitefeather.stardust.user.User;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -16,7 +17,6 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 public class BukkitItemSignService implements ItemSignService<ItemStack, Player> {
 
@@ -65,17 +65,16 @@ public class BukkitItemSignService implements ItemSignService<ItemStack, Player>
             }
         }
 
+        ItemStack item = base.clone();
+        if (!isInCreative) item.setAmount(1);
+
         User user = stardustPlugin.getUserService().getUser(player.getUniqueId());
-        if (user == null) return base;
+        if (user == null) return item;
 
-        ItemStack itemStack = buildSignedUsers(player, base, sign, user);
+        ItemStack itemStack = buildSignedUsers(player, item, sign, user);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.lore(buildLore(player, base, sign, lore));
+        itemMeta.lore(buildLore(player, itemStack, sign, lore));
         itemStack.setItemMeta(itemMeta);
-
-        if (!isInCreative) {
-            itemStack.setAmount(1);
-        }
         return itemStack;
     }
 
@@ -103,7 +102,8 @@ public class BukkitItemSignService implements ItemSignService<ItemStack, Player>
             if (sign) {
                 currentLore.addAll(lore);
             } else {
-                currentLore.addAll(removePlayerFromLore(player, currentLore));
+                currentLore.clear();
+                currentLore.addAll(removePlayerFromLore(player, lore));
             }
         }
 
@@ -111,13 +111,11 @@ public class BukkitItemSignService implements ItemSignService<ItemStack, Player>
     }
 
     private List<Component> removePlayerFromLore(Player player, List<Component> lore) {
-        UUID playerId = player.getUniqueId();
         String playerName = player.getName();
         List<Component> filtered = new ArrayList<>();
         for (Component component : lore) {
             String text = PlainTextComponentSerializer.plainText().serialize(component);
-            UUID foundId = stardustPlugin.getServer().getPlayerUniqueId(playerName);
-            if (!(text.contains(playerName) && playerId.equals(foundId))) {
+            if (!(text.contains(playerName))) {
                 filtered.add(component);
             }
         }
@@ -135,9 +133,7 @@ public class BukkitItemSignService implements ItemSignService<ItemStack, Player>
     private long[] addPlayerSign(ItemStack itemStack, User user) {
         long[] players = getSignedPlayers(itemStack);
         if (players == null) return new long[]{user.getId()};
-        long[] result = new long[players.length + 1];
-        result[players.length] = user.getId();
-        return result;
+        return ArrayUtils.add(players, user.getId());
     }
 
     private long[] getSignedPlayers(ItemStack itemStack) {
