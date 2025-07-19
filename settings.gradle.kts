@@ -28,7 +28,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
 
-            version("hibernate", "6.6.4.Final")
+            version("hibernate", "7.0.6.Final")
             version("paper", "1.21.4-R0.1-SNAPSHOT")
             version("luckperms", "5.4")
             version("protocolLib", "5.0.0")
