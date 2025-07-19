@@ -41,8 +41,11 @@ public class UserTask implements Runnable {
     }
 
     private void saturatePlayer(Player player) {
-        player.setFoodLevel(20);
-        player.setSaturation(20);
-        player.setExhaustion(0);
+        int requiredFoodLevel = 3; //Required food level for sprinting
+        if(player.getFoodLevel() <= requiredFoodLevel) {
+            player.setFoodLevel(20);
+            player.setSaturation(20);
+            player.setExhaustion(0);
+        }
     }
 }
