@@ -14,8 +14,6 @@ import org.mockbukkit.mockbukkit.ServerMock;
 import java.io.File;
 import java.net.InetSocketAddress;
 
-import static org.mockito.Mockito.any;
-
 class IPSameCommandTest {
 
     private ServerMock server;
