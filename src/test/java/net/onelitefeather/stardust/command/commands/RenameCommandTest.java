@@ -8,6 +8,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.MockBukkit;
@@ -17,7 +18,7 @@ import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import java.io.File;
 
 @SuppressWarnings("removal")
-class RenameCommand {
+class RenameCommandTest {
 
     private @NotNull ServerMock server;
     private StardustPlugin plugin;
@@ -52,7 +53,7 @@ class RenameCommand {
     void setUp() {
         // Initialize MockBukkit
         server = MockBukkit.mock();
-        plugin = MockBukkit.load(IPSameCommandTest.MockStardustPlugin.class);
+        plugin = MockBukkit.load(MockStardustPlugin.class);
 
         // Create the command instance
         renameCommand = new RenameCommand(plugin);
@@ -64,14 +65,14 @@ class RenameCommand {
     }
 
     @Test
-    void testRenameItemNotInHand() {
+    void testHasPlayerAirInHand() {
 
         PlayerMock player = server.addPlayer();
         // Simulate the player not holding an item
         player.setItemInHand(new ItemStack(Material.AIR));
-        player.performCommand("/itemrename"); //How?
-        // Verify that the player received the correct message
-        player.assertSaid(Component.translatable("commands.rename.invalid-item").arguments(plugin.getPrefix()));
+        this.renameCommand.handleCommand(player, "Excalibur");
+
+        Assertions.assertEquals(player.nextComponentMessage(), Component.translatable("commands.rename.invalid-item").arguments(plugin.getPrefix()));
 
     }
     @Test
@@ -82,15 +83,15 @@ class RenameCommand {
 
         // Simulate the command execution
         String newName = "Excalibur";
-        player.performCommand("/itemrename " + newName);
+        this.renameCommand.handleCommand(player, newName);
 
         // Verify that the item name was changed
         ItemStack updatedItem = player.getInventory().getItemInMainHand();
-        assert updatedItem.getType() == Material.DIAMOND_SWORD;
-        assert updatedItem.getItemMeta().displayName().equals(Component.text(newName));
+        Assertions.assertNotNull(updatedItem);
+        Assertions.assertEquals(Material.DIAMOND_SWORD, updatedItem.getType());
+        Assertions.assertEquals(Component.text(newName), updatedItem.getItemMeta().displayName());
 
-        // Verify that the player received the success message
-        player.assertSaid(Component.translatable("commands.rename.success").arguments(plugin.getPrefix(), Component.text(newName)));
+        Assertions.assertEquals(player.nextComponentMessage(), Component.translatable("commands.rename.success").arguments(plugin.getPrefix(), Component.text(newName)));
     }
 
 }
