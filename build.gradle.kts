@@ -3,18 +3,7 @@ plugins {
     alias(libs.plugins.pluginYaml)
     alias(libs.plugins.shadow)
     alias(libs.plugins.runServer)
-    alias(libs.plugins.publishData)
     `maven-publish`
-}
-
-version = "1.3.1"
-group = "net.onelitefeather"
-
-repositories {
-    mavenCentral()
-    maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-    maven("https://repo.dmulloy2.net/repository/public/")
 }
 dependencies {
 
@@ -40,28 +29,23 @@ java {
 }
 
 tasks {
-
+    jar {
+        archiveClassifier.set("unshaded")
+    }
     build {
         dependsOn(shadowJar)
     }
-
-    compileJava {
-        options.encoding = "UTF-8"
-        options.release.set(21)
+    shadowJar {
+        archiveClassifier.set("")
+        archiveFileName.set("stardust.jar")
+        mergeServiceFiles()
     }
-
+    test {
+        useJUnitPlatform()
+    }
     runServer {
         minecraftVersion("1.21.4")
         jvmArgs("-Dcom.mojang.eula.agree=true")
-    }
-
-    test {
-        useJUnitPlatform()
-
-    }
-
-    shadowJar {
-        archiveFileName.set("${rootProject.name}-${rootProject.version}.${archiveExtension.getOrElse("jar")}")
     }
 }
 
@@ -82,34 +66,56 @@ paper {
     }
 }
 
-publishData {
-    addBuildData()
-    useGitlabReposForProject("78", "https://gitlab.onelitefeather.dev/")
-    publishTask("shadowJar")
-}
-
-
 publishing {
     publications.create<MavenPublication>("maven") {
-        // configure the publication as defined previously.
-        publishData.configurePublication(this)
-        version = publishData.getVersion(false)
+        artifact(project.tasks.getByName("shadowJar"))
+        version = rootProject.version as String
+        artifactId = "stardust"
+        groupId = rootProject.group as String
+        pom {
+            name = "Stardust"
+            description = "A simple essential plugin for OneLiteFeather servers, providing basic features and utilities."
+            url = "https://github.com/OneLiteFeatherNET/stardust"
+            licenses {
+                license {
+                    name = "AGPL-3.0"
+                    url = "https://www.gnu.org/licenses/agpl-3.0.en.html"
+                }
+            }
+            developers {
+                developer {
+                    id = "theShadowsDust"
+                    name = "theShadowsDust"
+                    email = "theShadowDust@onelitefeather.net"
+                }
+                developer {
+                    id = "themeinerlp"
+                    name = "Phillipp Glanz"
+                    email = "p.glanz@madfix.me"
+                }
+            }
+            scm {
+                connection = "scm:git:git://github.com:OneLiteFeatherNET/StarDust.git"
+                developerConnection = "scm:git:ssh://git@github.com:OneLiteFeatherNET/StarDust.git"
+                url = "https://github.com/OneLiteFeatherNET/StarDust"
+            }
+        }
     }
 
     repositories {
         maven {
-            credentials(HttpHeaderCredentials::class) {
-                name = "Job-Token"
-                value = System.getenv("CI_JOB_TOKEN")
-            }
             authentication {
-                create("header", HttpHeaderAuthentication::class)
+                credentials(PasswordCredentials::class) {
+                    // Those credentials need to be set under "Settings -> Secrets -> Actions" in your repository
+                    username = System.getenv("ONELITEFEATHER_MAVEN_USERNAME")
+                    password = System.getenv("ONELITEFEATHER_MAVEN_PASSWORD")
+                }
             }
 
-
-            name = "Gitlab"
-            // Get the detected repository from the publish data
-            url = uri(publishData.getRepository())
+            name = "OneLiteFeatherRepository"
+            val releasesRepoUrl = uri("https://repo.onelitefeather.dev/onelitefeather-releases")
+            val snapshotsRepoUrl = uri("https://repo.onelitefeather.dev/onelitefeather-snapshots")
+            url = if (version.toString().contains("SNAPSHOT") || version.toString().contains("BETA") || version.toString().contains("ALPHA")) snapshotsRepoUrl else releasesRepoUrl
         }
     }
 }
