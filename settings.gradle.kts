@@ -48,7 +48,7 @@ dependencyResolutionManagement {
 
             library("cloudPaper", "org.incendo", "cloud-paper").version("2.0.0-beta.10")
             library("cloudAnnotations", "org.incendo", "cloud-annotations").version("2.0.0")
-            library("cloudExtras", "org.incendo", "cloud-minecraft-extras").version("2.0.0-beta.10")
+            library("cloudExtras", "org.incendo", "cloud-minecraft-extras").version("2.0.0-SNAPSHOT")
 
             //Database
             library("hibernateCore", "org.hibernate", "hibernate-core").versionRef("hibernate")
