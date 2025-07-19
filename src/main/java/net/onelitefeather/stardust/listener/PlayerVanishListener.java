@@ -8,7 +8,10 @@ import net.onelitefeather.stardust.user.User;
 import net.onelitefeather.stardust.user.UserPropertyType;
 import org.bukkit.Bukkit;
 import org.bukkit.block.data.Powerable;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,6 +24,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.raid.RaidTriggerEvent;
 
 import java.util.Arrays;
@@ -139,15 +143,20 @@ public class PlayerVanishListener implements Listener {
     }
 
     @EventHandler
+    public void onItemConsume(PlayerItemConsumeEvent event) {
+        var player = event.getPlayer();
+        User user = stardustPlugin.getUserService().getUser(player.getUniqueId());
+        if (user == null) return;
+        if (!user.isVanished()) return;
+        event.setCancelled(true);
+    }
+
+    @EventHandler
     public void onFoodLevelChange(FoodLevelChangeEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            try {
-                User user = stardustPlugin.getUserService().getUser(player.getUniqueId());
-                event.setCancelled(user != null && (user.isVanished() || player.isInvulnerable()));
-            } catch (Exception e) {
-                stardustPlugin.getLogger().throwing(PlayerVanishListener.class.getSimpleName(), "onFoodLevelChange", e);
-            }
-        }
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (event.getFoodLevel() >= event.getEntity().getFoodLevel()) return; //Ignore food level increment
+        if (!player.isInvulnerable()) return;
+        event.setCancelled(true);
     }
 
     @EventHandler
