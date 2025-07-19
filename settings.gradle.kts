@@ -46,7 +46,7 @@ dependencyResolutionManagement {
             library("luckperms", "net.luckperms", "api").versionRef("luckperms")
             library("protocolLib", "com.comphenix.protocol", "ProtocolLib").versionRef("protocolLib")
 
-            library("cloudPaper", "org.incendo", "cloud-paper").version("2.0.0-beta.10")
+            library("cloudPaper", "org.incendo", "cloud-paper").version("2.0.0-SNAPSHOT")
             library("cloudAnnotations", "org.incendo", "cloud-annotations").version("2.0.0")
             library("cloudExtras", "org.incendo", "cloud-minecraft-extras").version("2.0.0-SNAPSHOT")
 
