@@ -60,6 +60,7 @@ public class PaperCommandService {
         annotationParser.parse(new GodmodeCommand(plugin));
         annotationParser.parse(new HealCommand(plugin));
         annotationParser.parse(new RenameCommand(plugin));
+        annotationParser.parse(new IPSameCommand(plugin));
         annotationParser.parse(new RepairCommand(plugin));
         annotationParser.parse(new SignCommand(plugin));
         annotationParser.parse(new SkullCommand(plugin));
