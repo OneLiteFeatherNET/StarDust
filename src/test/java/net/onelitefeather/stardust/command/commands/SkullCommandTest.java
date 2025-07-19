@@ -67,7 +67,7 @@ public class SkullCommandTest {
     void testCommandWithOfflineSkull() {
         PlayerMock player = server.addPlayer();
         skullCommand.handleCommand(player, "Seelenretterin");
-
+        server.getScheduler().performOneTick();
         // Then assert the expected behavior, such as checking if the skull item was added to the player's inventory
         Assertions.assertNotNull(skullCommand);
         Assertions.assertTrue(player.getInventory().contains(Material.PLAYER_HEAD),
@@ -79,7 +79,7 @@ public class SkullCommandTest {
     void testCommandWithPlayerSkullSelf() {
         PlayerMock player = server.addPlayer("Seelenretterin");
         skullCommand.handleCommand(player, player.getName());
-
+        server.getScheduler().performOneTick();
         // Then assert the expected behavior, such as checking if the skull item was added to the player's inventory
         Assertions.assertNotNull(skullCommand);
         Assertions.assertTrue(player.getInventory().contains(Material.PLAYER_HEAD),
@@ -92,7 +92,7 @@ public class SkullCommandTest {
         PlayerMock player = server.addPlayer("Seelenretterin");
         PlayerMock otherPlayer = server.addPlayer("TheMeinerLP");
         skullCommand.handleCommand(player, otherPlayer.getName());
-
+        server.getScheduler().performOneTick();
         // Then assert the expected behavior, such as checking if the skull item was added to the player's inventory
         Assertions.assertNotNull(skullCommand);
         Assertions.assertTrue(player.getInventory().contains(Material.PLAYER_HEAD),
@@ -104,7 +104,7 @@ public class SkullCommandTest {
     void testCommandWithPlayerSkullNull() {
         PlayerMock player = server.addPlayer("Seelenretterin");
         skullCommand.handleCommand(player, null);
-
+        server.getScheduler().performOneTick();
         // Then assert the expected behavior, such as checking if the skull item was added to the player's inventory
         Assertions.assertNotNull(skullCommand);
         Assertions.assertTrue(player.getInventory().contains(Material.PLAYER_HEAD),
@@ -116,12 +116,12 @@ public class SkullCommandTest {
     void testCommandWithPlayerSkullEmpty() {
         PlayerMock player = server.addPlayer("Seelenretterin");
         skullCommand.handleCommand(player, "");
-
+        server.getScheduler().performOneTick();
         // Then assert the expected behavior, such as checking if the skull item was added to the player's inventory
         Assertions.assertNotNull(skullCommand);
         Assertions.assertTrue(player.getInventory().contains(Material.PLAYER_HEAD),
                 "Player should have a player head in their inventory.");
         Assertions.assertEquals(player.nextComponentMessage(), Component.translatable("commands.skull.success")
-                .arguments(plugin.getPrefix(), Component.text(player.getName())));
+                .arguments(plugin.getPrefix(), Component.text("")));
     }
 }
