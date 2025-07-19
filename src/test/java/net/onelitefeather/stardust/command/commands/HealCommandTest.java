@@ -53,7 +53,7 @@ class HealCommandTest {
     void setUp() {
         // Initialize MockBukkit
         server = MockBukkit.mock();
-        plugin = MockBukkit.load(IPSameCommandTest.MockStardustPlugin.class);
+        plugin = MockBukkit.load(MockStardustPlugin.class);
 
         // Create the command instance
         healCommand = new HealCommand(plugin);
