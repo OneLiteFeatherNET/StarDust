@@ -80,7 +80,7 @@ public class SignCommand {
         } else {
             int firstEmpty = player.getInventory().firstEmpty();
             if (firstEmpty != -1) {
-                player.getInventory().setItem(firstEmpty, itemStack);
+                player.getInventory().addItem(itemStack);
             } else {
                 player.sendMessage(Component.translatable("plugin.inventory-full")
                         .arguments(plugin.getPrefix()));
