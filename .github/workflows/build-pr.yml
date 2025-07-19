@@ -1,0 +1,44 @@
+name: Build PR
+on: [pull_request]
+jobs:
+  build_pr:
+    if: github.repository_owner == 'OneLiteFeatherNET'
+    name: Build Pull Request Branch
+    runs-on: ${{ matrix.os }}
+    env:
+      ONELITEFEATHER_MAVEN_USERNAME: ${{ secrets.ONELITEFEATHER_MAVEN_USERNAME }}
+      ONELITEFEATHER_MAVEN_PASSWORD: ${{ secrets.ONELITEFEATHER_MAVEN_PASSWORD }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 24
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Build on ${{ matrix.os }}
+        run: ./gradlew clean build test
+      - name: Generate JaCoCo Coverage Report
+        if: matrix.os == 'ubuntu-latest'
+        run: ./gradlew jacocoRootReport
+      - name: Upload Coverage Report
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: |
+            build/reports/jacoco/jacocoRootReport/html/
+            build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml
+      - name: Upload Coverage to Codecov
+        if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v5
+        with:
+          file: build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+          comment: true

@@ -1,0 +1,23 @@
+# General plugin settings
+settings:
+  use-cooldown-bypass: true
+
+item-signing:
+  message: '<text> <gray>(</gray><player> <gray>-</gray> <gold><date></gold><gray>)</gray>'
+
+physicalBlocks:
+  - 'SCULK_SENSOR'
+  - 'CALIBRATED_SCULK_SENSOR'
+  - 'SCULK_SHRIEKER'
+  - 'BIG_DRIPLEAF'
+  - 'TURTLE_EGG'
+  - 'FARMLAND'
+
+vanish:
+  group-weight-based-visibility: true
+
+# Setting to enable cool down on some commands
+command-cooldowns:
+  skull:
+    timeunit: DAYS
+    time: 1
