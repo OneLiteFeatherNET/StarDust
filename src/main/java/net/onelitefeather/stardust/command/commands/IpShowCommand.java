@@ -24,7 +24,7 @@ public final class IpShowCommand {
     public void ipShowPlayer(Player player, @Greedy @Argument("player") Player target) {
         if (target != null && player.hasPermission("stardust.command.ipshow.other")) {
             if (target.getAddress() != null) {
-                player.sendMessage(Component.translatable("stardust.command.ipshow").arguments(
+                player.sendMessage(Component.translatable("commands.ipshow").arguments(
                         plugin.getPrefix(),
                         target.displayName(),
                         Component.text(target.getAddress().getHostName()),
@@ -32,7 +32,7 @@ public final class IpShowCommand {
             }
         } else {
             if (player.getAddress() != null) {
-                player.sendMessage(Component.translatable("stardust.command.ipshow").arguments(
+                player.sendMessage(Component.translatable("commands.ipshow").arguments(
                         plugin.getPrefix(),
                         player.displayName(),
                         Component.text(player.getAddress().getHostName()),
