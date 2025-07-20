@@ -21,3 +21,6 @@ command-cooldowns:
   skull:
     timeunit: DAYS
     time: 1
+
+iphub:
+  key: "your-api-key-here"
