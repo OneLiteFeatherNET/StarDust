@@ -57,7 +57,7 @@ public class StardustPlugin extends JavaPlugin {
         var registry = TranslationRegistry.create(Key.key("stardust", "localization"));
         supportedLocals.forEach(locale -> {
             var bundle = ResourceBundle.getBundle("stardust", locale, UTF8ResourceBundleControl.get());
-            registry.registerAll(locale, bundle, false);
+            registry.registerAll(locale, bundle, true);
         });
 
         registry.defaultLocale(supportedLocals.getFirst());
