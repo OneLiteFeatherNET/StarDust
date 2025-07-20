@@ -67,6 +67,7 @@ public class PaperCommandService {
         annotationParser.parse(new VanishCommand(plugin));
         annotationParser.parse(plugin.getSyncFrogService());
         annotationParser.parse(new VPNCheckCommand(plugin));
+        annotationParser.parse(new PingCommand(plugin));
         annotationParser.parse(new IpShowCommand(plugin));
     }
 
