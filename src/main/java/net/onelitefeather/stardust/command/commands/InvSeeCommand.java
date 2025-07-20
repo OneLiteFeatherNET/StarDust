@@ -5,7 +5,7 @@ import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
 import org.incendo.cloud.annotations.Permission;
 
-public class InvSeeCommand {
+public final class InvSeeCommand {
 
     @Command("invsee <player>")
     @Permission(value = {
