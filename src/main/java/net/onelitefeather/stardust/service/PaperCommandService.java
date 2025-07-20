@@ -66,6 +66,7 @@ public class PaperCommandService {
         annotationParser.parse(new SkullCommand(plugin));
         annotationParser.parse(new VanishCommand(plugin));
         annotationParser.parse(plugin.getSyncFrogService());
+        annotationParser.parse(new VPNCheckCommand(plugin));
     }
 
     @Command("stardust help [query]")
