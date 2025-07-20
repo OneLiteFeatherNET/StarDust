@@ -48,7 +48,7 @@ public class PaperCommandService {
         return MinecraftHelp.<CommandSender>builder()
                 .commandManager(commandManager)
                 .audienceProvider(AudienceProvider.nativeAudience())
-                .commandPrefix("/stardust")
+                .commandPrefix("/stardust help")
                 .colors(helpColors)
                 .build();
     }
