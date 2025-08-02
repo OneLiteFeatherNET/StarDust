@@ -37,7 +37,7 @@ dependencyResolutionManagement {
             version("apacheCommons", "3.18.0")
             version("junitApi", "5.11.0")
             version("bom", "1.4.2")
-            version("mockbukit", "4.72.5")
+            version("mockbukit", "4.72.6")
 
             plugin("pluginYaml", "net.minecrell.plugin-yml.paper").version("0.6.0")
             plugin("shadow", "com.github.johnrengelman.shadow").version("8.1.1")
