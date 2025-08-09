@@ -1,3 +1,5 @@
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+
 plugins {
     id("java")
     alias(libs.plugins.pluginYaml)
@@ -63,6 +65,47 @@ paper {
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
 
     authors = listOf("theShadowsDust", "OneLiteFeather")
+
+    val userPermissions = listOf("glow", "sign", "unsign", "help").map { "stardust.command.$it" }.toList();
+
+    val staffPermissions = listOf("flight", "godmode", "heal", "rename", "repair", "skull", "vanish").map { "stardust.command.$it" }.toList()
+
+    val otherCommandPermissions = listOf("flight", "glow", "godmode", "heal", "vanish").map { "stardust.command.$it.others" }.toList().toList()
+
+    val adminPermissions = listOf("stardust.command.vanish.fakejoin", "stardust.command.vanish.fakequit", "stardust.command.frogbucket")
+
+    permissions {
+
+        this.register("stardust.commands.user") {
+            children = userPermissions
+            this.default = BukkitPluginDescription.Permission.Default.FALSE
+        }
+
+        this.register("stardust.commands.staff") {
+            children = staffPermissions
+            this.default = BukkitPluginDescription.Permission.Default.OP
+        }
+
+        this.register("stardust.bundle.vanish") {
+            children = listOf(
+                "stardust.command.vanish.toggleproperty",
+                "stardust.vanish.silentopen.interact",
+                "stardust.vanish.silentopen",
+                "stardust.vanish.auto")
+            this.default = BukkitPluginDescription.Permission.Default.OP
+        }
+
+        this.register("stardust.bundle.bypass") {
+            children = listOf("stardust.commandcooldown.bypass", "stardust.bypass.damage.invulnerable", "stardust.command.sign.override")
+            this.default = BukkitPluginDescription.Permission.Default.OP
+        }
+
+        this.register("stardust.commands.admin") {
+            children = otherCommandPermissions.plus(adminPermissions)
+            this.default = BukkitPluginDescription.Permission.Default.OP
+        }
+    }
+
     serverDependencies {
         register("LuckPerms") {
             required = false
@@ -71,6 +114,7 @@ paper {
             required = false
         }
     }
+
 }
 
 publishing {
