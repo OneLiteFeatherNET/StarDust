@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.shadow)
     alias(libs.plugins.runServer)
     `maven-publish`
+    jacoco
 }
 
 dependencies {
@@ -48,13 +49,22 @@ tasks {
     }
     test {
         useJUnitPlatform()
+        jvmArgs("-Dstardust.insideTest=true")
         testLogging {
             events("passed", "skipped", "failed")
         }
+        finalizedBy(rootProject.tasks.jacocoTestReport)
     }
     runServer {
         minecraftVersion("1.21.4")
         jvmArgs("-Dcom.mojang.eula.agree=true")
+    }
+    jacocoTestReport {
+        dependsOn(rootProject.tasks.test)
+        reports {
+            xml.required.set(true)
+            csv.required.set(true)
+        }
     }
 }
 
