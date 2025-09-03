@@ -29,7 +29,7 @@ dependencyResolutionManagement {
         create("libs") {
 
             version("hibernate", "7.1.0.Final")
-            version("paper", "1.21.4-R0.1-SNAPSHOT")
+            version("paper", "1.21.8-R0.1-SNAPSHOT")
             version("luckperms", "5.5")
             version("protocolLib", "5.3.0")
             version("jaxbRuntime", "4.0.5")
@@ -37,7 +37,7 @@ dependencyResolutionManagement {
             version("apacheCommons", "3.18.0")
             version("junitApi", "5.11.0")
             version("bom", "1.4.3")
-            version("mockbukit", "4.72.8")
+            version("mockbukit", "4.76.0")
 
             plugin("pluginYaml", "net.minecrell.plugin-yml.paper").version("0.6.0")
             plugin("shadow", "com.gradleup.shadow").version("9.0.2")
