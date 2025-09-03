@@ -23,6 +23,7 @@ dependencies {
 
     // Testing
     testImplementation(platform(libs.mycelium.bom))
+    testImplementation(libs.paper)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.platform.launcher)
     testRuntimeOnly(libs.junit.jupiter.engine)
