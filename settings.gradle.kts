@@ -40,7 +40,7 @@ dependencyResolutionManagement {
             version("mockbukit", "4.76.0")
 
             plugin("pluginYaml", "net.minecrell.plugin-yml.paper").version("0.6.0")
-            plugin("shadow", "com.gradleup.shadow").version("9.0.2")
+            plugin("shadow", "com.gradleup.shadow").version("9.1.0")
             plugin("runServer", "xyz.jpenilla.run-paper").version("2.3.1")
 
 
