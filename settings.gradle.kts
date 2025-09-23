@@ -32,7 +32,7 @@ dependencyResolutionManagement {
             version("paper", "1.21.8-R0.1-SNAPSHOT")
             version("luckperms", "5.5")
             version("protocolLib", "5.3.0")
-            version("jaxbRuntime", "4.0.5")
+            version("jaxbRuntime", "4.0.6")
             version("postgresql", "42.7.8")
             version("apacheCommons", "3.18.0")
             version("junitApi", "5.11.0")
