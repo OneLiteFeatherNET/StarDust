@@ -34,7 +34,7 @@ dependencyResolutionManagement {
             version("protocolLib", "5.3.0")
             version("jaxbRuntime", "4.0.6")
             version("postgresql", "42.7.8")
-            version("apacheCommons", "3.18.0")
+            version("apacheCommons", "3.19.0")
             version("junitApi", "5.11.0")
             version("bom", "1.4.4")
             version("mockbukit", "4.79.0")
