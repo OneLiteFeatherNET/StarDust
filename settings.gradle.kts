@@ -41,7 +41,7 @@ dependencyResolutionManagement {
 
             plugin("pluginYaml", "net.minecrell.plugin-yml.paper").version("0.6.0")
             plugin("shadow", "com.gradleup.shadow").version("9.2.2")
-            plugin("runServer", "xyz.jpenilla.run-paper").version("3.0.0")
+            plugin("runServer", "xyz.jpenilla.run-paper").version("3.0.1")
 
 
             library("mycelium.bom", "net.onelitefeather", "mycelium-bom").versionRef("bom")
