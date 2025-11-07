@@ -1,3 +1,23 @@
+## [1.8.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.8.1...v1.8.2) (2025-11-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.97.1 ([#99](https://github.com/OneLiteFeatherNET/StarDust/issues/99)) ([0e5cd51](https://github.com/OneLiteFeatherNET/StarDust/commit/0e5cd513abeae68eb3d799f416c0daf492e7ca88))
+* **deps:** update hibernate core to v7.1.7.final (patch) ([#100](https://github.com/OneLiteFeatherNET/StarDust/issues/100)) ([c43b592](https://github.com/OneLiteFeatherNET/StarDust/commit/c43b592307a96214c2e0e0175d64551d3378ea34))
+
+
+
+
+
+## [1.8.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.8.1...v1.8.2) (2025-11-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.97.1 ([#99](https://github.com/OneLiteFeatherNET/StarDust/issues/99)) ([0e5cd51](https://github.com/OneLiteFeatherNET/StarDust/commit/0e5cd513abeae68eb3d799f416c0daf492e7ca88))
+* **deps:** update hibernate core to v7.1.7.final (patch) ([#100](https://github.com/OneLiteFeatherNET/StarDust/issues/100)) ([c43b592](https://github.com/OneLiteFeatherNET/StarDust/commit/c43b592307a96214c2e0e0175d64551d3378ea34))
+
 ## [1.8.1](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.8.0...v1.8.1) (2025-11-07)
 
 
