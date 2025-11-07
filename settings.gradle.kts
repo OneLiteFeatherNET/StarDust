@@ -36,7 +36,7 @@ dependencyResolutionManagement {
             version("postgresql", "42.7.8")
             version("apacheCommons", "3.19.0")
             version("junitApi", "5.11.0")
-            version("bom", "1.5.0")
+            version("bom", "1.5.2")
             version("mockbukit", "4.97.0")
 
             plugin("pluginYaml", "net.minecrell.plugin-yml.paper").version("0.6.0")
