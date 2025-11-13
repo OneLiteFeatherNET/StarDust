@@ -20,6 +20,7 @@ dependencies {
     implementation(libs.jaxbRuntime)
     implementation(libs.postgresql)
     implementation(libs.apacheCommons)
+    compileOnly(libs.bluemapApi)
 
     // Testing
     testImplementation(platform(libs.mycelium.bom))
@@ -122,6 +123,9 @@ paper {
             required = false
         }
         register("ProtocolLib") {
+            required = false
+        }
+        register("BlueMap") {
             required = false
         }
     }

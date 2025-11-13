@@ -9,6 +9,7 @@ dependencyResolutionManagement {
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         maven("https://repo.dmulloy2.net/repository/public/")
+        maven ("https://repo.bluecolored.de/releases")
         maven {
             name = "OneLiteFeatherRepository"
             url = uri("https://repo.onelitefeather.dev/onelitefeather")
@@ -32,6 +33,7 @@ dependencyResolutionManagement {
             version("paper", "1.21.10-R0.1-SNAPSHOT")
             version("luckperms", "5.5")
             version("protocolLib", "5.3.0")
+            version("bluemapApi", "2.7.6")
             version("jaxbRuntime", "4.0.6")
             version("postgresql", "42.7.8")
             version("apacheCommons", "3.19.0")
@@ -48,6 +50,7 @@ dependencyResolutionManagement {
             library("paper", "io.papermc.paper", "paper-api").versionRef("paper")
             library("luckperms", "net.luckperms", "api").versionRef("luckperms")
             library("protocolLib", "com.comphenix.protocol", "ProtocolLib").versionRef("protocolLib")
+            library("bluemapApi", "de.bluecolored", "bluemap-api").versionRef("bluemapApi")
 
             library("cloudPaper", "org.incendo", "cloud-paper").version("2.0.0-SNAPSHOT")
             library("cloudAnnotations", "org.incendo", "cloud-annotations").version("2.0.0")

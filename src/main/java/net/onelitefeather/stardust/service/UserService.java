@@ -7,6 +7,7 @@ import net.onelitefeather.stardust.task.UserTask;
 import net.onelitefeather.stardust.user.User;
 import net.onelitefeather.stardust.user.UserProperty;
 import net.onelitefeather.stardust.user.UserPropertyType;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.hibernate.SessionFactory;
@@ -20,6 +21,8 @@ import java.util.logging.Level;
 
 public final class UserService {
 
+    private static final String PLUGIN_BLUEMAP_ENABLED = "BlueMap";
+
     private final StardustPlugin plugin;
     private final BukkitTask userTask;
     private final PlayerVanishService<Player> vanishService;
@@ -28,7 +31,11 @@ public final class UserService {
     public UserService(StardustPlugin plugin) {
         this.plugin = plugin;
         this.userTask = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new UserTask(plugin), 20L, 20L);
-        this.vanishService = new BukkitPlayerVanishService(this, plugin);
+        if (Bukkit.getPluginManager().isPluginEnabled(PLUGIN_BLUEMAP_ENABLED)) {
+            this.vanishService = new DelegatedBlueMapVanishService(new BukkitPlayerVanishService(this, plugin));
+        } else {
+            this.vanishService = new BukkitPlayerVanishService(this, plugin);
+        }
         this.databaseService = plugin.getDatabaseService();
     }
 
