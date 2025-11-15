@@ -1,3 +1,49 @@
+# [1.9.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.8.2...v1.9.0) (2025-11-15)
+
+
+### Bug Fixes
+
+* **bluemap:** Change negation of visibility of bluemap adapter ([2f2e98c](https://github.com/OneLiteFeatherNET/StarDust/commit/2f2e98c3b5a0b3bc387256144c4fb1746ed49691))
+* **bluemap:** Change negation of visibility of bluemap adapter ([#104](https://github.com/OneLiteFeatherNET/StarDust/issues/104)) ([67290c4](https://github.com/OneLiteFeatherNET/StarDust/commit/67290c4a9ee4c8fdb426126a69ad7353d72abc85))
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.98.0 ([1276b22](https://github.com/OneLiteFeatherNET/StarDust/commit/1276b2281e9a816225b7aa4f4771c5bfb0a815d1))
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.98.0 ([#93](https://github.com/OneLiteFeatherNET/StarDust/issues/93)) ([ef8f49f](https://github.com/OneLiteFeatherNET/StarDust/commit/ef8f49f961054cd5f3f3c83da938b9ced5994950))
+* **luckperms:** Change the subscribed luckperms event ([93c714b](https://github.com/OneLiteFeatherNET/StarDust/commit/93c714bc5b9b46faf96ec6f927b5bc43f985fd1f))
+* **luckperms:** Improve luckperms permission tracking ([#105](https://github.com/OneLiteFeatherNET/StarDust/issues/105)) ([dc244d2](https://github.com/OneLiteFeatherNET/StarDust/commit/dc244d20ae4491f5fc5b38552f50afbc30dd57af))
+* **luckperms:** improved permission check for luckperms tracking ([b4ee0fd](https://github.com/OneLiteFeatherNET/StarDust/commit/b4ee0fdc6f7c09b6ec33c0810d96fc37daea08bc))
+
+
+### Features
+
+* **bluemap:** Integrate BlueMap support into vanish service with API delegation ([e185084](https://github.com/OneLiteFeatherNET/StarDust/commit/e185084be77eefd122f6c5c198d23407e8a50040))
+* **bluemap:** Integrate BlueMap support into vanish service with API delegation ([#102](https://github.com/OneLiteFeatherNET/StarDust/issues/102)) ([12654b4](https://github.com/OneLiteFeatherNET/StarDust/commit/12654b477af168dcebb128d6e23cb4a7b52139b7))
+* **deps:** Update dependencies in package-lock.json, including @octokit/plugin-paginate-rest to v13.2.1 and related sub-dependencies ([284d5c1](https://github.com/OneLiteFeatherNET/StarDust/commit/284d5c1b29088973c6b052d53661688dd2e745da))
+* **deps:** Update dependencies in package-lock.json, including @octokit/plugin-paginate-rest to v13.2.1 and related sub-dependencies ([#103](https://github.com/OneLiteFeatherNET/StarDust/issues/103)) ([9fd3b50](https://github.com/OneLiteFeatherNET/StarDust/commit/9fd3b5034e08d8ec91a8f6421c2d2a5716d851e3))
+
+
+
+
+
+# [1.9.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.8.2...v1.9.0) (2025-11-15)
+
+
+### Bug Fixes
+
+* **bluemap:** Change negation of visibility of bluemap adapter ([2f2e98c](https://github.com/OneLiteFeatherNET/StarDust/commit/2f2e98c3b5a0b3bc387256144c4fb1746ed49691))
+* **bluemap:** Change negation of visibility of bluemap adapter ([#104](https://github.com/OneLiteFeatherNET/StarDust/issues/104)) ([67290c4](https://github.com/OneLiteFeatherNET/StarDust/commit/67290c4a9ee4c8fdb426126a69ad7353d72abc85))
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.98.0 ([1276b22](https://github.com/OneLiteFeatherNET/StarDust/commit/1276b2281e9a816225b7aa4f4771c5bfb0a815d1))
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.98.0 ([#93](https://github.com/OneLiteFeatherNET/StarDust/issues/93)) ([ef8f49f](https://github.com/OneLiteFeatherNET/StarDust/commit/ef8f49f961054cd5f3f3c83da938b9ced5994950))
+* **luckperms:** Change the subscribed luckperms event ([93c714b](https://github.com/OneLiteFeatherNET/StarDust/commit/93c714bc5b9b46faf96ec6f927b5bc43f985fd1f))
+* **luckperms:** Improve luckperms permission tracking ([#105](https://github.com/OneLiteFeatherNET/StarDust/issues/105)) ([dc244d2](https://github.com/OneLiteFeatherNET/StarDust/commit/dc244d20ae4491f5fc5b38552f50afbc30dd57af))
+* **luckperms:** improved permission check for luckperms tracking ([b4ee0fd](https://github.com/OneLiteFeatherNET/StarDust/commit/b4ee0fdc6f7c09b6ec33c0810d96fc37daea08bc))
+
+
+### Features
+
+* **bluemap:** Integrate BlueMap support into vanish service with API delegation ([e185084](https://github.com/OneLiteFeatherNET/StarDust/commit/e185084be77eefd122f6c5c198d23407e8a50040))
+* **bluemap:** Integrate BlueMap support into vanish service with API delegation ([#102](https://github.com/OneLiteFeatherNET/StarDust/issues/102)) ([12654b4](https://github.com/OneLiteFeatherNET/StarDust/commit/12654b477af168dcebb128d6e23cb4a7b52139b7))
+* **deps:** Update dependencies in package-lock.json, including @octokit/plugin-paginate-rest to v13.2.1 and related sub-dependencies ([284d5c1](https://github.com/OneLiteFeatherNET/StarDust/commit/284d5c1b29088973c6b052d53661688dd2e745da))
+* **deps:** Update dependencies in package-lock.json, including @octokit/plugin-paginate-rest to v13.2.1 and related sub-dependencies ([#103](https://github.com/OneLiteFeatherNET/StarDust/issues/103)) ([9fd3b50](https://github.com/OneLiteFeatherNET/StarDust/commit/9fd3b5034e08d8ec91a8f6421c2d2a5716d851e3))
+
 ## [1.8.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.8.1...v1.8.2) (2025-11-07)
 
 
