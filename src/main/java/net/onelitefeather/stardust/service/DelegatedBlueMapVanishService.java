@@ -52,4 +52,9 @@ public final class DelegatedBlueMapVanishService implements PlayerVanishService<
     public boolean canSee(Player player, Player target) {
         return this.delegate.canSee(player, target);
     }
+
+    @Override
+    public boolean isVanishPermitted(Player player) {
+        return this.delegate.isVanishPermitted(player);
+    }
 }
