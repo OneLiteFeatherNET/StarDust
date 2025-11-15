@@ -34,7 +34,7 @@ public final class DelegatedBlueMapVanishService implements PlayerVanishService<
 
     @Override
     public void setVanished(Player player, boolean vanished) {
-        BlueMapAPI.getInstance().map(BlueMapAPI::getWebApp).ifPresent(api -> api.setPlayerVisibility(player.getUniqueId(), vanished));
+        BlueMapAPI.getInstance().map(BlueMapAPI::getWebApp).ifPresent(api -> api.setPlayerVisibility(player.getUniqueId(), !vanished));
         this.delegate.setVanished(player, vanished);
     }
 
