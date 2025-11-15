@@ -2,7 +2,7 @@ package net.onelitefeather.stardust.service;
 
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.event.EventSubscription;
-import net.luckperms.api.event.user.UserLoadEvent;
+import net.luckperms.api.event.user.track.UserTrackEvent;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import net.onelitefeather.stardust.StardustPlugin;
@@ -40,12 +40,14 @@ public class LuckPermsService {
     }
 
     private void subscribeToEvents() {
-        luckPermsEvents.add(luckPerms.getEventBus().subscribe(UserLoadEvent.class, event -> disableVanish(event.getUser())));
+        luckPermsEvents.add(luckPerms.getEventBus().subscribe(UserTrackEvent.class, event -> disableVanish(event.getUser())));
     }
 
     private void disableVanish(User user) {
         Player player = Bukkit.getPlayer(user.getUniqueId());
         if (player == null) return;
+        if (plugin.getUserService().getVanishService().isVanishPermitted(player)) return;
+
         if (!plugin.getUserService().getVanishService().isVanished(player)) return;
         plugin.getUserService().getVanishService().toggle(player);
     }

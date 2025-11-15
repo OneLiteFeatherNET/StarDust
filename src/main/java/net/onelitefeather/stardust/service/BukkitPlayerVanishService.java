@@ -13,6 +13,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class BukkitPlayerVanishService implements PlayerVanishService<Player> {
 
+    private static final String VANISH_PERMISSION = "stardust.command.vanish";
     private final StardustPlugin plugin;
     private final UserService userService;
     private final NamespacedKey vanishedKey;
@@ -125,6 +126,11 @@ public class BukkitPlayerVanishService implements PlayerVanishService<Player> {
         var playerGroupPriority = plugin.getLuckPermsService().getGroupPriority(player);
         var targetGroupPriority = plugin.getLuckPermsService().getGroupPriority(target);
         return playerGroupPriority >= targetGroupPriority;
+    }
+
+    @Override
+    public boolean isVanishPermitted(Player player) {
+        return player.hasPermission(VANISH_PERMISSION);
     }
 
     private void sendReappearedMessage(Player player) {
