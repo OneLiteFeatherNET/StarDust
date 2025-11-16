@@ -1,5 +1,7 @@
 package net.onelitefeather.stardust;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.translation.GlobalTranslator;
@@ -42,8 +44,16 @@ public class StardustPlugin extends JavaPlugin {
     private PaperCommandService commandService;
 
     private ItemSignService<ItemStack, Player> itemSignService;
-    private PacketListener packetListener;
+    private VanishNoPacketListener packetListener;
     private PluginConfiguration pluginConfiguration;
+
+    @Override
+    public void onLoad() {
+        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
+        PacketEvents.getAPI().load();
+        this.packetListener = new VanishNoPacketListener(this);
+        this.packetListener.register();
+    }
 
     @Override
     public void onEnable() {
@@ -77,20 +87,18 @@ public class StardustPlugin extends JavaPlugin {
         this.itemSignService = new BukkitItemSignService(this);
         this.userService = new UserService(this);
 
-        if (getServer().getPluginManager().isPluginEnabled("ProtocolLib")) {
-            packetListener = new PacketListener(this);
-            packetListener.register();
-        }
-
+        PacketEvents.getAPI().init();
         registerListeners();
     }
 
     @Override
     public void onDisable() {
-        if (this.packetListener != null) this.packetListener.unregister();
         this.userService.stopUserTask();
         this.luckPermsService.unsubscribeEvents();
         this.databaseService.close();
+
+        this.packetListener.unregister();
+        PacketEvents.getAPI().terminate();
     }
 
     public PluginConfiguration getPluginConfiguration() {
