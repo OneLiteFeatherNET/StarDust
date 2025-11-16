@@ -12,9 +12,9 @@ plugins {
 dependencies {
 
     compileOnly(libs.paper)
+    compileOnly(libs.packetEvents)
     implementation(libs.bundles.cloud)
     compileOnly(libs.luckperms)
-    compileOnly(libs.protocolLib)
 
     implementation(libs.bundles.hibernate)
     implementation(libs.jaxbRuntime)
@@ -122,11 +122,13 @@ paper {
         register("LuckPerms") {
             required = false
         }
-        register("ProtocolLib") {
-            required = false
-        }
+
         register("BlueMap") {
             required = false
+        }
+
+        register("packetevents") {
+            required = true
         }
     }
 
