@@ -1,3 +1,21 @@
+## [1.9.1](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.9.0...v1.9.1) (2025-11-18)
+
+
+### Bug Fixes
+
+* **deps:** update hibernate core to v7.1.8.final (patch) ([#106](https://github.com/OneLiteFeatherNET/StarDust/issues/106)) ([e02acb3](https://github.com/OneLiteFeatherNET/StarDust/commit/e02acb32e5fd36503e6fa3682c7fb60261b2ade3))
+
+
+
+
+
+## [1.9.1](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.9.0...v1.9.1) (2025-11-18)
+
+
+### Bug Fixes
+
+* **deps:** update hibernate core to v7.1.8.final (patch) ([#106](https://github.com/OneLiteFeatherNET/StarDust/issues/106)) ([e02acb3](https://github.com/OneLiteFeatherNET/StarDust/commit/e02acb32e5fd36503e6fa3682c7fb60261b2ade3))
+
 # [1.9.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.8.2...v1.9.0) (2025-11-15)
 
 
