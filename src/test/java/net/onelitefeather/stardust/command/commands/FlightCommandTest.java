@@ -11,6 +11,7 @@ import org.mockbukkit.mockbukkit.ServerMock;
 
 import java.io.File;
 
+@Disabled
 class FlightCommandTest {
 
     private @NotNull ServerMock server;
@@ -60,7 +61,7 @@ class FlightCommandTest {
         MockBukkit.unmock();
     }
 
-    @Disabled
+
     @Test
     void testFlightCommand() {
         // Create a mock player
@@ -82,7 +83,6 @@ class FlightCommandTest {
         Assertions.assertFalse(player.getAllowFlight(), "Player should not be able to fly after toggling back");
     }
 
-    @Disabled
     @Test
     void testGlowCommandWithTarget() {
         // Create a mock player
@@ -102,7 +102,6 @@ class FlightCommandTest {
         Assertions.assertFalse(target.getAllowFlight(), "Target player should not be able to fly after toggling back");
     }
 
-    @Disabled
     @Test
     void testFlightCommandWithoutPermission() {
         // Create a mock player without permission
