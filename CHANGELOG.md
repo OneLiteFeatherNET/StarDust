@@ -1,3 +1,35 @@
+# [1.10.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.9.2...v1.10.0) (2025-11-22)
+
+
+### Bug Fixes
+
+* **packetevents:** add packetevents dependency to the gradle build and settings script ([d0ff29a](https://github.com/OneLiteFeatherNET/StarDust/commit/d0ff29a714e5feff16f83c9376456bd0abbd3704))
+* **packetevents:** remove old packetlistener of protocollib ([0d39ee4](https://github.com/OneLiteFeatherNET/StarDust/commit/0d39ee445b32e219526b6ac1b564f8b86d6477f7))
+
+
+### Features
+
+* **packetevents:** implementation of packetevents ([#112](https://github.com/OneLiteFeatherNET/StarDust/issues/112)) ([f17a303](https://github.com/OneLiteFeatherNET/StarDust/commit/f17a3037a089b1bb6cdd6677e75353bb620f5c3f))
+* **packetevents:** implemented packetevents to improve packet handling ([4eda3b4](https://github.com/OneLiteFeatherNET/StarDust/commit/4eda3b49b4128a046a93a63e3b1ee63cea42662a))
+
+
+
+
+
+# [1.10.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.9.2...v1.10.0) (2025-11-22)
+
+
+### Bug Fixes
+
+* **packetevents:** add packetevents dependency to the gradle build and settings script ([d0ff29a](https://github.com/OneLiteFeatherNET/StarDust/commit/d0ff29a714e5feff16f83c9376456bd0abbd3704))
+* **packetevents:** remove old packetlistener of protocollib ([0d39ee4](https://github.com/OneLiteFeatherNET/StarDust/commit/0d39ee445b32e219526b6ac1b564f8b86d6477f7))
+
+
+### Features
+
+* **packetevents:** implementation of packetevents ([#112](https://github.com/OneLiteFeatherNET/StarDust/issues/112)) ([f17a303](https://github.com/OneLiteFeatherNET/StarDust/commit/f17a3037a089b1bb6cdd6677e75353bb620f5c3f))
+* **packetevents:** implemented packetevents to improve packet handling ([4eda3b4](https://github.com/OneLiteFeatherNET/StarDust/commit/4eda3b49b4128a046a93a63e3b1ee63cea42662a))
+
 ## [1.9.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.9.1...v1.9.2) (2025-11-21)
 
 
