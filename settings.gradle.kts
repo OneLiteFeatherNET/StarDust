@@ -10,6 +10,9 @@ dependencyResolutionManagement {
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         maven("https://repo.dmulloy2.net/repository/public/")
         maven ("https://repo.bluecolored.de/releases")
+
+        maven("https://repo.codemc.io/repository/maven-releases/")
+
         maven {
             name = "OneLiteFeatherRepository"
             url = uri("https://repo.onelitefeather.dev/onelitefeather")
@@ -51,6 +54,8 @@ dependencyResolutionManagement {
             library("luckperms", "net.luckperms", "api").versionRef("luckperms")
             library("protocolLib", "com.comphenix.protocol", "ProtocolLib").versionRef("protocolLib")
             library("bluemapApi", "de.bluecolored", "bluemap-api").versionRef("bluemapApi")
+
+            library("packetEvents", "com.github.retrooper", "packetevents-spigot").version("2.10.1")
 
             library("cloudPaper", "org.incendo", "cloud-paper").version("2.0.0-SNAPSHOT")
             library("cloudAnnotations", "org.incendo", "cloud-annotations").version("2.0.0")

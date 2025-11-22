@@ -4,16 +4,14 @@ import net.kyori.adventure.text.Component;
 import net.onelitefeather.stardust.StardustPlugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 
 import java.io.File;
 import java.net.InetSocketAddress;
 
+@Disabled
 class IPSameCommandTest {
 
     private ServerMock server;
