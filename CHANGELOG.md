@@ -1,3 +1,23 @@
+## [1.10.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.1...v1.10.2) (2025-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.commons:commons-lang3 to v3.20.0 ([51bd05c](https://github.com/OneLiteFeatherNET/StarDust/commit/51bd05cb5eacfafcd28ef87cbe12407dabb284b1))
+* **deps:** update dependency org.apache.commons:commons-lang3 to v3.20.0 ([#107](https://github.com/OneLiteFeatherNET/StarDust/issues/107)) ([aca9b87](https://github.com/OneLiteFeatherNET/StarDust/commit/aca9b87230b25b9d1325fe558739e46ec9c2f24f))
+
+
+
+
+
+## [1.10.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.1...v1.10.2) (2025-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.commons:commons-lang3 to v3.20.0 ([51bd05c](https://github.com/OneLiteFeatherNET/StarDust/commit/51bd05cb5eacfafcd28ef87cbe12407dabb284b1))
+* **deps:** update dependency org.apache.commons:commons-lang3 to v3.20.0 ([#107](https://github.com/OneLiteFeatherNET/StarDust/issues/107)) ([aca9b87](https://github.com/OneLiteFeatherNET/StarDust/commit/aca9b87230b25b9d1325fe558739e46ec9c2f24f))
+
 ## [1.10.1](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.0...v1.10.1) (2025-11-24)
 
 
