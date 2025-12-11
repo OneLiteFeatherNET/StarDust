@@ -1,3 +1,21 @@
+## [1.10.4](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.3...v1.10.4) (2025-12-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency de.bluecolored:bluemap-api to v2.7.7 ([#119](https://github.com/OneLiteFeatherNET/StarDust/issues/119)) ([51a0798](https://github.com/OneLiteFeatherNET/StarDust/commit/51a07986a8079063b537778567f3a236d67b734c))
+
+
+
+
+
+## [1.10.4](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.3...v1.10.4) (2025-12-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency de.bluecolored:bluemap-api to v2.7.7 ([#119](https://github.com/OneLiteFeatherNET/StarDust/issues/119)) ([51a0798](https://github.com/OneLiteFeatherNET/StarDust/commit/51a07986a8079063b537778567f3a236d67b734c))
+
 ## [1.10.3](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.2...v1.10.3) (2025-12-01)
 
 
