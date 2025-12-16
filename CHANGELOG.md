@@ -1,3 +1,21 @@
+## [1.10.7](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.6...v1.10.7) (2025-12-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.5.3 ([#122](https://github.com/OneLiteFeatherNET/StarDust/issues/122)) ([5efbe58](https://github.com/OneLiteFeatherNET/StarDust/commit/5efbe5872cce10cad77754ffb98f98f4176f9f31))
+
+
+
+
+
+## [1.10.7](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.6...v1.10.7) (2025-12-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.5.3 ([#122](https://github.com/OneLiteFeatherNET/StarDust/issues/122)) ([5efbe58](https://github.com/OneLiteFeatherNET/StarDust/commit/5efbe5872cce10cad77754ffb98f98f4176f9f31))
+
 ## [1.10.6](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.5...v1.10.6) (2025-12-15)
 
 
