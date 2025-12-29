@@ -28,6 +28,9 @@ public class VanishNoPacketListener implements PacketListener {
         if (event.getPacketType() != PacketType.Play.Server.PLAYER_INFO) return;
         WrapperPlayServerPlayerInfo info = new WrapperPlayServerPlayerInfo(event);
 
+        // Allow game mode updates to pass through.
+        if (info.getAction() == WrapperPlayServerPlayerInfo.Action.UPDATE_GAME_MODE) return;
+
         List<WrapperPlayServerPlayerInfo.PlayerData> list = info.getPlayerDataList();
         list.removeIf(this::isVanished);
         info.setPlayerDataList(list);
@@ -43,7 +46,7 @@ public class VanishNoPacketListener implements PacketListener {
 
     private boolean isVanished(WrapperPlayServerPlayerInfo.PlayerData data) {
         UserProfile userProfile = data.getUserProfile();
-        if(userProfile == null) return false;
+        if (userProfile == null) return false;
         var user = this.stardustPlugin.getUserService().getUser(userProfile.getUUID());
         if (user == null) return false;
         return this.stardustPlugin.getUserService().getVanishService().isVanished(user.getBase());
