@@ -1,3 +1,23 @@
+## [1.10.10](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.9...v1.10.10) (2025-12-29)
+
+
+### Bug Fixes
+
+* **vanish:** allow game mode updates to pass through ([5c4a524](https://github.com/OneLiteFeatherNET/StarDust/commit/5c4a5241cd2cf644165535cea6945c7f905ad342))
+* **vanish:** allow game mode updates to pass through ([#125](https://github.com/OneLiteFeatherNET/StarDust/issues/125)) ([62d44c4](https://github.com/OneLiteFeatherNET/StarDust/commit/62d44c4cbea30baf2742aab1cc0c13a5cf58e6c1))
+
+
+
+
+
+## [1.10.10](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.9...v1.10.10) (2025-12-29)
+
+
+### Bug Fixes
+
+* **vanish:** allow game mode updates to pass through ([5c4a524](https://github.com/OneLiteFeatherNET/StarDust/commit/5c4a5241cd2cf644165535cea6945c7f905ad342))
+* **vanish:** allow game mode updates to pass through ([#125](https://github.com/OneLiteFeatherNET/StarDust/issues/125)) ([62d44c4](https://github.com/OneLiteFeatherNET/StarDust/commit/62d44c4cbea30baf2742aab1cc0c13a5cf58e6c1))
+
 ## [1.10.9](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.8...v1.10.9) (2025-12-25)
 
 
