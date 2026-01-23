@@ -15,7 +15,7 @@ public class PlayerAdvancementListener implements Listener {
     @EventHandler
     public void onPlayerAdvancement(PlayerAdvancementCriterionGrantEvent event) {
         var player = event.getPlayer();
-        if (plugin.getUserService().getVanishService().isVanished(player)) {
+        if (plugin.getUserService().getVanishService().isVanished(player.getUniqueId())) {
             event.setCancelled(true);
         }
     }

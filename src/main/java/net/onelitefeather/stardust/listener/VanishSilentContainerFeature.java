@@ -35,7 +35,7 @@ public class VanishSilentContainerFeature implements Listener {
         if (!(event.getWhoClicked() instanceof Player whoClicked)) return;
         Inventory clickedInventory = event.getInventory();
 
-        if (stardustPlugin.getUserService().getVanishService().isVanished(whoClicked)) {
+        if (stardustPlugin.getUserService().getVanishService().isVanished(whoClicked.getUniqueId())) {
             Inventory inventory = silentContainerLooter.get(whoClicked);
             if (inventory == null) return;
             boolean canInteract = whoClicked.hasPermission("stardust.vanish.silentopen.interact");
@@ -52,7 +52,7 @@ public class VanishSilentContainerFeature implements Listener {
         BlockState blockState = event.getClickedBlock().getState();
 
         boolean hasPermission = player.hasPermission("stardust.vanish.silentopen");
-        boolean vanished = stardustPlugin.getUserService().getVanishService().isVanished(player);
+        boolean vanished = stardustPlugin.getUserService().getVanishService().isVanished(player.getUniqueId());
 
         if (blockState instanceof EnderChest) {
             boolean useInteractBlock = vanished && !player.isSneaking() || player.isSneaking();

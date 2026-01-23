@@ -44,7 +44,7 @@ public class PlayerVanishListener implements Listener {
     }
 
     private boolean isVanished(Player player) {
-        return stardustPlugin.getUserService().getVanishService().isVanished(player);
+        return stardustPlugin.getUserService().getVanishService().isVanished(player.getUniqueId());
     }
 
     @EventHandler
@@ -245,7 +245,7 @@ public class PlayerVanishListener implements Listener {
         }
 
         if (resultPlayer == null) return;
-        event.setCancelled(stardustPlugin.getUserService().getVanishService().isVanished(resultPlayer));
+        event.setCancelled(stardustPlugin.getUserService().getVanishService().isVanished(resultPlayer.getUniqueId()));
     }
 
     @EventHandler

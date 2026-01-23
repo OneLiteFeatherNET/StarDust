@@ -71,7 +71,7 @@ public class VanishCommand {
                 toggleProperty(commandSender, target, property);
                 return;
             }
-            if (stardustPlugin.getUserService().getVanishService().canSee((Player) commandSender, target)) {
+            if (stardustPlugin.getUserService().getVanishService().canSee(((Player) commandSender).getUniqueId(), target.getUniqueId())) {
                 toggleProperty(commandSender, target, property);
             }
         }
@@ -114,7 +114,7 @@ public class VanishCommand {
                         .arguments(stardustPlugin.getPrefix()));
                 return;
             }
-            stardustPlugin.getUserService().getVanishService().toggle(target);
+            stardustPlugin.getUserService().getVanishService().toggle(target.getUniqueId());
         } catch (Exception e) {
             stardustPlugin.getLogger().throwing(VanishCommand.class.getSimpleName(), "toggleVanish", e);
         }

@@ -2,59 +2,54 @@ package net.onelitefeather.stardust.service;
 
 import de.bluecolored.bluemap.api.BlueMapAPI;
 import net.onelitefeather.stardust.api.PlayerVanishService;
-import org.bukkit.entity.Player;
 
-public final class DelegatedBlueMapVanishService implements PlayerVanishService<Player> {
+import java.util.UUID;
 
-    private final PlayerVanishService<Player> delegate;
+public record DelegatedBlueMapVanishService(PlayerVanishService delegate) implements PlayerVanishService {
 
-    public DelegatedBlueMapVanishService(PlayerVanishService<Player> delegate) {
-        this.delegate = delegate;
+    @Override
+    public void hidePlayer(UUID playerId) {
+        this.delegate.hidePlayer(playerId);
     }
 
     @Override
-    public void hidePlayer(Player player) {
-        this.delegate.hidePlayer(player);
+    public void showPlayer(UUID playerId) {
+        this.delegate.showPlayer(playerId);
     }
 
     @Override
-    public void showPlayer(Player player) {
-        this.delegate.showPlayer(player);
+    public boolean toggle(UUID playerId) {
+        return this.delegate.toggle(playerId);
     }
 
     @Override
-    public boolean toggle(Player player) {
-        return this.delegate.toggle(player);
+    public boolean isVanished(UUID playerId) {
+        return this.delegate.isVanished(playerId);
     }
 
     @Override
-    public boolean isVanished(Player player) {
-        return this.delegate.isVanished(player);
+    public void setVanished(UUID playerId, boolean vanished) {
+        this.delegate.setVanished(playerId, vanished);
+        BlueMapAPI.getInstance().map(BlueMapAPI::getWebApp).ifPresent(api -> api.setPlayerVisibility(playerId, !vanished));
     }
 
     @Override
-    public void setVanished(Player player, boolean vanished) {
-        BlueMapAPI.getInstance().map(BlueMapAPI::getWebApp).ifPresent(api -> api.setPlayerVisibility(player.getUniqueId(), !vanished));
-        this.delegate.setVanished(player, vanished);
+    public boolean handlePlayerJoin(UUID playerId) {
+        return this.delegate.handlePlayerJoin(playerId);
     }
 
     @Override
-    public boolean handlePlayerJoin(Player player) {
-        return this.delegate.handlePlayerJoin(player);
+    public void handlePlayerQuit(UUID playerId) {
+        this.delegate.handlePlayerQuit(playerId);
     }
 
     @Override
-    public void handlePlayerQuit(Player player) {
-        this.delegate.handlePlayerQuit(player);
+    public boolean canSee(UUID playerId, UUID targetId) {
+        return this.delegate.canSee(playerId, targetId);
     }
 
     @Override
-    public boolean canSee(Player player, Player target) {
-        return this.delegate.canSee(player, target);
-    }
-
-    @Override
-    public boolean isVanishPermitted(Player player) {
-        return this.delegate.isVanishPermitted(player);
+    public boolean isVanishPermitted(UUID playerId) {
+        return this.delegate.isVanishPermitted(playerId);
     }
 }
