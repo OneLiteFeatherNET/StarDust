@@ -58,7 +58,7 @@ tasks {
         finalizedBy(rootProject.tasks.jacocoTestReport)
     }
     runServer {
-        minecraftVersion("1.21.4")
+        minecraftVersion("1.21.10")
         jvmArgs("-Dcom.mojang.eula.agree=true")
     }
     jacocoTestReport {
