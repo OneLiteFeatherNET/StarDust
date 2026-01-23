@@ -1,61 +1,60 @@
 package net.onelitefeather.stardust.api;
 
-import org.bukkit.entity.Player;
+import java.util.UUID;
 
-public interface PlayerVanishService<P extends Player> {
+public interface PlayerVanishService {
 
     /**
      * Hides a player for other players
      *
-     * @param player to be hide
+     * @param playerId to be hidden
      */
-    void hidePlayer(P player);
+    void hidePlayer(UUID playerId);
 
     /**
      * Shows a player for other players
      *
-     * @param player to be shown to other player
+     * @param playerId to be shown to other players
      */
-    void showPlayer(P player);
+    void showPlayer(UUID playerId);
+
+    /*
+     * @param playerId to be affected
+     * @return new vanish state
+     */
+    boolean toggle(UUID playerId);
 
     /**
-     * Toggle vanish status of a player
-     *
-     * @param player be affected
-     */
-    boolean toggle(P player);
-
-    /**
-     * Check if the player in vanish
+     * Check if the player is vanished
      *
      * @return the current status
      */
-    boolean isVanished(P player);
+    boolean isVanished(UUID playerId);
 
     /**
      * Set a user explicit the vanish status
      *
-     * @param player   to be affected
-     * @param vanished status of the user
+     * @param playerId  to be affected
+     * @param vanished  status of the user
      */
-    void setVanished(P player, boolean vanished);
+    void setVanished(UUID playerId, boolean vanished);
 
     /**
      * Handles if a player joining the server
      *
-     * @param player be affected
+     * @param playerId to be affected
      * @return true if the player is vanished
      */
-    boolean handlePlayerJoin(P player);
+    boolean handlePlayerJoin(UUID playerId);
 
     /**
      * Handles if a player quits the server
      *
-     * @param player be affected
+     * @param playerId to be affected
      */
-    void handlePlayerQuit(P player);
+    void handlePlayerQuit(UUID playerId);
 
-    boolean canSee(P player, P target);
+    boolean canSee(UUID viewerId, UUID targetId);
 
-    boolean isVanishPermitted(P player);
+    boolean isVanishPermitted(UUID playerId);
 }
