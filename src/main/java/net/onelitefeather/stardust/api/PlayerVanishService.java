@@ -56,5 +56,11 @@ public interface PlayerVanishService {
 
     boolean canSee(UUID viewerId, UUID targetId);
 
+    /**
+     * Check if a player has permission to vanish
+     *
+     * @param playerId to be checked
+     * @return true if the player has permission to vanish
+     */
     boolean isVanishPermitted(UUID playerId);
 }
