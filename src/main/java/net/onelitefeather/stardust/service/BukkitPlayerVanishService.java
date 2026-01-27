@@ -12,8 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-public class BukkitPlayerVanishService implements PlayerVanishService {
+public final class BukkitPlayerVanishService implements PlayerVanishService {
 
     private static final String VANISH_PERMISSION = "stardust.command.vanish";
     private final StardustPlugin plugin;
@@ -32,12 +34,13 @@ public class BukkitPlayerVanishService implements PlayerVanishService {
         Player player = plugin.getServer().getPlayer(playerId);
         if (player == null) return;
 
-        plugin.getServer().getScheduler().getMainThreadExecutor(plugin)
-                .execute(() -> plugin.getServer().getOnlinePlayers().forEach(onlinePlayer -> {
-                    if (!canSee(onlinePlayer.getUniqueId(), playerId)) {
-                        onlinePlayer.hidePlayer(plugin, player);
-                    }
-                }));
+        Predicate<Player> cannotSeePredicate = onlinePlayer -> !canSee(onlinePlayer.getUniqueId(), playerId);
+        Consumer<Player> hideAction = onlinePlayer -> onlinePlayer.hidePlayer(plugin, player);
+
+        plugin.getServer()
+                .getScheduler()
+                .getMainThreadExecutor(plugin)
+                .execute(() -> plugin.getServer().getOnlinePlayers().stream().filter(cannotSeePredicate).forEach(hideAction));
     }
 
     @Override
@@ -45,7 +48,9 @@ public class BukkitPlayerVanishService implements PlayerVanishService {
         Player player = plugin.getServer().getPlayer(playerId);
         if (player == null) return;
 
-        plugin.getServer().getScheduler().getMainThreadExecutor(plugin)
+        plugin.getServer()
+                .getScheduler()
+                .getMainThreadExecutor(plugin)
                 .execute(() -> plugin.getServer().getOnlinePlayers().forEach(onlinePlayer -> {
                     onlinePlayer.showPlayer(plugin, player);
                     onlinePlayer.sendMessage(Component.translatable("listener.join-message").arguments(player.displayName()));
