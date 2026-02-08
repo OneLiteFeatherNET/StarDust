@@ -49,6 +49,6 @@ public class VanishNoPacketListener implements PacketListener {
         if (userProfile == null) return false;
         var user = this.stardustPlugin.getUserService().getUser(userProfile.getUUID());
         if (user == null) return false;
-        return this.stardustPlugin.getUserService().getVanishService().isVanished(user.getBase());
+        return this.stardustPlugin.getUserService().getVanishService().isVanished(user.getUniqueId());
     }
 }

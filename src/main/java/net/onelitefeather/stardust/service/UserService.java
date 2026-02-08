@@ -25,7 +25,7 @@ public final class UserService {
 
     private final StardustPlugin plugin;
     private final BukkitTask userTask;
-    private final PlayerVanishService<Player> vanishService;
+    private final PlayerVanishService vanishService;
     private final DatabaseConnectionService databaseService;
 
     public UserService(StardustPlugin plugin) {
@@ -39,7 +39,7 @@ public final class UserService {
         this.databaseService = plugin.getDatabaseService();
     }
 
-    public PlayerVanishService<Player> getVanishService() {
+    public PlayerVanishService getVanishService() {
         return vanishService;
     }
 

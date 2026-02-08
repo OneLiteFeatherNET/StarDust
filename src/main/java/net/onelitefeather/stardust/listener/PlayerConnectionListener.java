@@ -1,7 +1,5 @@
 package net.onelitefeather.stardust.listener;
 
-import org.bukkit.event.Listener;
-
 import net.kyori.adventure.text.Component;
 import net.onelitefeather.stardust.StardustPlugin;
 import net.onelitefeather.stardust.user.User;
@@ -57,7 +55,7 @@ public class PlayerConnectionListener implements Listener {
             } else {
                 event.quitMessage(Component.translatable("listener.quit-message").arguments(player.displayName()));
             }
-            stardustPlugin.getUserService().getVanishService().handlePlayerQuit(player);
+            stardustPlugin.getUserService().getVanishService().handlePlayerQuit(player.getUniqueId());
         } catch (Exception e) {
             stardustPlugin.getLogger().log(Level.SEVERE, "Something went wrong during the quit process", e);
         }
@@ -65,7 +63,7 @@ public class PlayerConnectionListener implements Listener {
 
     private void joinMessage(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        boolean isVanished = stardustPlugin.getUserService().getVanishService().handlePlayerJoin(player);
+        boolean isVanished = stardustPlugin.getUserService().getVanishService().handlePlayerJoin(player.getUniqueId());
         if (isVanished) {
             event.joinMessage(null);
         } else {

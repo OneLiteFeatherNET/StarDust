@@ -11,7 +11,11 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
-public class BukkitPlayerVanishService implements PlayerVanishService<Player> {
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
+public final class BukkitPlayerVanishService implements PlayerVanishService {
 
     private static final String VANISH_PERMISSION = "stardust.command.vanish";
     private final StardustPlugin plugin;
@@ -26,78 +30,94 @@ public class BukkitPlayerVanishService implements PlayerVanishService<Player> {
     }
 
     @Override
-    public void hidePlayer(Player player) {
-        plugin.getServer().getScheduler().getMainThreadExecutor(plugin)
-                .execute(() -> plugin.getServer().getOnlinePlayers().forEach(onlinePlayer -> {
+    public void hidePlayer(UUID playerId) {
+        Player player = plugin.getServer().getPlayer(playerId);
+        if (player == null) return;
 
-                    if (!canSee(onlinePlayer, player)) {
-                        onlinePlayer.hidePlayer(plugin, player);
-                    }
-                }));
+        Predicate<Player> cannotSeePredicate = onlinePlayer -> !canSee(onlinePlayer.getUniqueId(), playerId);
+        Consumer<Player> hideAction = onlinePlayer -> onlinePlayer.hidePlayer(plugin, player);
+
+        plugin.getServer()
+                .getScheduler()
+                .getMainThreadExecutor(plugin)
+                .execute(() -> plugin.getServer().getOnlinePlayers().stream().filter(cannotSeePredicate).forEach(hideAction));
     }
 
     @Override
-    public void showPlayer(Player player) {
-        plugin.getServer().getScheduler().getMainThreadExecutor(plugin)
-                .execute(() -> plugin.getServer().getOnlinePlayers().forEach(onlinePlayer -> {
+    public void showPlayer(UUID playerId) {
+        Player player = plugin.getServer().getPlayer(playerId);
+        if (player == null) return;
 
+        plugin.getServer()
+                .getScheduler()
+                .getMainThreadExecutor(plugin)
+                .execute(() -> plugin.getServer().getOnlinePlayers().forEach(onlinePlayer -> {
                     onlinePlayer.showPlayer(plugin, player);
                     onlinePlayer.sendMessage(Component.translatable("listener.join-message").arguments(player.displayName()));
                 }));
     }
 
     @Override
-    public boolean toggle(Player player) {
-
-        var currentState = isVanished(player);
+    public boolean toggle(UUID playerId) {
+        Player player = plugin.getServer().getPlayer(playerId);
+        if (player == null) return false;
+        var currentState = isVanished(playerId);
 
         if (currentState) {
-            showPlayer(player);
+            showPlayer(playerId);
             sendReappearedMessage(player);
         } else {
-            hidePlayer(player);
+            hidePlayer(playerId);
             sendDisappearedMessage(player);
         }
 
         var newState = !currentState;
-        setVanished(player, newState);
+        setVanished(playerId, newState);
         togglePlayerProperties(player, newState);
 
         return newState;
     }
 
     @Override
-    public boolean isVanished(Player player) {
-        var vanished = player.getPersistentDataContainer().get(vanishedKey, PersistentDataType.BOOLEAN);
-        if (vanished == null) return false;
+    public boolean isVanished(UUID playerId) {
 
-        var user = userService.getUser(player.getUniqueId());
+        var user = userService.getUser(playerId);
         if (user == null) return false;
-        return user.isVanished() || vanished;
+
+        Player player = plugin.getServer().getPlayer(playerId);
+        var vanished = player != null && Boolean.TRUE.equals(player.getPersistentDataContainer().get(vanishedKey, PersistentDataType.BOOLEAN));
+        return Boolean.logicalAnd(user.isVanished(), vanished);
     }
 
     @Override
-    public void setVanished(Player player, boolean vanished) {
+    public void setVanished(UUID playerId, boolean vanished) {
 
-        var user = userService.getUser(player.getUniqueId());
+        var user = userService.getUser(playerId);
         if (user == null) return;
 
         this.userService.setUserProperty(user, UserPropertyType.VANISHED, vanished);
-        player.getPersistentDataContainer().set(vanishedKey, PersistentDataType.BOOLEAN, vanished);
+
+        Player player = plugin.getServer().getPlayer(playerId);
+        if (player != null) {
+            player.getPersistentDataContainer().set(vanishedKey, PersistentDataType.BOOLEAN, vanished);
+        }
     }
 
     @Override
-    public boolean handlePlayerJoin(Player player) {
+    public boolean handlePlayerJoin(UUID playerId) {
 
-        player.getServer().getOnlinePlayers().stream().filter(this::isVanished).forEach(this::hidePlayer);
+        Player player = plugin.getServer().getPlayer(playerId);
+        if (player == null) return false;
+
+        player.getServer().getOnlinePlayers().stream().map(Player::getUniqueId).filter(this::isVanished).forEach(this::hidePlayer);
 
         if (handleAutoVanish(player)) return true;
 
-        if (isVanished(player)) {
+        if (isVanished(playerId)) {
 
             if (!player.hasPermission("stardust.command.vanish")) {
-                setVanished(player, false);
-                showPlayer(player);
+                setVanished(playerId, false);
+                showPlayer(playerId);
                 togglePlayerProperties(player, false);
                 return true;
             }
@@ -105,7 +125,7 @@ public class BukkitPlayerVanishService implements PlayerVanishService<Player> {
             player.sendMessage(Component.translatable("vanish.join.self").arguments(plugin.getPrefix()));
             broadcastMessage(player,
                     Component.translatable("vanish.join.silently").arguments(vanishDisplayName(player)));
-            hidePlayer(player);
+            hidePlayer(playerId);
             togglePlayerProperties(player, true);
         }
 
@@ -113,15 +133,22 @@ public class BukkitPlayerVanishService implements PlayerVanishService<Player> {
     }
 
     @Override
-    public void handlePlayerQuit(Player player) {
-        if (!isVanished(player)) return;
+    public void handlePlayerQuit(UUID playerId) {
+        var player = plugin.getServer().getPlayer(playerId);
+        if (player == null) return;
+        if (!isVanished(playerId)) return;
         broadcastMessage(player,
                 Component.translatable("vanish.quit.silently")
                         .arguments(plugin.getPrefix(), vanishDisplayName(player)));
     }
 
     @Override
-    public boolean canSee(Player player, Player target) {
+    public boolean canSee(UUID playerId, UUID targetId) {
+
+        Player player = plugin.getServer().getPlayer(playerId);
+        Player target = plugin.getServer().getPlayer(targetId);
+        if (player == null) return false;
+
         if (!isGroupWeightBased()) return player.hasPermission(VANISH_SEE_OTHERS_PERMISSION);
         var playerGroupPriority = plugin.getLuckPermsService().getGroupPriority(player);
         var targetGroupPriority = plugin.getLuckPermsService().getGroupPriority(target);
@@ -129,8 +156,9 @@ public class BukkitPlayerVanishService implements PlayerVanishService<Player> {
     }
 
     @Override
-    public boolean isVanishPermitted(Player player) {
-        return player.hasPermission(VANISH_PERMISSION);
+    public boolean isVanishPermitted(UUID playerId) {
+        Player player = plugin.getServer().getPlayer(playerId);
+        return player != null && player.hasPermission(VANISH_PERMISSION);
     }
 
     private void sendReappearedMessage(Player player) {
@@ -176,8 +204,8 @@ public class BukkitPlayerVanishService implements PlayerVanishService<Player> {
         if (player.hasPermission("stardust.vanish.auto")) {
             var displayName = vanishDisplayName(player);
 
-            setVanished(player, true);
-            hidePlayer(player);
+            setVanished(player.getUniqueId(), true);
+            hidePlayer(player.getUniqueId());
             togglePlayerProperties(player, true);
             player.sendMessage(Component.translatable("vanish.join.self").arguments(plugin.getPrefix()));
 
