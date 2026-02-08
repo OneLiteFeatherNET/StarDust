@@ -1,3 +1,27 @@
+## [1.10.11](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.10...v1.10.11) (2026-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.101.0 ([8a77d49](https://github.com/OneLiteFeatherNET/StarDust/commit/8a77d490d40afb020c8a7f8a2bd47bcfaf9f7e9d))
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.101.0 ([#136](https://github.com/OneLiteFeatherNET/StarDust/issues/136)) ([bc573ff](https://github.com/OneLiteFeatherNET/StarDust/commit/bc573ff7b6275fbfd7875a2e687dbc4c4a5a3dfc))
+* **deps:** update hibernate core to v7.2.4.final ([1781302](https://github.com/OneLiteFeatherNET/StarDust/commit/178130235d956726e566ad267a9b1e2e0cd5cba1))
+* **deps:** update hibernate core to v7.2.4.final (patch) ([#132](https://github.com/OneLiteFeatherNET/StarDust/issues/132)) ([98a9578](https://github.com/OneLiteFeatherNET/StarDust/commit/98a95783b384c683cc5746c87450e57c04243749))
+
+
+
+
+
+## [1.10.11](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.10...v1.10.11) (2026-02-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.101.0 ([8a77d49](https://github.com/OneLiteFeatherNET/StarDust/commit/8a77d490d40afb020c8a7f8a2bd47bcfaf9f7e9d))
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.101.0 ([#136](https://github.com/OneLiteFeatherNET/StarDust/issues/136)) ([bc573ff](https://github.com/OneLiteFeatherNET/StarDust/commit/bc573ff7b6275fbfd7875a2e687dbc4c4a5a3dfc))
+* **deps:** update hibernate core to v7.2.4.final ([1781302](https://github.com/OneLiteFeatherNET/StarDust/commit/178130235d956726e566ad267a9b1e2e0cd5cba1))
+* **deps:** update hibernate core to v7.2.4.final (patch) ([#132](https://github.com/OneLiteFeatherNET/StarDust/issues/132)) ([98a9578](https://github.com/OneLiteFeatherNET/StarDust/commit/98a95783b384c683cc5746c87450e57c04243749))
+
 ## [1.10.10](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.9...v1.10.10) (2025-12-29)
 
 
