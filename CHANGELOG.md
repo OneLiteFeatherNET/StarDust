@@ -1,3 +1,21 @@
+## [1.10.14](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.13...v1.10.14) (2026-02-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.github.retrooper:packetevents-spigot to v2.11.2 ([#129](https://github.com/OneLiteFeatherNET/StarDust/issues/129)) ([62a9c51](https://github.com/OneLiteFeatherNET/StarDust/commit/62a9c512f2399c2580a00bb5604fb71cb4d5a461))
+
+
+
+
+
+## [1.10.14](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.13...v1.10.14) (2026-02-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.github.retrooper:packetevents-spigot to v2.11.2 ([#129](https://github.com/OneLiteFeatherNET/StarDust/issues/129)) ([62a9c51](https://github.com/OneLiteFeatherNET/StarDust/commit/62a9c512f2399c2580a00bb5604fb71cb4d5a461))
+
 ## [1.10.13](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.12...v1.10.13) (2026-02-12)
 
 
