@@ -174,11 +174,13 @@ public final class BukkitPlayerVanishService implements PlayerVanishService {
 
     private void togglePlayerProperties(Player player, boolean vanished) {
         if (vanished) {
+            player.setInvulnerable(true);
             PlayerUtil.removeEnemies(player, Constants.RADIUS_REMOVE_ENEMIES);
             player.setAllowFlight(true);
             player.setSleepingIgnored(true);
             player.setAffectsSpawning(false);
         } else {
+            player.setInvulnerable(false);
             player.setAllowFlight(PlayerUtil.canEnterFlyMode(player));
             player.setSleepingIgnored(false);
             player.setAffectsSpawning(true);
