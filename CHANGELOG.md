@@ -1,3 +1,23 @@
+## [1.10.15](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.14...v1.10.15) (2026-02-20)
+
+
+### Bug Fixes
+
+* **vanish:** add invulnerability toggle for vanished players ([ce528b0](https://github.com/OneLiteFeatherNET/StarDust/commit/ce528b01b8d83b46bf14d88526f68854d7f3a87d))
+* **vanish:** Creaking behavior for vanished players. ([#138](https://github.com/OneLiteFeatherNET/StarDust/issues/138)) ([0c36987](https://github.com/OneLiteFeatherNET/StarDust/commit/0c3698772bdc5e0894b4516031214088b1ae4c5a))
+
+
+
+
+
+## [1.10.15](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.14...v1.10.15) (2026-02-20)
+
+
+### Bug Fixes
+
+* **vanish:** add invulnerability toggle for vanished players ([ce528b0](https://github.com/OneLiteFeatherNET/StarDust/commit/ce528b01b8d83b46bf14d88526f68854d7f3a87d))
+* **vanish:** Creaking behavior for vanished players. ([#138](https://github.com/OneLiteFeatherNET/StarDust/issues/138)) ([0c36987](https://github.com/OneLiteFeatherNET/StarDust/commit/0c3698772bdc5e0894b4516031214088b1ae4c5a))
+
 ## [1.10.14](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.13...v1.10.14) (2026-02-13)
 
 
