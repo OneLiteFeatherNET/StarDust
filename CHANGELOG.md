@@ -1,3 +1,25 @@
+## [1.10.17](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.16...v1.10.17) (2026-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.6.2 ([ae093ab](https://github.com/OneLiteFeatherNET/StarDust/commit/ae093ab6d72b70e8796d027a978dd673ee29c6db))
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.6.2 ([#140](https://github.com/OneLiteFeatherNET/StarDust/issues/140)) ([ad20362](https://github.com/OneLiteFeatherNET/StarDust/commit/ad20362ea25d111ff1f5677b0ec469a0a8026638))
+* **deps:** update hibernate core to v7.2.6.final ([8688ca9](https://github.com/OneLiteFeatherNET/StarDust/commit/8688ca971e91659be99fc0dd8c65ee41559cbcf5))
+* **deps:** update hibernate core to v7.2.6.final (patch) ([#144](https://github.com/OneLiteFeatherNET/StarDust/issues/144)) ([f5f66f9](https://github.com/OneLiteFeatherNET/StarDust/commit/f5f66f9ede117fac4e0243dd533bc7b95d8aa994))
+
+
+
+## [1.10.17](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.16...v1.10.17) (2026-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.6.2 ([ae093ab](https://github.com/OneLiteFeatherNET/StarDust/commit/ae093ab6d72b70e8796d027a978dd673ee29c6db))
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.6.2 ([#140](https://github.com/OneLiteFeatherNET/StarDust/issues/140)) ([ad20362](https://github.com/OneLiteFeatherNET/StarDust/commit/ad20362ea25d111ff1f5677b0ec469a0a8026638))
+* **deps:** update hibernate core to v7.2.6.final ([8688ca9](https://github.com/OneLiteFeatherNET/StarDust/commit/8688ca971e91659be99fc0dd8c65ee41559cbcf5))
+* **deps:** update hibernate core to v7.2.6.final (patch) ([#144](https://github.com/OneLiteFeatherNET/StarDust/issues/144)) ([f5f66f9](https://github.com/OneLiteFeatherNET/StarDust/commit/f5f66f9ede117fac4e0243dd533bc7b95d8aa994))
+
 ## [1.10.16](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.15...v1.10.16) (2026-02-23)
 
 
