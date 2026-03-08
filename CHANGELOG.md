@@ -1,3 +1,19 @@
+## [1.10.19](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.18...v1.10.19) (2026-03-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.107.0 ([#141](https://github.com/OneLiteFeatherNET/StarDust/issues/141)) ([57da3c7](https://github.com/OneLiteFeatherNET/StarDust/commit/57da3c721aa11d5c42a23883ac7899c8de7238f9))
+
+
+
+## [1.10.19](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.18...v1.10.19) (2026-03-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.107.0 ([#141](https://github.com/OneLiteFeatherNET/StarDust/issues/141)) ([57da3c7](https://github.com/OneLiteFeatherNET/StarDust/commit/57da3c721aa11d5c42a23883ac7899c8de7238f9))
+
 ## [1.10.18](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.17...v1.10.18) (2026-03-06)
 
 
