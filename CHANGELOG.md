@@ -1,3 +1,21 @@
+## [1.10.20](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.19...v1.10.20) (2026-03-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.glassfish.jaxb:jaxb-runtime to v4.0.7 ([#152](https://github.com/OneLiteFeatherNET/StarDust/issues/152)) ([e1fad52](https://github.com/OneLiteFeatherNET/StarDust/commit/e1fad5280c59a00f2b3894fa7ffa8807794f4854))
+* **deps:** update hibernate core to v7.2.7.final (patch) ([#153](https://github.com/OneLiteFeatherNET/StarDust/issues/153)) ([dcc451a](https://github.com/OneLiteFeatherNET/StarDust/commit/dcc451ad8b5221b8101043d23c2857a993ae9f8e))
+
+
+
+## [1.10.20](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.19...v1.10.20) (2026-03-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.glassfish.jaxb:jaxb-runtime to v4.0.7 ([#152](https://github.com/OneLiteFeatherNET/StarDust/issues/152)) ([e1fad52](https://github.com/OneLiteFeatherNET/StarDust/commit/e1fad5280c59a00f2b3894fa7ffa8807794f4854))
+* **deps:** update hibernate core to v7.2.7.final (patch) ([#153](https://github.com/OneLiteFeatherNET/StarDust/issues/153)) ([dcc451a](https://github.com/OneLiteFeatherNET/StarDust/commit/dcc451ad8b5221b8101043d23c2857a993ae9f8e))
+
 ## [1.10.19](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.18...v1.10.19) (2026-03-08)
 
 
