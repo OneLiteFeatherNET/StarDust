@@ -55,7 +55,7 @@ dependencyResolutionManagement {
             library("protocolLib", "com.comphenix.protocol", "ProtocolLib").versionRef("protocolLib")
             library("bluemapApi", "de.bluecolored", "bluemap-api").versionRef("bluemapApi")
 
-            library("packetEvents", "com.github.retrooper", "packetevents-spigot").version("2.11.2")
+            library("packetEvents", "com.github.retrooper", "packetevents-spigot").version("2.12.0")
 
             library("cloudPaper", "org.incendo", "cloud-paper").version("2.0.0-SNAPSHOT")
             library("cloudAnnotations", "org.incendo", "cloud-annotations").version("2.0.0")
