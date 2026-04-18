@@ -1,3 +1,177 @@
+## [1.10.26](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.25...v1.10.26) (2026-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.github.retrooper:packetevents-spigot to v2.12.0 ([#164](https://github.com/OneLiteFeatherNET/StarDust/issues/164)) ([c54533d](https://github.com/OneLiteFeatherNET/StarDust/commit/c54533d1377fd7c8ec1d5299bf480e8d9c2d3add))
+
+
+
+## [1.10.26](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.25...v1.10.26) (2026-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.github.retrooper:packetevents-spigot to v2.12.0 ([#164](https://github.com/OneLiteFeatherNET/StarDust/issues/164)) ([c54533d](https://github.com/OneLiteFeatherNET/StarDust/commit/c54533d1377fd7c8ec1d5299bf480e8d9c2d3add))
+
+## [1.10.25](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.24...v1.10.25) (2026-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.108.0 ([#151](https://github.com/OneLiteFeatherNET/StarDust/issues/151)) ([c910f41](https://github.com/OneLiteFeatherNET/StarDust/commit/c910f41487925e1ae77a9571add9f3b08ce10bd0))
+* **deps:** update hibernate core to v7.3.1.final ([7869891](https://github.com/OneLiteFeatherNET/StarDust/commit/78698917a93ca78606fff78f1df1da91a5e05f1c))
+* **deps:** update hibernate core to v7.3.1.final (minor) ([#155](https://github.com/OneLiteFeatherNET/StarDust/issues/155)) ([05dfa86](https://github.com/OneLiteFeatherNET/StarDust/commit/05dfa8618b9e70e01dcbbecfa99373b4f792d0fd))
+
+
+
+## [1.10.25](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.24...v1.10.25) (2026-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.108.0 ([#151](https://github.com/OneLiteFeatherNET/StarDust/issues/151)) ([c910f41](https://github.com/OneLiteFeatherNET/StarDust/commit/c910f41487925e1ae77a9571add9f3b08ce10bd0))
+* **deps:** update hibernate core to v7.3.1.final ([7869891](https://github.com/OneLiteFeatherNET/StarDust/commit/78698917a93ca78606fff78f1df1da91a5e05f1c))
+* **deps:** update hibernate core to v7.3.1.final (minor) ([#155](https://github.com/OneLiteFeatherNET/StarDust/issues/155)) ([05dfa86](https://github.com/OneLiteFeatherNET/StarDust/commit/05dfa8618b9e70e01dcbbecfa99373b4f792d0fd))
+
+## [1.10.24](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.23...v1.10.24) (2026-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency de.bluecolored:bluemap-api to v2.7.8 ([#165](https://github.com/OneLiteFeatherNET/StarDust/issues/165)) ([373ea3d](https://github.com/OneLiteFeatherNET/StarDust/commit/373ea3d546a13db8978ff02b7839bd3342472071))
+
+
+
+## [1.10.24](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.23...v1.10.24) (2026-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency de.bluecolored:bluemap-api to v2.7.8 ([#165](https://github.com/OneLiteFeatherNET/StarDust/issues/165)) ([373ea3d](https://github.com/OneLiteFeatherNET/StarDust/commit/373ea3d546a13db8978ff02b7839bd3342472071))
+
+## [1.10.23](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.22...v1.10.23) (2026-04-06)
+
+
+### Bug Fixes
+
+* **deps:** update hibernate core to v7.2.10.final (patch) ([#163](https://github.com/OneLiteFeatherNET/StarDust/issues/163)) ([ae9ccc7](https://github.com/OneLiteFeatherNET/StarDust/commit/ae9ccc7d9633c1bd4e149c8976894c2c11807117))
+
+
+
+## [1.10.23](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.22...v1.10.23) (2026-04-06)
+
+
+### Bug Fixes
+
+* **deps:** update hibernate core to v7.2.10.final (patch) ([#163](https://github.com/OneLiteFeatherNET/StarDust/issues/163)) ([ae9ccc7](https://github.com/OneLiteFeatherNET/StarDust/commit/ae9ccc7d9633c1bd4e149c8976894c2c11807117))
+
+## [1.10.22](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.21...v1.10.22) (2026-04-01)
+
+
+### Bug Fixes
+
+* **deps:** update hibernate core to v7.2.9.final (patch) ([#162](https://github.com/OneLiteFeatherNET/StarDust/issues/162)) ([343fc38](https://github.com/OneLiteFeatherNET/StarDust/commit/343fc38c32e725460b02a110ac04e72cc96b3873))
+
+
+
+## [1.10.22](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.21...v1.10.22) (2026-04-01)
+
+
+### Bug Fixes
+
+* **deps:** update hibernate core to v7.2.9.final (patch) ([#162](https://github.com/OneLiteFeatherNET/StarDust/issues/162)) ([343fc38](https://github.com/OneLiteFeatherNET/StarDust/commit/343fc38c32e725460b02a110ac04e72cc96b3873))
+
+## [1.10.21](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.20...v1.10.21) (2026-03-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.6.4 ([#158](https://github.com/OneLiteFeatherNET/StarDust/issues/158)) ([a093f70](https://github.com/OneLiteFeatherNET/StarDust/commit/a093f701d6e4b67f82b8edd47e8781e50a7a43b9))
+* **deps:** update hibernate core to v7.2.8.final (patch) ([#159](https://github.com/OneLiteFeatherNET/StarDust/issues/159)) ([685366e](https://github.com/OneLiteFeatherNET/StarDust/commit/685366e941b5bbdc0b4c5004bcbbf0035b37df44))
+
+
+
+## [1.10.21](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.20...v1.10.21) (2026-03-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.6.4 ([#158](https://github.com/OneLiteFeatherNET/StarDust/issues/158)) ([a093f70](https://github.com/OneLiteFeatherNET/StarDust/commit/a093f701d6e4b67f82b8edd47e8781e50a7a43b9))
+* **deps:** update hibernate core to v7.2.8.final (patch) ([#159](https://github.com/OneLiteFeatherNET/StarDust/issues/159)) ([685366e](https://github.com/OneLiteFeatherNET/StarDust/commit/685366e941b5bbdc0b4c5004bcbbf0035b37df44))
+
+## [1.10.20](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.19...v1.10.20) (2026-03-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.glassfish.jaxb:jaxb-runtime to v4.0.7 ([#152](https://github.com/OneLiteFeatherNET/StarDust/issues/152)) ([e1fad52](https://github.com/OneLiteFeatherNET/StarDust/commit/e1fad5280c59a00f2b3894fa7ffa8807794f4854))
+* **deps:** update hibernate core to v7.2.7.final (patch) ([#153](https://github.com/OneLiteFeatherNET/StarDust/issues/153)) ([dcc451a](https://github.com/OneLiteFeatherNET/StarDust/commit/dcc451ad8b5221b8101043d23c2857a993ae9f8e))
+
+
+
+## [1.10.20](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.19...v1.10.20) (2026-03-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.glassfish.jaxb:jaxb-runtime to v4.0.7 ([#152](https://github.com/OneLiteFeatherNET/StarDust/issues/152)) ([e1fad52](https://github.com/OneLiteFeatherNET/StarDust/commit/e1fad5280c59a00f2b3894fa7ffa8807794f4854))
+* **deps:** update hibernate core to v7.2.7.final (patch) ([#153](https://github.com/OneLiteFeatherNET/StarDust/issues/153)) ([dcc451a](https://github.com/OneLiteFeatherNET/StarDust/commit/dcc451ad8b5221b8101043d23c2857a993ae9f8e))
+
+## [1.10.19](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.18...v1.10.19) (2026-03-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.107.0 ([#141](https://github.com/OneLiteFeatherNET/StarDust/issues/141)) ([57da3c7](https://github.com/OneLiteFeatherNET/StarDust/commit/57da3c721aa11d5c42a23883ac7899c8de7238f9))
+
+
+
+## [1.10.19](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.18...v1.10.19) (2026-03-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.107.0 ([#141](https://github.com/OneLiteFeatherNET/StarDust/issues/141)) ([57da3c7](https://github.com/OneLiteFeatherNET/StarDust/commit/57da3c721aa11d5c42a23883ac7899c8de7238f9))
+
+## [1.10.18](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.17...v1.10.18) (2026-03-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.6.3 ([#150](https://github.com/OneLiteFeatherNET/StarDust/issues/150)) ([110fc62](https://github.com/OneLiteFeatherNET/StarDust/commit/110fc62b135812066e88cd774f655e40541ec711))
+
+
+
+## [1.10.18](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.17...v1.10.18) (2026-03-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.6.3 ([#150](https://github.com/OneLiteFeatherNET/StarDust/issues/150)) ([110fc62](https://github.com/OneLiteFeatherNET/StarDust/commit/110fc62b135812066e88cd774f655e40541ec711))
+
+## [1.10.17](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.16...v1.10.17) (2026-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.6.2 ([ae093ab](https://github.com/OneLiteFeatherNET/StarDust/commit/ae093ab6d72b70e8796d027a978dd673ee29c6db))
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.6.2 ([#140](https://github.com/OneLiteFeatherNET/StarDust/issues/140)) ([ad20362](https://github.com/OneLiteFeatherNET/StarDust/commit/ad20362ea25d111ff1f5677b0ec469a0a8026638))
+* **deps:** update hibernate core to v7.2.6.final ([8688ca9](https://github.com/OneLiteFeatherNET/StarDust/commit/8688ca971e91659be99fc0dd8c65ee41559cbcf5))
+* **deps:** update hibernate core to v7.2.6.final (patch) ([#144](https://github.com/OneLiteFeatherNET/StarDust/issues/144)) ([f5f66f9](https://github.com/OneLiteFeatherNET/StarDust/commit/f5f66f9ede117fac4e0243dd533bc7b95d8aa994))
+
+
+
+## [1.10.17](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.16...v1.10.17) (2026-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.6.2 ([ae093ab](https://github.com/OneLiteFeatherNET/StarDust/commit/ae093ab6d72b70e8796d027a978dd673ee29c6db))
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.6.2 ([#140](https://github.com/OneLiteFeatherNET/StarDust/issues/140)) ([ad20362](https://github.com/OneLiteFeatherNET/StarDust/commit/ad20362ea25d111ff1f5677b0ec469a0a8026638))
+* **deps:** update hibernate core to v7.2.6.final ([8688ca9](https://github.com/OneLiteFeatherNET/StarDust/commit/8688ca971e91659be99fc0dd8c65ee41559cbcf5))
+* **deps:** update hibernate core to v7.2.6.final (patch) ([#144](https://github.com/OneLiteFeatherNET/StarDust/issues/144)) ([f5f66f9](https://github.com/OneLiteFeatherNET/StarDust/commit/f5f66f9ede117fac4e0243dd533bc7b95d8aa994))
+
 ## [1.10.16](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.15...v1.10.16) (2026-02-23)
 
 

@@ -32,20 +32,20 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
 
-            version("hibernate", "7.2.5.Final")
+            version("hibernate", "7.3.1.Final")
             version("paper", "1.21.11-R0.1-SNAPSHOT")
             version("luckperms", "5.5")
             version("protocolLib", "5.3.0")
-            version("bluemapApi", "2.7.7")
-            version("jaxbRuntime", "4.0.6")
+            version("bluemapApi", "2.7.8")
+            version("jaxbRuntime", "4.0.7")
             version("postgresql", "42.7.10")
             version("apacheCommons", "3.20.0")
             version("junitApi", "5.11.0")
-            version("bom", "1.6.1")
-            version("mockbukit", "4.101.0")
+            version("bom", "1.6.4")
+            version("mockbukit", "4.108.0")
 
             plugin("pluginYaml", "net.minecrell.plugin-yml.paper").version("0.6.0")
-            plugin("shadow", "com.gradleup.shadow").version("9.3.1")
+            plugin("shadow", "com.gradleup.shadow").version("9.4.1")
             plugin("runServer", "xyz.jpenilla.run-paper").version("3.0.2")
 
 
@@ -55,7 +55,7 @@ dependencyResolutionManagement {
             library("protocolLib", "com.comphenix.protocol", "ProtocolLib").versionRef("protocolLib")
             library("bluemapApi", "de.bluecolored", "bluemap-api").versionRef("bluemapApi")
 
-            library("packetEvents", "com.github.retrooper", "packetevents-spigot").version("2.11.2")
+            library("packetEvents", "com.github.retrooper", "packetevents-spigot").version("2.12.0")
 
             library("cloudPaper", "org.incendo", "cloud-paper").version("2.0.0-SNAPSHOT")
             library("cloudAnnotations", "org.incendo", "cloud-annotations").version("2.0.0")
