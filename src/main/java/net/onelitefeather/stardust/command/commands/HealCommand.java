@@ -2,6 +2,7 @@ package net.onelitefeather.stardust.command.commands;
 
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.TriState;
 import net.onelitefeather.stardust.StardustPlugin;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -16,7 +17,7 @@ import org.incendo.cloud.annotations.Permission;
 public class HealCommand {
 
     private static final int DEFAULT_PLAYER_FIRE_TICKS = 0;
-    private static final boolean DEFAULT_ENTITY_HAS_VISUAL_FIRE = false;
+    private static final TriState DEFAULT_ENTITY_HAS_VISUAL_FIRE = TriState.FALSE;
     private static final int DEFAULT_PLAYER_FOOD_LEVEL = 20;
     private static final float DEFAULT_PLAYER_SATURATION_LEVEL = 5.0f;
 

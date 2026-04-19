@@ -1,6 +1,8 @@
 package net.onelitefeather.stardust.service;
 
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.onelitefeather.stardust.StardustPlugin;
@@ -15,7 +17,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.StringUtil;
 import org.incendo.cloud.annotation.specifier.Quoted;
 import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
@@ -29,6 +30,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class SyncFrogService implements Listener {
+
+    private static final Registry<Frog.@NotNull Variant> FROG_REGISTRY = RegistryAccess.registryAccess().getRegistry(RegistryKey.FROG_VARIANT);
 
     private static final String FROG_BUCKET_NAME = "Frog Bucket";
     private static final Frog.Variant DEFAULT_VARIANT = Frog.Variant.TEMPERATE;
@@ -68,7 +71,7 @@ public class SyncFrogService implements Listener {
         var player = event.getPlayer();
 
         var itemStack = event.getItem();
-        if(itemStack == null) return;
+        if (itemStack == null) return;
 
         var clickedBlock = event.getClickedBlock();
         if (clickedBlock == null) return;
@@ -171,13 +174,14 @@ public class SyncFrogService implements Listener {
         container.set(frogVariantKey, PersistentDataType.STRING, frogVariantName(variant));
         itemStack.setItemMeta(itemMeta);
 
+
         return itemStack;
     }
 
     private void addFrogBucketToPlayer(Player player, int amount, Component customName, Frog.Variant variant, boolean actionBarMessage) {
 
         var slot = player.getInventory().firstEmpty();
-        if(slot == -1) {
+        if (slot == -1) {
             player.sendMessage(Component.translatable("plugin.inventory-full").arguments(plugin.getPrefix()));
             return;
         }
@@ -200,14 +204,12 @@ public class SyncFrogService implements Listener {
 
     @NotNull
     private Frog.Variant frogVariant(@Nullable String variant) {
-
         if (variant == null) return DEFAULT_VARIANT;
 
         var key = NamespacedKey.fromString(variant.toLowerCase());
-        if (key == null) return Frog.Variant.TEMPERATE;
+        if (key == null) return DEFAULT_VARIANT;
 
-        var frogVariant = Registry.FROG_VARIANT.get(key);
-
+        var frogVariant = FROG_REGISTRY.get(key);
         return frogVariant != null ? frogVariant : DEFAULT_VARIANT;
     }
 
@@ -217,9 +219,8 @@ public class SyncFrogService implements Listener {
 
     @Suggestions(value = "frogVariants")
     public List<String> frogVariants(CommandContext<CommandSender> context, String input) {
-        return Registry.FROG_VARIANT.stream()
-                .map(Frog.Variant::getKey)
-                .map(NamespacedKey::value)
+        return FROG_REGISTRY.stream()
+                .map(variant -> variant.key().value())
                 .filter(s -> s.startsWith(input))
                 .toList();
     }
