@@ -38,7 +38,7 @@ dependencyResolutionManagement {
             version("protocolLib", "5.3.0")
             version("bluemapApi", "2.7.8")
             version("jaxbRuntime", "4.0.7")
-            version("postgresql", "42.7.10")
+            version("postgresql", "42.7.11")
             version("apacheCommons", "3.20.0")
             version("junitApi", "5.11.0")
             version("bom", "1.6.4")
