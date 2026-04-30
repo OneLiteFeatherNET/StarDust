@@ -1,3 +1,19 @@
+## [1.10.29](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.28...v1.10.29) (2026-04-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.postgresql:postgresql to v42.7.11 ([#171](https://github.com/OneLiteFeatherNET/StarDust/issues/171)) ([ddfd73e](https://github.com/OneLiteFeatherNET/StarDust/commit/ddfd73e9d7b4e04fa88442da78f803b3306cdd09))
+
+
+
+## [1.10.29](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.28...v1.10.29) (2026-04-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.postgresql:postgresql to v42.7.11 ([#171](https://github.com/OneLiteFeatherNET/StarDust/issues/171)) ([ddfd73e](https://github.com/OneLiteFeatherNET/StarDust/commit/ddfd73e9d7b4e04fa88442da78f803b3306cdd09))
+
 ## [1.10.28](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.27...v1.10.28) (2026-04-21)
 
 
