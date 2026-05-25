@@ -1,3 +1,19 @@
+## [1.10.34](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.33...v1.10.34) (2026-05-25)
+
+
+### Bug Fixes
+
+* **deps:** update hibernate core to v7.3.6.final ([#179](https://github.com/OneLiteFeatherNET/StarDust/issues/179)) ([0646691](https://github.com/OneLiteFeatherNET/StarDust/commit/064669173d20bfae27d75a294503fc5194e8ca2d))
+
+
+
+## [1.10.34](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.33...v1.10.34) (2026-05-25)
+
+
+### Bug Fixes
+
+* **deps:** update hibernate core to v7.3.6.final ([#179](https://github.com/OneLiteFeatherNET/StarDust/issues/179)) ([0646691](https://github.com/OneLiteFeatherNET/StarDust/commit/064669173d20bfae27d75a294503fc5194e8ca2d))
+
 ## [1.10.33](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.32...v1.10.33) (2026-05-22)
 
 
