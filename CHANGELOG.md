@@ -1,3 +1,19 @@
+## [1.10.35](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.34...v1.10.35) (2026-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.glassfish.jaxb:jaxb-runtime to v4.0.9 ([#182](https://github.com/OneLiteFeatherNET/StarDust/issues/182)) ([33265c3](https://github.com/OneLiteFeatherNET/StarDust/commit/33265c3f64220f1556933c0886752cd4b0889008))
+
+
+
+## [1.10.35](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.34...v1.10.35) (2026-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.glassfish.jaxb:jaxb-runtime to v4.0.9 ([#182](https://github.com/OneLiteFeatherNET/StarDust/issues/182)) ([33265c3](https://github.com/OneLiteFeatherNET/StarDust/commit/33265c3f64220f1556933c0886752cd4b0889008))
+
 ## [1.10.34](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.33...v1.10.34) (2026-05-25)
 
 
