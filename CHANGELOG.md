@@ -1,3 +1,21 @@
+## [1.10.36](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.35...v1.10.36) (2026-06-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.github.retrooper:packetevents-spigot to v2.12.2 ([#183](https://github.com/OneLiteFeatherNET/StarDust/issues/183)) ([a7e97e8](https://github.com/OneLiteFeatherNET/StarDust/commit/a7e97e89d3ef7163d754596b4c1eaad55b90b60a))
+* **deps:** update hibernate core to v7.3.7.final ([#184](https://github.com/OneLiteFeatherNET/StarDust/issues/184)) ([fe35f25](https://github.com/OneLiteFeatherNET/StarDust/commit/fe35f25a710b213fa5e488d78bc28ada97012dca))
+
+
+
+## [1.10.36](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.35...v1.10.36) (2026-06-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.github.retrooper:packetevents-spigot to v2.12.2 ([#183](https://github.com/OneLiteFeatherNET/StarDust/issues/183)) ([a7e97e8](https://github.com/OneLiteFeatherNET/StarDust/commit/a7e97e89d3ef7163d754596b4c1eaad55b90b60a))
+* **deps:** update hibernate core to v7.3.7.final ([#184](https://github.com/OneLiteFeatherNET/StarDust/issues/184)) ([fe35f25](https://github.com/OneLiteFeatherNET/StarDust/commit/fe35f25a710b213fa5e488d78bc28ada97012dca))
+
 ## [1.10.35](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.34...v1.10.35) (2026-05-29)
 
 
