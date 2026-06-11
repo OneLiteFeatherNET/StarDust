@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @Entity
 @Table
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@NaturalIdCache
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "stardust-user")
+@NaturalIdCache(region = "stardust-user-naturalid")
 public class User {
 
     @Id
@@ -34,7 +34,7 @@ public class User {
     @Column
     private String name;
 
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "stardust-user-properties")
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private List<UserProperty> properties;
 
