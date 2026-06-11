@@ -13,6 +13,10 @@ import org.bukkit.scheduler.BukkitTask;
 import org.hibernate.SessionFactory;
 import org.jetbrains.annotations.Nullable;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +31,17 @@ public final class UserService {
     private final BukkitTask userTask;
     private final PlayerVanishService vanishService;
     private final DatabaseConnectionService databaseService;
+
+    /**
+     * In-memory cache of online players' {@link User}s. Reads from here never touch the database,
+     * so event handlers running on the server thread never block on JDBC I/O. Populated
+     * asynchronously on login (see {@code AsyncPlayerPreLoginEvent}) and evicted on quit; the
+     * access-based expiry is a safety net that drops orphaned entries (e.g. a login that is
+     * allowed but never completes the join).
+     */
+    private final Cache<UUID, User> userCache = Caffeine.newBuilder()
+            .expireAfterAccess(Duration.ofMinutes(30))
+            .build();
 
     public UserService(StardustPlugin plugin) {
         this.plugin = plugin;
@@ -54,16 +69,57 @@ public final class UserService {
 
     @Nullable
     public User getUser(UUID uuid) {
+        var cached = userCache.getIfPresent(uuid);
+        if (cached != null) return cached;
+
+        var user = loadUser(uuid);
+        // Keep online players warm so subsequent per-event lookups stay off the database thread.
+        if (user != null && plugin.getServer().getPlayer(uuid) != null) {
+            userCache.put(uuid, user);
+        }
+        return user;
+    }
+
+    /**
+     * Loads a user from the database by its natural id. This consults Hibernate's
+     * {@code @NaturalIdCache} (unlike an HQL query, which always issues SQL), but still performs
+     * blocking JDBC I/O on a cache miss — never call this directly from the server thread.
+     */
+    @Nullable
+    private User loadUser(UUID uuid) {
         return this.databaseService.getSessionFactory().map(SessionFactory::openSession).map(session -> {
             try (session) {
-                var query = session.createQuery("SELECT u FROM User u JOIN FETCH u.properties WHERE u.uuid = :uuid", User.class);
-                query.setParameter("uuid", uuid.toString());
-                return query.uniqueResult();
+                return session.byNaturalId(User.class).using("uuid", uuid.toString()).load();
             } catch (Exception e) {
                 this.plugin.getLogger().log(Level.SEVERE, "Failed to retrieve user with UUID: %s".formatted(uuid.toString()), e);
                 return null;
             }
         }).orElse(null);
+    }
+
+    /**
+     * Loads a user into the online cache. Performs blocking I/O, so it must be called from an
+     * asynchronous context (e.g. {@code AsyncPlayerPreLoginEvent}).
+     */
+    public void loadIntoCache(UUID uuid) {
+        var user = loadUser(uuid);
+        if (user != null) userCache.put(uuid, user);
+    }
+
+    /**
+     * Removes a user from the online cache. Called when a player disconnects.
+     */
+    public void invalidateUser(UUID uuid) {
+        userCache.invalidate(uuid);
+    }
+
+    /**
+     * Reloads a cached user off the server thread after a write, so cached reads stay coherent
+     * with the database. No-op for users that are not currently cached.
+     */
+    private void refreshCache(UUID uuid) {
+        if (userCache.getIfPresent(uuid) == null) return;
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> loadIntoCache(uuid));
     }
 
     @Nullable
@@ -97,6 +153,8 @@ public final class UserService {
                 session.persist(user);
                 transaction.commit();
                 consumer.accept(user);
+                // Pull the canonical, fully-persisted user into the cache off-thread.
+                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> loadIntoCache(player.getUniqueId()));
 
             } catch (Exception e) {
                 consumer.accept(null);
@@ -119,6 +177,7 @@ public final class UserService {
                 }
 
                 transaction.commit();
+                refreshCache(user.getUniqueId());
             } catch (Exception e) {
                 this.plugin.getLogger().log(Level.SEVERE, "Failed to update user: %s".formatted(user.getName()), e);
                 if (transaction != null) transaction.rollback();
@@ -144,6 +203,7 @@ public final class UserService {
 
                 consumer.accept(true);
                 transaction.commit();
+                invalidateUser(uuid);
 
             } catch (Exception e) {
                 this.plugin.getLogger().log(Level.SEVERE, "Failed to delete user with UUID: %s".formatted(uuid.toString()), e);
@@ -168,6 +228,7 @@ public final class UserService {
                 }
 
                 transaction.commit();
+                refreshCache(user.getUniqueId());
             } catch (Exception e) {
                 this.plugin.getLogger().log(Level.SEVERE, "Failed to set user property: %s".formatted(propertyType.getName()), e);
                 if (transaction != null) transaction.rollback();
