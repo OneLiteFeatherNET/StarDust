@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -18,6 +19,14 @@ public class PlayerConnectionListener implements Listener {
 
     public PlayerConnectionListener(StardustPlugin stardustPlugin) {
         this.stardustPlugin = stardustPlugin;
+    }
+
+    @EventHandler
+    public void onAsyncPreLogin(AsyncPlayerPreLoginEvent event) {
+        // Warm the user cache off the main thread before the player joins, so the on-thread
+        // join handler and all later event handlers read from memory instead of the database.
+        if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) return;
+        stardustPlugin.getUserService().loadIntoCache(event.getUniqueId());
     }
 
     @EventHandler
@@ -58,6 +67,8 @@ public class PlayerConnectionListener implements Listener {
             stardustPlugin.getUserService().getVanishService().handlePlayerQuit(player.getUniqueId());
         } catch (Exception e) {
             stardustPlugin.getLogger().log(Level.SEVERE, "Something went wrong during the quit process", e);
+        } finally {
+            stardustPlugin.getUserService().invalidateUser(player.getUniqueId());
         }
     }
 
