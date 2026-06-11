@@ -12,7 +12,9 @@ import org.jetbrains.annotations.Nullable;
 import org.hibernate.annotations.Cache;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table
@@ -26,15 +28,21 @@ public class User {
     private Long id;
 
     @NaturalId
-    @Column
+    @Column(unique = true, nullable = false, length = 36)
     private String uuid;
 
     @Column
     private String name;
 
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private List<UserProperty> properties;
+
+    @Transient
+    private transient UUID cachedUuid;
+
+    @Transient
+    private transient Map<String, UserProperty> propertyIndex;
 
     public User() {
         //Empty constructor for hibernate
@@ -56,8 +64,12 @@ public class User {
     }
 
     public UUID getUniqueId() {
-        return UUID.fromString(uuid);
+        if (cachedUuid == null) {
+            cachedUuid = UUID.fromString(uuid);
+        }
+        return cachedUuid;
     }
+
 
     public String getName() {
         return name;
@@ -69,7 +81,13 @@ public class User {
     }
 
     public UserProperty getProperty(UserPropertyType type) {
-        return properties.stream().filter(property -> property.getName().equals(type.getName())).findFirst().orElse(null);
+        if (propertyIndex == null) {
+            // built once per cached instance; tiny map, rebuilt after each DB (re)load
+            propertyIndex = properties == null ? Map.of()
+                    : properties.stream().collect(Collectors.toUnmodifiableMap(
+                    UserProperty::getName, p -> p, (a, b) -> b));
+        }
+        return propertyIndex.get(type.getName());
     }
 
     public List<UserProperty> getProperties() {
@@ -136,6 +154,18 @@ public class User {
 
     private boolean getDefaultValue(UserPropertyType type) {
         return type.getType() == 2 && ((Boolean) type.getDefaultValue());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User other)) return false;
+        return uuid != null && uuid.equals(other.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid != null ? uuid.hashCode() : 0;
     }
 
 }
