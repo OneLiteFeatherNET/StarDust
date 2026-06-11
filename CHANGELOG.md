@@ -1,3 +1,21 @@
+# [1.13.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.12.0...v1.13.0) (2026-06-11)
+
+
+### Features
+
+* configure Caffeine cache policies for User-related regions ([8876b02](https://github.com/OneLiteFeatherNET/StarDust/commit/8876b02f11ccbb9c48e1b8023f8e7ee611d2fbd4))
+* update Hibernate cache regions for User entity annotations ([560dbef](https://github.com/OneLiteFeatherNET/StarDust/commit/560dbef28b5ceda2073761d0285a1a1e7572cb86))
+
+
+
+# [1.13.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.12.0...v1.13.0) (2026-06-11)
+
+
+### Features
+
+* configure Caffeine cache policies for User-related regions ([8876b02](https://github.com/OneLiteFeatherNET/StarDust/commit/8876b02f11ccbb9c48e1b8023f8e7ee611d2fbd4))
+* update Hibernate cache regions for User entity annotations ([560dbef](https://github.com/OneLiteFeatherNET/StarDust/commit/560dbef28b5ceda2073761d0285a1a1e7572cb86))
+
 # [1.12.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.11.0...v1.12.0) (2026-06-11)
 
 
