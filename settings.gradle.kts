@@ -43,6 +43,10 @@ dependencyResolutionManagement {
             version("junitApi", "5.11.0")
             version("bom", "1.6.4")
             version("mockbukit", "4.108.0")
+            version("caffeine", "3.2.3")
+            version("mariadb", "3.5.8")
+
+
 
             plugin("pluginYaml", "net.minecrell.plugin-yml.paper").version("0.6.0")
             plugin("shadow", "com.gradleup.shadow").version("9.4.2")
@@ -66,6 +70,11 @@ dependencyResolutionManagement {
             library("hibernateHikariCP", "org.hibernate", "hibernate-hikaricp").versionRef("hibernate")
             library("jaxbRuntime", "org.glassfish.jaxb", "jaxb-runtime").versionRef("jaxbRuntime")
             library("postgresql", "org.postgresql", "postgresql").versionRef("postgresql")
+            library("hibernateJcache", "org.hibernate.orm", "hibernate-jcache").versionRef("hibernate")
+            library("caffeine", "com.github.ben-manes.caffeine", "caffeine").versionRef("caffeine")
+            library("caffeineJcache", "com.github.ben-manes.caffeine", "jcache").versionRef("caffeine")
+            library("mariadb", "org.mariadb.jdbc", "mariadb-java-client").versionRef("mariadb")
+
 
             library("apacheCommons", "org.apache.commons", "commons-lang3").versionRef("apacheCommons")
 
@@ -75,7 +84,8 @@ dependencyResolutionManagement {
             library("mockbukkit", "org.mockbukkit.mockbukkit", "mockbukkit-v1.21").versionRef("mockbukit")
 
             bundle("cloud", listOf("cloudPaper", "cloudAnnotations", "cloudExtras"))
-            bundle("hibernate", listOf("hibernateCore", "hibernateHikariCP"))
+            bundle("hibernate", listOf("hibernateCore", "hibernateHikariCP", "hibernateJcache"))
+            bundle("caching", listOf("caffeine", "caffeineJcache"))
         }
     }
 }

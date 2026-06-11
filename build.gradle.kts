@@ -17,8 +17,10 @@ dependencies {
     compileOnly(libs.luckperms)
 
     implementation(libs.bundles.hibernate)
+    implementation(libs.bundles.caching)
     implementation(libs.jaxbRuntime)
     implementation(libs.postgresql)
+    implementation(libs.mariadb)
     implementation(libs.apacheCommons)
     compileOnly(libs.bluemapApi)
 
