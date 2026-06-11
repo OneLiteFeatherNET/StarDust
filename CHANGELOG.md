@@ -1,3 +1,19 @@
+# [1.12.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.11.0...v1.12.0) (2026-06-11)
+
+
+### Features
+
+* optimize User entity with caching and index improvements ([5b13368](https://github.com/OneLiteFeatherNET/StarDust/commit/5b13368dcf8a807bb051a92f65033107339c394a))
+
+
+
+# [1.12.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.11.0...v1.12.0) (2026-06-11)
+
+
+### Features
+
+* optimize User entity with caching and index improvements ([5b13368](https://github.com/OneLiteFeatherNET/StarDust/commit/5b13368dcf8a807bb051a92f65033107339c394a))
+
 # [1.11.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.36...v1.11.0) (2026-06-11)
 
 
