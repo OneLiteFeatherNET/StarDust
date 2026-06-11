@@ -1,3 +1,21 @@
+# [1.14.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.13.0...v1.14.0) (2026-06-11)
+
+
+### Features
+
+* integrate Caffeine cache for User lookups and caching strategies ([977a400](https://github.com/OneLiteFeatherNET/StarDust/commit/977a400bc2b1d9c39e57968f154e9067b3706150))
+* preload user cache on async player login and improve cleanup on quit ([4bd9b83](https://github.com/OneLiteFeatherNET/StarDust/commit/4bd9b83f8a3ca3bab16b049ebcec4c87e5661170))
+
+
+
+# [1.14.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.13.0...v1.14.0) (2026-06-11)
+
+
+### Features
+
+* integrate Caffeine cache for User lookups and caching strategies ([977a400](https://github.com/OneLiteFeatherNET/StarDust/commit/977a400bc2b1d9c39e57968f154e9067b3706150))
+* preload user cache on async player login and improve cleanup on quit ([4bd9b83](https://github.com/OneLiteFeatherNET/StarDust/commit/4bd9b83f8a3ca3bab16b049ebcec4c87e5661170))
+
 # [1.13.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.12.0...v1.13.0) (2026-06-11)
 
 
