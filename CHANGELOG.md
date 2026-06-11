@@ -1,3 +1,21 @@
+# [1.11.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.36...v1.11.0) (2026-06-11)
+
+
+### Features
+
+* add caffeine and MariaDB dependencies with caching bundle integration ([0449bcb](https://github.com/OneLiteFeatherNET/StarDust/commit/0449bcb5e065ef614ca08e82faff609bfe37a172))
+* add Hibernate caching annotations to User entity ([2266abd](https://github.com/OneLiteFeatherNET/StarDust/commit/2266abd3f5360aa8eb828608c2ef0df8b9ef6034))
+
+
+
+# [1.11.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.36...v1.11.0) (2026-06-11)
+
+
+### Features
+
+* add caffeine and MariaDB dependencies with caching bundle integration ([0449bcb](https://github.com/OneLiteFeatherNET/StarDust/commit/0449bcb5e065ef614ca08e82faff609bfe37a172))
+* add Hibernate caching annotations to User entity ([2266abd](https://github.com/OneLiteFeatherNET/StarDust/commit/2266abd3f5360aa8eb828608c2ef0df8b9ef6034))
+
 ## [1.10.36](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.10.35...v1.10.36) (2026-06-02)
 
 
