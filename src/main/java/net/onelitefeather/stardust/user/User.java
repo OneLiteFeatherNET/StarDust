@@ -5,25 +5,34 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 import org.jetbrains.annotations.Nullable;
+import org.hibernate.annotations.Cache;
 
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@NaturalIdCache
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NaturalId
     @Column
     private String uuid;
 
     @Column
     private String name;
 
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<UserProperty> properties;
 
