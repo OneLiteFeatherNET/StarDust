@@ -1,3 +1,21 @@
+## [1.14.1](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.14.0...v1.14.1) (2026-06-12)
+
+
+### Bug Fixes
+
+* **deps:** update caffeine to v3.2.4 ([#189](https://github.com/OneLiteFeatherNET/StarDust/issues/189)) ([f128d4d](https://github.com/OneLiteFeatherNET/StarDust/commit/f128d4dede3088495625a365f78e554de38f2b9b))
+* **deps:** update hibernate-orm monorepo to v7.3.8.final ([#190](https://github.com/OneLiteFeatherNET/StarDust/issues/190)) ([3cc9cac](https://github.com/OneLiteFeatherNET/StarDust/commit/3cc9caccdf6b73ef9b6ed24f197ba68c5db9b8f0))
+
+
+
+## [1.14.1](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.14.0...v1.14.1) (2026-06-12)
+
+
+### Bug Fixes
+
+* **deps:** update caffeine to v3.2.4 ([#189](https://github.com/OneLiteFeatherNET/StarDust/issues/189)) ([f128d4d](https://github.com/OneLiteFeatherNET/StarDust/commit/f128d4dede3088495625a365f78e554de38f2b9b))
+* **deps:** update hibernate-orm monorepo to v7.3.8.final ([#190](https://github.com/OneLiteFeatherNET/StarDust/issues/190)) ([3cc9cac](https://github.com/OneLiteFeatherNET/StarDust/commit/3cc9caccdf6b73ef9b6ed24f197ba68c5db9b8f0))
+
 # [1.14.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.13.0...v1.14.0) (2026-06-11)
 
 
