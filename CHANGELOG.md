@@ -1,3 +1,19 @@
+## [1.14.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.14.1...v1.14.2) (2026-06-12)
+
+
+### Bug Fixes
+
+* **vanish:** prevent damage to invulnerable entities and TNTPrimed ([7e48c08](https://github.com/OneLiteFeatherNET/StarDust/commit/7e48c080b0adbd06e5ab43eb9a4c1297c4f239db))
+
+
+
+## [1.14.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.14.1...v1.14.2) (2026-06-12)
+
+
+### Bug Fixes
+
+* **vanish:** prevent damage to invulnerable entities and TNTPrimed ([7e48c08](https://github.com/OneLiteFeatherNET/StarDust/commit/7e48c080b0adbd06e5ab43eb9a4c1297c4f239db))
+
 ## [1.14.1](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.14.0...v1.14.1) (2026-06-12)
 
 
