@@ -8,10 +8,7 @@ import net.onelitefeather.stardust.user.User;
 import net.onelitefeather.stardust.user.UserPropertyType;
 import org.bukkit.Bukkit;
 import org.bukkit.block.data.Powerable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -77,6 +74,8 @@ public class PlayerVanishListener implements Listener {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         Entity target = event.getEntity();
         Entity attacker = event.getDamager();
+        if(target.isInvulnerable()) return;
+        if(attacker instanceof TNTPrimed) return;
         if (attacker instanceof Projectile) return;
 
         User attackerUser = stardustPlugin.getUserService().getUser(attacker.getUniqueId());
