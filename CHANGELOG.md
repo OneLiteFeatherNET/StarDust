@@ -1,3 +1,19 @@
+# [1.15.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.14.2...v1.15.0) (2026-06-14)
+
+
+### Features
+
+* **ci:** trigger build ([bca9519](https://github.com/OneLiteFeatherNET/StarDust/commit/bca95190f00b4fac178ea6cb2316a1ad9f21741d))
+
+
+
+# [1.15.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.14.2...v1.15.0) (2026-06-14)
+
+
+### Features
+
+* **ci:** trigger build ([bca9519](https://github.com/OneLiteFeatherNET/StarDust/commit/bca95190f00b4fac178ea6cb2316a1ad9f21741d))
+
 ## [1.14.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.14.1...v1.14.2) (2026-06-12)
 
 
