@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "simple",
+  "include-component-in-tag": false,
+  "include-v-in-tag": true,
+  "bootstrap-sha": "HEAD",
+  "pull-request-header": "",
+  "packages": {
+    ".": {
+      "package-name": "stardust",
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": [
+        "gradle.properties"
+      ]
+    }
+  }
+}
