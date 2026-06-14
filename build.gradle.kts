@@ -35,7 +35,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 
@@ -60,7 +60,7 @@ tasks {
         finalizedBy(rootProject.tasks.jacocoTestReport)
     }
     runServer {
-        minecraftVersion("1.21.10")
+        minecraftVersion("26.1.2")
         jvmArgs("-Dcom.mojang.eula.agree=true")
     }
     jacocoTestReport {
@@ -74,7 +74,7 @@ tasks {
 
 paper {
     main = "${rootProject.group}.stardust.StardustPlugin"
-    apiVersion = "1.21"
+    apiVersion = "26.1.2"
     name = "Stardust"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
 
