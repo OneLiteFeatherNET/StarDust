@@ -14,6 +14,15 @@
 
 * **ci:** trigger build ([bca9519](https://github.com/OneLiteFeatherNET/StarDust/commit/bca95190f00b4fac178ea6cb2316a1ad9f21741d))
 
+## [1.15.1](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.15.0...v1.15.1) (2026-06-15)
+
+
+### Bug Fixes
+
+* **deps:** update bom to v1.7.1 ([#186](https://github.com/OneLiteFeatherNET/StarDust/issues/186)) ([72ae263](https://github.com/OneLiteFeatherNET/StarDust/commit/72ae26336aff0f3b47142041663f9c67da9ed4e8))
+* **deps:** update mariadb to v3.5.9 ([#192](https://github.com/OneLiteFeatherNET/StarDust/issues/192)) ([fce7517](https://github.com/OneLiteFeatherNET/StarDust/commit/fce7517b6c931bf8277c4977697b15602b360602))
+* **deps:** update mockbukit to v4.110.0 ([#173](https://github.com/OneLiteFeatherNET/StarDust/issues/173)) ([3353b7d](https://github.com/OneLiteFeatherNET/StarDust/commit/3353b7db44d102f174972e005290a4d69f0295e4))
+
 ## [1.14.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.14.1...v1.14.2) (2026-06-12)
 
 
