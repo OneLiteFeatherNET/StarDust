@@ -40,7 +40,6 @@ public final class VPNCheckCommand {
                     .header("X-Key", this.plugin.getConfig().getString("iphub.key"))
                     .build();
             try {
-                player.sendMessage(Component.text(address.getAddress().getHostAddress()));
                 var response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
                 player.sendMessage(Component.text(response.body()));
                 if (response.statusCode() == 200) {
