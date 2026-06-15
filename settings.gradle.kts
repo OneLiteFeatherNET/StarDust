@@ -44,7 +44,7 @@ dependencyResolutionManagement {
             version("bom", "1.6.4")
             version("mockbukit", "4.108.0")
             version("caffeine", "3.2.4")
-            version("mariadb", "3.5.8")
+            version("mariadb", "3.5.9")
 
 
 
