@@ -42,7 +42,7 @@ dependencyResolutionManagement {
             version("apacheCommons", "3.20.0")
             version("junitApi", "5.11.0")
             version("bom", "1.6.4")
-            version("mockbukit", "4.108.0")
+            version("mockbukit", "4.110.0")
             version("caffeine", "3.2.4")
             version("mariadb", "3.5.9")
 
