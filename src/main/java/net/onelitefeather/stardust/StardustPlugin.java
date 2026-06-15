@@ -4,15 +4,13 @@ import com.github.retrooper.packetevents.PacketEvents;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.translation.MiniMessageTranslationStore;
 import net.kyori.adventure.translation.GlobalTranslator;
-import net.kyori.adventure.translation.TranslationRegistry;
-import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import net.onelitefeather.stardust.api.CommandCooldownService;
 import net.onelitefeather.stardust.api.ItemSignService;
 import net.onelitefeather.stardust.configuration.PluginConfiguration;
 import net.onelitefeather.stardust.listener.*;
 import net.onelitefeather.stardust.service.*;
-import net.onelitefeather.stardust.translation.PluginTranslationRegistry;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -46,6 +44,7 @@ public class StardustPlugin extends JavaPlugin {
     private ItemSignService<ItemStack, Player> itemSignService;
     private VanishNoPacketListener packetListener;
     private PluginConfiguration pluginConfiguration;
+    private MiniMessageTranslationStore translationStore;
 
     @Override
     public void onLoad() {
@@ -64,14 +63,14 @@ public class StardustPlugin extends JavaPlugin {
 
         this.pluginConfiguration = new PluginConfiguration(getConfig());
 
-        var registry = TranslationRegistry.create(Key.key("stardust", "localization"));
-        supportedLocals.forEach(locale -> {
-            var bundle = ResourceBundle.getBundle("stardust", locale, UTF8ResourceBundleControl.get());
-            registry.registerAll(locale, bundle, true);
-        });
+        this.translationStore = MiniMessageTranslationStore.create(Key.key("stardust", "translations"));
+        this.translationStore.defaultLocale(supportedLocals.getFirst());
+        GlobalTranslator.translator().addSource(this.translationStore);
 
-        registry.defaultLocale(supportedLocals.getFirst());
-        GlobalTranslator.translator().addSource(new PluginTranslationRegistry(registry));
+        supportedLocals.forEach(locale -> this.translationStore.registerAll(
+                locale,
+                ResourceBundle.getBundle("stardust", locale),
+                false));
 
         this.syncFrogService = new SyncFrogService(this);
 
@@ -97,6 +96,7 @@ public class StardustPlugin extends JavaPlugin {
         this.luckPermsService.unsubscribeEvents();
         this.databaseService.close();
 
+        GlobalTranslator.translator().removeSource(this.translationStore);
         this.packetListener.unregister();
         PacketEvents.getAPI().terminate();
     }
