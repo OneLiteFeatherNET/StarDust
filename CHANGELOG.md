@@ -14,6 +14,20 @@
 
 * **ci:** trigger build ([bca9519](https://github.com/OneLiteFeatherNET/StarDust/commit/bca95190f00b4fac178ea6cb2316a1ad9f21741d))
 
+## [1.15.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.15.1...v1.15.2) (2026-07-14)
+
+
+### Bug Fixes
+
+* **deps:** update bom (patch) ([#202](https://github.com/OneLiteFeatherNET/StarDust/issues/202)) ([ee3fbc6](https://github.com/OneLiteFeatherNET/StarDust/commit/ee3fbc6222757d5da523ef42f3882990ff3d6ef5))
+* **deps:** update bom to v1.7.2 ([ee3fbc6](https://github.com/OneLiteFeatherNET/StarDust/commit/ee3fbc6222757d5da523ef42f3882990ff3d6ef5))
+* **deps:** update dependency org.hibernate.orm:hibernate-jcache to v7.3.10.final ([#206](https://github.com/OneLiteFeatherNET/StarDust/issues/206)) ([fdf930c](https://github.com/OneLiteFeatherNET/StarDust/commit/fdf930ca3f2ba6c30d81e031e6e4ef5feb5f9bfb))
+* **deps:** update dependency org.hibernate.orm:hibernate-jcache to v7.3.11.final ([#208](https://github.com/OneLiteFeatherNET/StarDust/issues/208)) ([4d494b4](https://github.com/OneLiteFeatherNET/StarDust/commit/4d494b476a614898b1b84c85ce8542b26233f62a))
+* **deps:** update dependency org.hibernate.orm:hibernate-jcache to v7.3.12.final ([#212](https://github.com/OneLiteFeatherNET/StarDust/issues/212)) ([2ac158f](https://github.com/OneLiteFeatherNET/StarDust/commit/2ac158f6996c23fb3eb541850fa0c2751401db8b))
+* **deps:** update dependency org.postgresql:postgresql to v42.7.12 ([#207](https://github.com/OneLiteFeatherNET/StarDust/issues/207)) ([3ce7cd7](https://github.com/OneLiteFeatherNET/StarDust/commit/3ce7cd7181894fd11c1ad3c56feceb11697456ef))
+* **deps:** update dependency org.postgresql:postgresql to v42.7.13 ([#210](https://github.com/OneLiteFeatherNET/StarDust/issues/210)) ([69a6282](https://github.com/OneLiteFeatherNET/StarDust/commit/69a628228b82219932b5b82ba68f2a6acd0fa744))
+* **deps:** update hibernate core to v7.3.9.final ([#199](https://github.com/OneLiteFeatherNET/StarDust/issues/199)) ([c7b2bad](https://github.com/OneLiteFeatherNET/StarDust/commit/c7b2bad44525d8d13f0ca9a228b67b13d3e0efd1))
+
 ## [1.15.1](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.15.0...v1.15.1) (2026-06-15)
 
 
