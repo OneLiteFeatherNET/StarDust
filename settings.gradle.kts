@@ -49,7 +49,7 @@ dependencyResolutionManagement {
 
 
             plugin("pluginYaml", "net.minecrell.plugin-yml.paper").version("0.6.0")
-            plugin("shadow", "com.gradleup.shadow").version("9.4.3")
+            plugin("shadow", "com.gradleup.shadow").version("9.6.0")
             plugin("runServer", "xyz.jpenilla.run-paper").version("3.0.2")
 
 
