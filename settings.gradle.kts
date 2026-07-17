@@ -36,7 +36,7 @@ dependencyResolutionManagement {
             version("paper", "26.1.2.build.+")
             version("luckperms", "5.5")
             version("protocolLib", "5.3.0")
-            version("bluemapApi", "2.7.8")
+            version("bluemapApi", "2.8.0")
             version("jaxbRuntime", "4.0.9")
             version("postgresql", "42.7.13")
             version("apacheCommons", "3.20.0")
