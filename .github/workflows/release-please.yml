@@ -24,7 +24,7 @@ jobs:
   publish:
     needs: release-please
     if: needs.release-please.outputs.release_created == 'true'
-    uses: OneLiteFeatherNET/workflows/.github/workflows/gradle-publish.yml@v2.1.0
+    uses: OneLiteFeatherNET/workflows/.github/workflows/gradle-publish.yml@v2.4.0
     with:
       java-version: "25.0.3"
       java-distribution: "temurin"
