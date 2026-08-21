@@ -10,7 +10,10 @@
       "package-name": "stardust",
       "changelog-path": "CHANGELOG.md",
       "extra-files": [
-        "gradle.properties"
+        {
+          "type": "generic",
+          "path": "build.gradle.kts"
+        }
       ]
     }
   }
