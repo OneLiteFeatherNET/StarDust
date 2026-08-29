@@ -9,6 +9,8 @@ plugins {
     jacoco
 }
 
+version = "1.15.2" // x-release-please-version
+
 dependencies {
 
     compileOnly(libs.paper)
