@@ -9,6 +9,9 @@ plugins {
     jacoco
 }
 
+version = "1.15.3" // x-release-please-version
+group = "net.onelitefeather"
+
 dependencies {
 
     compileOnly(libs.paper)
@@ -60,7 +63,7 @@ tasks {
         finalizedBy(rootProject.tasks.jacocoTestReport)
     }
     runServer {
-        minecraftVersion("26.1.2")
+        minecraftVersion("26.2")
         jvmArgs("-Dcom.mojang.eula.agree=true")
     }
     jacocoTestReport {
