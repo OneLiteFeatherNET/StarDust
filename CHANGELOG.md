@@ -14,6 +14,13 @@
 
 * **ci:** trigger build ([bca9519](https://github.com/OneLiteFeatherNET/StarDust/commit/bca95190f00b4fac178ea6cb2316a1ad9f21741d))
 
+## [1.15.4](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.15.3...v1.15.4) (2026-09-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.incendo:cloud-minecraft-extras to v2.0.1 ([#240](https://github.com/OneLiteFeatherNET/StarDust/issues/240)) ([d96c551](https://github.com/OneLiteFeatherNET/StarDust/commit/d96c551b9dab03dc8d3f71a73c76e335821b4686))
+
 ## [1.15.3](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.15.2...v1.15.3) (2026-09-06)
 
 
