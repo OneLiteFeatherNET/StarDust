@@ -61,7 +61,7 @@ dependencyResolutionManagement {
 
             library("packetEvents", "com.github.retrooper", "packetevents-spigot").version("2.13.0")
 
-            library("cloudPaper", "org.incendo", "cloud-paper").version("2.0.0")
+            library("cloudPaper", "org.incendo", "cloud-paper").version("2.0.1")
             library("cloudAnnotations", "org.incendo", "cloud-annotations").version("2.1.0")
             library("cloudExtras", "org.incendo", "cloud-minecraft-extras").version("2.0.0")
 
