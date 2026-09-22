@@ -41,7 +41,7 @@ dependencyResolutionManagement {
             version("postgresql", "42.7.13")
             version("apacheCommons", "3.20.0")
             version("junitApi", "5.11.0")
-            version("bom", "1.8.5")
+            version("bom", "1.8.6")
             version("mockbukit", "4.116.3")
             version("caffeine", "3.3.0")
             version("mariadb", "3.5.10")
