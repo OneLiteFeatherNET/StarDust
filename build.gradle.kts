@@ -9,7 +9,7 @@ plugins {
     jacoco
 }
 
-version = "1.15.3" // x-release-please-version
+version = "1.15.4" // x-release-please-version
 group = "net.onelitefeather"
 
 dependencies {
