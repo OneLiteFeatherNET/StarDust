@@ -39,7 +39,7 @@ dependencyResolutionManagement {
             version("bluemapApi", "2.8.1")
             version("jaxbRuntime", "4.0.9")
             version("postgresql", "42.7.14")
-            version("apacheCommons", "3.20.0")
+            version("apacheCommons", "3.21.0")
             version("junitApi", "5.11.0")
             version("bom", "1.8.8")
             version("mockbukit", "4.116.3")
