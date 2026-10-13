@@ -43,7 +43,7 @@ dependencyResolutionManagement {
             version("junitApi", "5.11.0")
             version("bom", "1.8.9")
             version("mockbukit", "4.116.3")
-            version("caffeine", "3.3.0")
+            version("caffeine", "3.3.1")
             version("mariadb", "3.5.10")
 
 
