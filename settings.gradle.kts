@@ -33,7 +33,7 @@ dependencyResolutionManagement {
         create("libs") {
 
             version("hibernate", "7.3.13.Final")
-            version("paper", "26.1.2.build.+")
+            version("paper", "26.3.build.+")
             version("luckperms", "5.5")
             version("protocolLib", "5.3.0")
             version("bluemapApi", "2.8.2")
