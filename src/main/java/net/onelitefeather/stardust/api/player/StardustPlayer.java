@@ -1,129 +1,163 @@
 package net.onelitefeather.stardust.api.player;
 
-import jakarta.persistence.Cacheable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
-import jakarta.persistence.Version;
 import net.onelitefeather.stardust.api.player.setting.PlayerSetting;
 import net.onelitefeather.stardust.api.player.setting.SettingKey;
 import net.onelitefeather.stardust.api.player.setting.SettingValueCodec;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.NaturalIdCache;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.type.SqlTypes;
+import net.onelitefeather.stardust.api.registry.SettingRegistry;
 
 import java.time.Clock;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A player known to StarDust. Settings are stored as a JSON map keyed by {@link SettingKey#key()};
  * only values that differ from {@link SettingKey#defaultValue()} are persisted.
  */
-@Entity
-@Table(name = "stardust_player")
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "stardust-player")
-@NaturalIdCache(region = "stardust-player-naturalid")
+
 public class StardustPlayer {
 
-    @Id
-    @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
-    @Column(name = "stardust_id", nullable = false, updatable = false)
-    private UUID stardustId;
+    public static final StardustPlayer DUMMY = StardustPlayer.create(UUID.randomUUID(), "Dummy", Collections.emptyMap());
 
-    @NaturalId
-    @Column(name = "minecraft_uuid", nullable = false, unique = true, updatable = false)
-    private UUID uuid;
-
-    @Column(name = "name", nullable = false, length = 16)
+    private final UUID id;
+    private UUID uniqueId;
     private String name;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "settings", nullable = false)
-    private Map<String, PlayerSetting> settings = new HashMap<>();
-
-    @Version
-    @Column(name = "version", nullable = false)
-    private long version;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    private final Map<String, PlayerSetting> settings;
     private Instant createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Transient
-    private transient Clock clock = Clock.systemUTC();
-
-    public StardustPlayer() {
-        // Empty constructor for hibernate
+    public StardustPlayer(UUID id, UUID uniqueId, String name, Instant createdAt, Instant updatedAt) {
+        this(id, uniqueId, name, new HashMap<>(), createdAt, updatedAt);
     }
 
-    public StardustPlayer(UUID uuid, String name) {
-        this(uuid, name, Clock.systemUTC());
+    public static StardustPlayer create(UUID uniqueId, String name, Map<String, PlayerSetting> settings) {
+        var now = Clock.systemUTC().instant();
+        return new StardustPlayer(null, uniqueId, name, settings, now, now);
     }
 
-    public StardustPlayer(UUID uuid, String name, Clock clock) {
-        this.uuid = Objects.requireNonNull(uuid, "uuid");
+    public StardustPlayer(UUID id,
+                          UUID uniqueId,
+                          String name,
+                          Map<String, PlayerSetting> settings,
+                          Instant createdAt,
+                          Instant updatedAt) {
+        this.id = id;
+        this.uniqueId = Objects.requireNonNull(uniqueId, "uuid");
         this.name = Objects.requireNonNull(name, "name");
-        this.clock = Objects.requireNonNull(clock, "clock");
+        this.settings = Objects.requireNonNull(settings, "settings");
+        this.createdAt = Objects.requireNonNull(createdAt, "createdAt");
+        this.updatedAt = Objects.requireNonNull(updatedAt, "updatedAt");
     }
 
-    public UUID getStardustId() {
-        return stardustId;
+    public UUID getId() {
+        return id;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public void setUniqueId(UUID uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    public UUID getUniqueId() {
+        return uniqueId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public StardustPlayer withName(String name) {
         this.name = Objects.requireNonNull(name, "name");
+        return this;
     }
 
-    public long getVersion() {
-        return version;
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Instant getCreatedAt() {
         return createdAt;
     }
 
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public Instant getUpdatedAt() {
         return updatedAt;
     }
 
-    /**
-     * Replaces the clock used for {@code updatedAt} of setting entries (runtime only, not persisted).
-     */
-    public void useClock(Clock clock) {
-        this.clock = Objects.requireNonNull(clock, "clock");
+    public boolean hasSetting(String key) {
+        return this.settings.containsKey(key);
     }
 
     /**
      * The persisted settings, including entries whose key is not (or no longer) registered.
      */
-    public Map<String, PlayerSetting> getRawSettings() {
-        return Collections.unmodifiableMap(settings);
+    public Map<String, PlayerSetting> getSettings() {
+        return settings;
+    }
+
+    public StardustPlayer withCanBuild(Boolean canBuild) {
+        setSetting(SettingRegistry.getSettingKey("vanish_allow_building"), canBuild);
+        return this;
+    }
+
+    /**
+     *
+     * @return true if the player is allowed to build while vanished.
+     */
+    public boolean canBuild() {
+        if (!hasSetting("vanish_allow_building")) return true;
+        return SettingValueCodec.decode(Boolean.class, this.settings.get("vanish_allow_building").value());
+    }
+
+    public StardustPlayer withCanAttack(Boolean canAttack) {
+        setSetting(SettingRegistry.getSettingKey("vanish_allow_pve"), canAttack);
+        return this;
+    }
+
+    /**
+     *
+     * @return true if the player is allowed to attack other entities while vanished.
+     */
+    public boolean canAttack() {
+        if (!hasSetting("vanish_allow_pve")) return true;
+        return SettingValueCodec.decode(Boolean.class, this.settings.get("vanish_allow_pve").value());
+    }
+
+    public StardustPlayer withKeepInventory(Boolean keepInventory) {
+        setSetting(SettingRegistry.getSettingKey("vanish_keep_inventory"), keepInventory);
+        return this;
+    }
+
+    /**
+     *
+     * <b>The game rule keep inventory for vanished players.</b>
+     *
+     * @return <b>true if the player is not allowed to drop or pickup items.</b>
+     */
+    public boolean keepInv() {
+        if (!hasSetting("vanish_keep_inventory")) return false;
+        return SettingValueCodec.decode(Boolean.class, this.settings.get("vanish_keep_inventory").value());
+    }
+
+    public StardustPlayer withAllowFlight(Boolean allowFlight) {
+        setSetting(SettingRegistry.getSettingKey("allow_flight"), allowFlight);
+        return this;
+    }
+
+    public boolean allowedFlight() {
+        return SettingValueCodec.decode(Boolean.class, this.settings.get("allow_flight").value());
+    }
+
+    public StardustPlayer withVanished(Boolean vanished) {
+        setSetting(SettingRegistry.getSettingKey("vanished"), vanished);
+        return this;
+    }
+
+    public boolean isVanished() {
+        if (!hasSetting("vanished")) return false;
+        return SettingValueCodec.decode(Boolean.class, this.settings.get("vanished").value());
     }
 
     /**
@@ -149,22 +183,24 @@ public class StardustPlayer {
     }
 
     /**
-     * Stores the value, or removes the entry if it equals the default. A {@code null} value resets
-     * the setting to its default.
+     * Stores the value to the represented {@link PlayerSetting}
+     *
      */
     public <T> void setSetting(SettingKey<T> key, T value) {
-        if (value == null || Objects.equals(value, key.defaultValue())) {
-            settings.remove(key.key());
+
+        var now = Clock.systemUTC().instant();
+        PlayerSetting stored = settings.get(key.key());
+        if (stored == null) {
+            settings.put(key.key(), new PlayerSetting(SettingValueCodec.encode(value), key.schemaVersion(), now));
             return;
         }
-        settings.put(key.key(), new PlayerSetting(SettingValueCodec.encode(value), key.schemaVersion(), clock.instant()));
+
+        this.settings.put(key.key(), new PlayerSetting(SettingValueCodec.encode(value), key.schemaVersion(), now));
     }
 
     private <T> PlayerSetting migrate(SettingKey<T> key, PlayerSetting stored) {
         String value = stored.value();
-        if (key.migrationFunction() != null) {
-            value = key.migrationFunction().apply(value);
-        }
+        if (key.migrationFunction() != null) value = key.migrationFunction().apply(value);
         try {
             T decoded = SettingValueCodec.decode(key.type(), value);
             if (Objects.equals(decoded, key.defaultValue())) {
@@ -175,7 +211,7 @@ public class StardustPlayer {
             settings.remove(key.key());
             return null;
         }
-        PlayerSetting migrated = new PlayerSetting(value, key.schemaVersion(), clock.instant());
+        PlayerSetting migrated = new PlayerSetting(value, key.schemaVersion(), Clock.systemUTC().instant());
         settings.put(key.key(), migrated);
         return migrated;
     }
@@ -184,11 +220,11 @@ public class StardustPlayer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof StardustPlayer other)) return false;
-        return uuid != null && uuid.equals(other.uuid);
+        return uniqueId != null && uniqueId.equals(other.uniqueId);
     }
 
     @Override
     public int hashCode() {
-        return uuid != null ? uuid.hashCode() : 0;
+        return uniqueId != null ? uniqueId.hashCode() : 0;
     }
 }
