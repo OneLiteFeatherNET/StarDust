@@ -30,6 +30,7 @@ dependencies {
     // Testing
     testImplementation(platform(libs.mycelium.bom))
     testImplementation(libs.paper)
+    testImplementation("com.h2database:h2:2.5.252")
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.platform.launcher)
     testRuntimeOnly(libs.junit.jupiter.engine)
