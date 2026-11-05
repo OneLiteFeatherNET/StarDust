@@ -1,15 +1,36 @@
 package net.onelitefeather.stardust.util;
 
 import net.onelitefeather.stardust.StardustPlugin;
+import net.onelitefeather.stardust.api.player.setting.PlayerSetting;
+import net.onelitefeather.stardust.api.registry.SettingRegistry;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PlayerUtil {
 
     private PlayerUtil() {
         throw new UnsupportedOperationException("Utility Class!");
+    }
+
+    public static Map<String, PlayerSetting> findSettingsForPlayer(Player player) {
+        Map<String, PlayerSetting> playerSettings = new HashMap<>();
+        SettingRegistry.getDefaults().forEach((key, settingKey) -> {
+            if (settingKey.hasPermission()) {
+                if (player.hasPermission(settingKey.permission())) {
+                    playerSettings.put(key, SettingRegistry.fromKey(settingKey));
+                }
+            } else {
+                playerSettings.put(key, SettingRegistry.fromKey(settingKey));
+            }
+        });
+
+        return playerSettings;
+
     }
 
     public static boolean canEnterFlyMode(Player player) {
