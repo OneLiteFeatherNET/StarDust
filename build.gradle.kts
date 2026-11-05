@@ -50,9 +50,11 @@ tasks {
         dependsOn(shadowJar)
     }
     shadowJar {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
         archiveClassifier.set("")
         archiveFileName.set("${rootProject.name}-${rootProject.version}.${archiveExtension.getOrElse("jar")}")
         mergeServiceFiles()
+
     }
     test {
         useJUnitPlatform()
