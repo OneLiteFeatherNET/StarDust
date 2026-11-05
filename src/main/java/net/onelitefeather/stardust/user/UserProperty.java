@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
+@Deprecated(forRemoval = true, since = "1.15.4")
 @Entity
 @Table
 public class UserProperty {
