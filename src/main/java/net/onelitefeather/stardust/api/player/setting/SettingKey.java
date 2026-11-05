@@ -21,7 +21,7 @@ public final class SettingKey<T> {
                        int schemaVersion,
                        Function<String, String> migrationFunction) {
         this.key = Objects.requireNonNull(key);
-        this.translationKey = Objects.requireNonNull(translationKey);
+        this.translationKey = translationKey;
         this.type = Objects.requireNonNull(type);
         this.permission = permission;
         this.defaultValue = defaultValue;
