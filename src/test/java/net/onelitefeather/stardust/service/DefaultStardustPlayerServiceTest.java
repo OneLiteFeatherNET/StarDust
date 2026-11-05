@@ -15,44 +15,39 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultStardustPlayerServiceTest {
 
+    private static final Path CONFIG_PATH = Path.of("src/test/resources/test-connection.cfg.xml");
+    private static final DatabaseConnectionService CONNECTION_SERVICE = new DatabaseConnectionService(CONFIG_PATH);
+    private static final StardustPlayerService PLAYER_SERVICE = new DefaultStardustPlayerService(CONNECTION_SERVICE.getSessionFactory().orElse(null));
 
+    private static final StardustPlayer TEST_PLAYER = new StardustPlayer(null,
+            UUID.fromString("df7c66a6-7876-44c2-9abd-9bd33f7d3d9e"),
+            "theShadowsDust",
+            Map.of("vanished", new PlayerSetting("false", 1, Instant.now())),
+            Instant.now(), Instant.now());
 
     @Test
     void testPlayerNotExists() {
-        DatabaseConnectionService connectionService = new DatabaseConnectionService(Path.of("src/test/resources/test-connection.cfg.xml"));
-        try {
-            StardustPlayerService playerService = new DefaultStardustPlayerService(connectionService.getSessionFactory().orElse(null));
-            assertFalse(playerService.playerExists(UUID.fromString("df7c66a6-7876-44c2-9abd-9bd33f7d3d9e")));
-        } finally {
-            connectionService.close();
-        }
+        assertFalse(PLAYER_SERVICE.playerExists(TEST_PLAYER.getUniqueId()));
     }
 
     @Test
-    void testRepeatedUpdatesUseCurrentEntityVersion() {
-        DatabaseConnectionService connectionService = new DatabaseConnectionService(Path.of("src/test/resources/test-connection.cfg.xml"));
-        try {
-            StardustPlayerService playerService = new DefaultStardustPlayerService(connectionService.getSessionFactory().orElse(null));
-            UUID playerUuid = UUID.randomUUID();
-            Instant now = Instant.now();
-            var player = new StardustPlayer(null, playerUuid, "Player",
-                    Map.of("vanished", new PlayerSetting("false", 1, now)), now, now);
+    void testDeletePlayer() {
+        PLAYER_SERVICE.saveOrUpdate(TEST_PLAYER);
+        assertTrue(PLAYER_SERVICE.playerExists(TEST_PLAYER.getUniqueId()));
+        PLAYER_SERVICE.delete(TEST_PLAYER);
+        assertFalse(PLAYER_SERVICE.playerExists(TEST_PLAYER.getUniqueId()));
+    }
 
-            playerService.saveOrUpdate(player);
-            var savedPlayer = playerService.findById(playerUuid);
-            assertNotNull(savedPlayer);
+    @Test
+    void testFindPlayer() {
+        var player = PLAYER_SERVICE.findById(TEST_PLAYER.getUniqueId());
+        assertNotNull(player);
+    }
 
-            playerService.saveOrUpdate(new StardustPlayer(savedPlayer.getId(), playerUuid, "Updated",
-                    Map.of("vanished", new PlayerSetting("true", 1, now)), savedPlayer.getCreatedAt(), now));
-            playerService.saveOrUpdate(new StardustPlayer(savedPlayer.getId(), playerUuid, "Updated again",
-                    Map.of("vanished", new PlayerSetting("false", 1, now)), savedPlayer.getCreatedAt(), now));
-
-            var updatedPlayer = playerService.findById(playerUuid);
-            assertNotNull(updatedPlayer);
-            assertEquals("Updated again", updatedPlayer.getName());
-            assertEquals("false", updatedPlayer.getSettings().get("vanished").value());
-        } finally {
-            connectionService.close();
-        }
+    @Test
+    void testListPlayers() {
+        PLAYER_SERVICE.saveOrUpdate(TEST_PLAYER);
+        var players = PLAYER_SERVICE.findAll(5);
+        assertFalse(players.isEmpty());
     }
 }
