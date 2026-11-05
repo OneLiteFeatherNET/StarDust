@@ -46,10 +46,10 @@ public class LuckPermsService {
     private void disableVanish(User user) {
         Player player = Bukkit.getPlayer(user.getUniqueId());
         if (player == null) return;
-        if (plugin.getUserService().getVanishService().isVanishPermitted(player.getUniqueId())) return;
+        if (plugin.getVanishService().isVanishPermitted(player.getUniqueId())) return;
 
-        if (!plugin.getUserService().getVanishService().isVanished(player.getUniqueId())) return;
-        plugin.getUserService().getVanishService().toggle(player.getUniqueId());
+        if (!plugin.getVanishService().isVanished(player.getUniqueId())) return;
+        plugin.getVanishService().toggle(player.getUniqueId());
     }
 
     public void unsubscribeEvents() {
