@@ -2,12 +2,12 @@ package net.onelitefeather.stardust.listener;
 
 import net.kyori.adventure.text.Component;
 import net.onelitefeather.stardust.StardustPlugin;
-import net.onelitefeather.stardust.user.User;
+import net.onelitefeather.stardust.api.player.StardustPlayer;
+import net.onelitefeather.stardust.util.PlayerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -22,59 +22,48 @@ public class PlayerConnectionListener implements Listener {
     }
 
     @EventHandler
-    public void onAsyncPreLogin(AsyncPlayerPreLoginEvent event) {
-        // Warm the user cache off the main thread before the player joins, so the on-thread
-        // join handler and all later event handlers read from memory instead of the database.
-        if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) return;
-        stardustPlugin.getUserService().loadIntoCache(event.getUniqueId());
-    }
-
-    @EventHandler
     public void handlePlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        try {
-            User user = stardustPlugin.getUserService().getUser(player.getUniqueId());
-            if (user == null) {
 
-                stardustPlugin.getUserService().registerUser(player, userResult -> player.sendMessage(Component.translatable("plugin.first-join")
-                        .arguments(stardustPlugin.getPrefix(), player.displayName())));
+        var userService = this.stardustPlugin.getUserService();
+        var user = userService.getUser(player.getUniqueId());
+        if(user != null) this.stardustPlugin.getPlayerService().migrateUser(user, userService);
 
-                joinMessage(event);
-                return;
-            }
-
-            if (!player.getName().equalsIgnoreCase(user.getName())) {
-                stardustPlugin.getLogger().log(Level.INFO, String.format("Updating Username from %s to %s", user.getName(), player.getName()));
-                stardustPlugin.getUserService().updateUser(user.withName(player.getName()));
-            }
-
+        if (!stardustPlugin.getPlayerService().playerExists(player.getUniqueId())) {
+            var stardustPlayer = StardustPlayer.create(player.getUniqueId(), player.getName(), PlayerUtil.findSettingsForPlayer(player));
+            stardustPlugin.getPlayerService().saveOrUpdate(stardustPlayer);
+            player.sendMessage(Component.translatable("plugin.new-player").arguments(Component.translatable("prefix"), player.displayName()));
             joinMessage(event);
-        } catch (Exception e) {
-            stardustPlugin.getLogger().log(Level.SEVERE, "Something went wrong during the join process", e);
+            return;
         }
+
+        var stardustPlayer = stardustPlugin.getPlayerService().findById(player.getUniqueId());
+        if (!player.getName().equalsIgnoreCase(stardustPlayer.getName())) {
+            stardustPlugin.getLogger().log(Level.INFO, String.format("Updating Username from %s to %s", stardustPlayer.getName(), player.getName()));
+            stardustPlugin.getPlayerService().saveOrUpdate(stardustPlayer.withName(player.getName()));
+        }
+
+        joinMessage(event);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         try {
-            User user = stardustPlugin.getUserService().getUser(player.getUniqueId());
-            if (user != null && user.isVanished()) {
+            if (this.stardustPlugin.getVanishService().isVanished(player.getUniqueId())) {
                 event.quitMessage(null);
             } else {
                 event.quitMessage(Component.translatable("listener.quit-message").arguments(player.displayName()));
             }
-            stardustPlugin.getUserService().getVanishService().handlePlayerQuit(player.getUniqueId());
+            stardustPlugin.getVanishService().handlePlayerQuit(player.getUniqueId());
         } catch (Exception e) {
             stardustPlugin.getLogger().log(Level.SEVERE, "Something went wrong during the quit process", e);
-        } finally {
-            stardustPlugin.getUserService().invalidateUser(player.getUniqueId());
         }
     }
 
     private void joinMessage(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        boolean isVanished = stardustPlugin.getUserService().getVanishService().handlePlayerJoin(player.getUniqueId());
+        boolean isVanished = stardustPlugin.getVanishService().handlePlayerJoin(player.getUniqueId());
         if (isVanished) {
             event.joinMessage(null);
         } else {
