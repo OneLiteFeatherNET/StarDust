@@ -20,7 +20,7 @@ public class PlayerUtil {
     public static Map<String, PlayerSetting> findSettingsForPlayer(Player player) {
         Map<String, PlayerSetting> playerSettings = new HashMap<>();
         SettingRegistry.getDefaults().forEach((key, settingKey) -> {
-            if (settingKey.hasPermission()) {
+            if (settingKey.isPermissionSet()) {
                 if (player.hasPermission(settingKey.permission())) {
                     playerSettings.put(key, SettingRegistry.fromKey(settingKey));
                 }
