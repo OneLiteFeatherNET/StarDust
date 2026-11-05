@@ -2,32 +2,20 @@ package net.onelitefeather.stardust.command.commands;
 
 import net.kyori.adventure.text.Component;
 import net.onelitefeather.stardust.StardustPlugin;
-import net.onelitefeather.stardust.user.UserPropertyType;
+import net.onelitefeather.stardust.util.Constants;
+import net.onelitefeather.stardust.util.PlayerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.util.StringUtil;
 import org.incendo.cloud.annotation.specifier.Greedy;
 import org.incendo.cloud.annotations.Argument;
 import org.incendo.cloud.annotations.Command;
 import org.incendo.cloud.annotations.CommandDescription;
 import org.incendo.cloud.annotations.Permission;
-import org.incendo.cloud.annotations.suggestion.Suggestions;
-import org.incendo.cloud.context.CommandContext;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class VanishCommand {
 
     private final StardustPlugin stardustPlugin;
-    private final List<UserPropertyType> vanishProperties = List.of(
-            UserPropertyType.VANISHED,
-            UserPropertyType.VANISH_ALLOW_PVP,
-            UserPropertyType.VANISH_ALLOW_PVP,
-            UserPropertyType.VANISH_ALLOW_BUILDING,
-            UserPropertyType.VANISH_DISABLE_ITEM_DROP,
-            UserPropertyType.VANISH_DISABLE_ITEM_COLLECT);
 
     public VanishCommand(StardustPlugin stardustPlugin) {
         this.stardustPlugin = stardustPlugin;
@@ -55,26 +43,48 @@ public class VanishCommand {
         }
     }
 
-    @Command("vanish|v toggleProperty <property> [player]")
-    @Permission("stardust.command.vanish.toggleproperty")
-    @CommandDescription("Toggling vanish properties for yourself or someone else")
-    public void commandVanishToggleProperty(
-            CommandSender commandSender,
-            @Argument(value = "property", suggestions = "vanishProperties") UserPropertyType property,
-            @Greedy @Argument(value = "player") Player target
-    ) {
-        if (target == null) {
-            toggleProperty(commandSender, (Player) commandSender, property);
-        } else {
-            boolean isSenderPlayer = commandSender instanceof Player;
-            if (!isSenderPlayer) {
-                toggleProperty(commandSender, target, property);
-                return;
-            }
-            if (stardustPlugin.getUserService().getVanishService().canSee(((Player) commandSender).getUniqueId(), target.getUniqueId())) {
-                toggleProperty(commandSender, target, property);
-            }
-        }
+    @Command("vanish|v toggle buildmode")
+    @Permission("stardust.command.vanish.buildmode")
+    @CommandDescription("Allows you to build while in vanish.")
+    public void commandVanishBuildMode(Player player) {
+
+        var stardustPlayer = this.stardustPlugin.getPlayerService().findById(player.getUniqueId());
+        if (stardustPlayer == null) return;
+
+        var newState = !stardustPlayer.canBuild();
+        var translationKey = newState ? "commands.vanish.setting.buildmode.enabled" : "commands.vanish.setting.buildmode.disabled";
+
+        this.stardustPlugin.getPlayerService().saveOrUpdate(stardustPlayer.withCanBuild(newState));
+        player.sendMessage(Component.translatable(translationKey).arguments(Component.translatable("plugin.prefix")));
+    }
+
+    @Command("vanish|v toggle keepinv")
+    @Permission("stardust.command.vanish.keepinv")
+    @CommandDescription("Prevents your inventory from being changed while in vanish.")
+    public void commandVanishKeepInventory(Player player) {
+        var stardustPlayer = this.stardustPlugin.getPlayerService().findById(player.getUniqueId());
+        if (stardustPlayer == null) return;
+
+        var newState = !stardustPlayer.keepInv();
+        var translationKey = newState ? "commands.vanish.setting.keepinv.enabled" : "commands.vanish.setting.keepinv.disabled";
+
+        this.stardustPlugin.getPlayerService().saveOrUpdate(stardustPlayer.withKeepInventory(newState));
+        player.sendMessage(Component.translatable(translationKey).arguments(Component.translatable("plugin.prefix")));
+    }
+
+    @Command("vanish|v toggle pve")
+    @Permission("stardust.command.vanish.pve")
+    @CommandDescription("Prevents you from attacking other players or entities while in vanish.")
+    public void commandVanishPVE(Player player) {
+        var stardustPlayer = this.stardustPlugin.getPlayerService().findById(player.getUniqueId());
+        if (stardustPlayer == null) return;
+
+        var newState = !stardustPlayer.canAttack();
+        var translationKey = newState ? "commands.vanish.setting.pve.enabled" : "commands.vanish.setting.pve.disabled";
+
+        this.stardustPlugin.getPlayerService().saveOrUpdate(stardustPlayer.withCanAttack(newState));
+        player.sendMessage(Component.translatable(translationKey).arguments(Component.translatable("plugin.prefix")));
+        if (!newState) PlayerUtil.removeEnemies(player, Constants.RADIUS_REMOVE_ENEMIES);
     }
 
     @Command("vanish|v [player]")
@@ -88,25 +98,6 @@ public class VanishCommand {
         }
     }
 
-    private void toggleProperty(CommandSender commandSender, Player target, UserPropertyType propertyType) {
-        var user = stardustPlugin.getUserService().getUser(target.getUniqueId());
-        if (user == null) return;
-
-        var property = user.getProperty(propertyType);
-        boolean defaultState = (Boolean) propertyType.getDefaultValue();
-        boolean currentValue = property != null ? (Boolean) property.getValue() : defaultState;
-        boolean value = !currentValue;
-
-        stardustPlugin.getUserService().setUserProperty(user, propertyType, value);
-
-        commandSender.sendMessage(Component.translatable("commands.vanish.property-set").arguments(
-                stardustPlugin.getPrefix(),
-                Component.text(propertyType.getFriendlyName()),
-                Component.text(value),
-                Component.text(target.getName())
-        ));
-    }
-
     public void toggleVanish(CommandSender commandSender, Player target) {
         try {
             if (!target.equals(commandSender) && !commandSender.hasPermission("stardust.vanish.others")) {
@@ -114,15 +105,13 @@ public class VanishCommand {
                         .arguments(stardustPlugin.getPrefix()));
                 return;
             }
-            stardustPlugin.getUserService().getVanishService().toggle(target.getUniqueId());
+            stardustPlugin.getVanishService().toggle(target.getUniqueId());
         } catch (Exception e) {
             stardustPlugin.getLogger().throwing(VanishCommand.class.getSimpleName(), "toggleVanish", e);
         }
     }
 
-    @Suggestions("vanishProperties")
-    public List<String> vanishProperties(CommandContext<CommandSender> context, String input) {
-        List<String> propertiesNames = this.vanishProperties.stream().map(Enum::toString).toList();
-        return StringUtil.copyPartialMatches(input, propertiesNames, new ArrayList<>(propertiesNames.size()));
+    private Component friendlyBooleanDisplay(Boolean bool) {
+        return bool ? Component.translatable("boolean.enabled") : Component.translatable("boolean.disabled");
     }
 }
