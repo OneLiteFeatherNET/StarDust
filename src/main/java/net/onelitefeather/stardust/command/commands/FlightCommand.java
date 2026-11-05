@@ -2,7 +2,6 @@ package net.onelitefeather.stardust.command.commands;
 
 import net.kyori.adventure.text.Component;
 import net.onelitefeather.stardust.StardustPlugin;
-import net.onelitefeather.stardust.user.UserPropertyType;
 import net.onelitefeather.stardust.util.PlayerUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -36,7 +35,7 @@ public class FlightCommand {
     }
 
     private void handleFlight(CommandSender commandSender, Player target) {
-        var user = this.plugin.getUserService().getUser(target.getUniqueId());
+        var stardustPlayer = this.plugin.getPlayerService().findById(target.getUniqueId());
         if (commandSender != target && !commandSender.hasPermission("stardust.command.flight.others")) {
             commandSender.sendMessage(Component.translatable("plugin.not-enough-permissions").arguments(plugin.getPrefix()));
             return;
@@ -51,7 +50,7 @@ public class FlightCommand {
         }
 
         target.setAllowFlight(!target.getAllowFlight());
-        this.plugin.getUserService().setUserProperty(user, UserPropertyType.FLYING, target.getAllowFlight());
+        this.plugin.getPlayerService().saveOrUpdate(stardustPlayer.withAllowFlight(target.getAllowFlight()));
 
         var targetEnabledMessage = Component.translatable("commands.flight.target.enable").arguments(this.plugin.getPrefix());
         var targetDisabledMessage = Component.translatable("commands.flight.target.disable").arguments(this.plugin.getPrefix());
