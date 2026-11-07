@@ -1,6 +1,7 @@
 package net.onelitefeather.stardust.command.mapper;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
@@ -79,6 +80,21 @@ public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, Comm
         public @NotNull CommandSourceStack withExecutor(@NotNull Entity entity) {
             return this;
         }
+
+        @Override
+        public void sendReply(@NonNull ComponentLike message) {
+            getPlayerOrThrow().sendMessage(message);
+        }
+
+        @Override
+        public void sendSuccess(@NonNull ComponentLike message, boolean allowInformingAdmins) {
+            getPlayerOrThrow().sendMessage(message);
+        }
+
+        @Override
+        public void sendFailure(@NonNull ComponentLike message) {
+            getPlayerOrThrow().sendMessage(message);
+        }
     }
 
     @SuppressWarnings({"NonExtendableApiUsage"})
@@ -116,6 +132,21 @@ public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, Comm
         @Override
         public @NotNull CommandSourceStack withExecutor(@NotNull Entity entity) {
             return this;
+        }
+
+        @Override
+        public void sendReply(@NonNull ComponentLike message) {
+            Bukkit.getConsoleSender().sendMessage(message);
+        }
+
+        @Override
+        public void sendSuccess(@NonNull ComponentLike message, boolean allowInformingAdmins) {
+            Bukkit.getConsoleSender().sendMessage(message);
+        }
+
+        @Override
+        public void sendFailure(@NonNull ComponentLike message) {
+            Bukkit.getConsoleSender().sendMessage(message);
         }
     }
 
@@ -155,6 +186,21 @@ public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, Comm
         @Override
         public @NotNull CommandSourceStack withExecutor(@NotNull Entity entity) {
             return this;
+        }
+
+        @Override
+        public void sendReply(@NonNull ComponentLike message) {
+            this.player.sendMessage(message);
+        }
+
+        @Override
+        public void sendSuccess(@NonNull ComponentLike message, boolean allowInformingAdmins) {
+            this.player.sendMessage(message);
+        }
+
+        @Override
+        public void sendFailure(@NonNull ComponentLike message) {
+            this.player.sendMessage(message);
         }
     }
 }

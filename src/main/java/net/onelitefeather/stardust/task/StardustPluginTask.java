@@ -6,11 +6,11 @@ import net.onelitefeather.stardust.util.PlayerUtil;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class UserTask implements Runnable {
+public class StardustPluginTask implements Runnable {
 
     private final StardustPlugin plugin;
 
-    public UserTask(@NotNull StardustPlugin plugin) {
+    public StardustPluginTask(@NotNull StardustPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -20,10 +20,10 @@ public class UserTask implements Runnable {
 
             if (player.isInvulnerable()) saturatePlayer(player);
 
-            var user = plugin.getUserService().getUser(player.getUniqueId());
-            if (user == null) return;
+            var stardustPlayer = plugin.getPlayerService().findById(player.getUniqueId());
+            if (stardustPlayer == null) return;
 
-            if (user.isVanished()) {
+            if (stardustPlayer.isVanished()) {
                 player.sendActionBar(Component.translatable("plugin.vanish-actionbar"));
                 saturatePlayer(player);
                 //Keep fly mode if the player's gamemode was changed to survival or adventure
@@ -35,7 +35,7 @@ public class UserTask implements Runnable {
             }
 
             if (!PlayerUtil.canEnterFlyMode(player)) {
-                player.setAllowFlight(user.isFlying());
+                player.setAllowFlight(stardustPlayer.allowedFlight());
             }
         });
     }

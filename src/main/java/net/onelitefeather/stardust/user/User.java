@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Deprecated(forRemoval = true, since = "1.15.4")
 @Entity
 @Table
 @Cacheable
@@ -121,29 +122,6 @@ public class User {
     public boolean getPropertyState(UserPropertyType type) {
         var property = getProperty(type);
         return property != null ? property.getValue() : getDefaultValue(type);
-    }
-
-    public void confirmChatMessage(NamespacedKey key, Boolean value) {
-        var base = getBase();
-        if (base == null) return;
-        base.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, value);
-    }
-
-    public boolean hasChatConfirmation(NamespacedKey key) {
-        var base = getBase();
-        if (base == null) return false;
-
-        //Remove old data from the persistent container.
-        var container = base.getPersistentDataContainer();
-        if (container.has(key, PersistentDataType.INTEGER)) {
-            container.remove(key);
-            return false;
-        }
-
-        var value = container.get(key, PersistentDataType.BOOLEAN);
-        if (value == null) return false;
-
-        return value;
     }
 
     @Nullable

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Deprecated(forRemoval = true, since = "1.15.4")
 public enum UserPropertyType {
 
     FLYING("Flying", false, (byte) 2),

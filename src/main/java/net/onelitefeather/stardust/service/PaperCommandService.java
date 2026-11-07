@@ -36,7 +36,7 @@ public class PaperCommandService {
     @SuppressWarnings("UnstableApiUsage")
     private PaperCommandManager<CommandSender> buildCommandSystem() {
         return PaperCommandManager.builder(new BukkitSenderMapper())
-                .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
+                .executionCoordinator(ExecutionCoordinator.simpleCoordinator())
                 .buildOnEnable(plugin);
     }
 
@@ -70,6 +70,7 @@ public class PaperCommandService {
         annotationParser.parse(new VPNCheckCommand(plugin));
         annotationParser.parse(new PingCommand(plugin));
         annotationParser.parse(new IpShowCommand(plugin));
+        annotationParser.parse(new PlayerInfoCommand(plugin));
     }
 
     @Command("stardust help [query]")

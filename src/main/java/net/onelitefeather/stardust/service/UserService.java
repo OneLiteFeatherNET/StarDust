@@ -1,20 +1,15 @@
 package net.onelitefeather.stardust.service;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import net.onelitefeather.stardust.DatabaseConnectionService;
 import net.onelitefeather.stardust.StardustPlugin;
-import net.onelitefeather.stardust.api.PlayerVanishService;
-import net.onelitefeather.stardust.task.UserTask;
 import net.onelitefeather.stardust.user.User;
 import net.onelitefeather.stardust.user.UserProperty;
 import net.onelitefeather.stardust.user.UserPropertyType;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 import org.hibernate.SessionFactory;
 import org.jetbrains.annotations.Nullable;
-
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -23,13 +18,12 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
+@Deprecated(forRemoval = true, since = "1.15.4")
 public final class UserService {
 
     private static final String PLUGIN_BLUEMAP_ENABLED = "BlueMap";
 
     private final StardustPlugin plugin;
-    private final BukkitTask userTask;
-    private final PlayerVanishService vanishService;
     private final DatabaseConnectionService databaseService;
 
     /**
@@ -45,22 +39,11 @@ public final class UserService {
 
     public UserService(StardustPlugin plugin) {
         this.plugin = plugin;
-        this.userTask = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new UserTask(plugin), 20L, 20L);
-        if (Bukkit.getPluginManager().isPluginEnabled(PLUGIN_BLUEMAP_ENABLED)) {
-            this.vanishService = new DelegatedBlueMapVanishService(new BukkitPlayerVanishService(this, plugin));
-        } else {
-            this.vanishService = new BukkitPlayerVanishService(this, plugin);
-        }
         this.databaseService = plugin.getDatabaseService();
     }
 
-    public PlayerVanishService getVanishService() {
-        return vanishService;
-    }
-
-    public void stopUserTask() {
-        if (userTask == null) return;
-        userTask.cancel();
+    public StardustPlugin getPlugin() {
+        return plugin;
     }
 
     public List<User> getUsers() {

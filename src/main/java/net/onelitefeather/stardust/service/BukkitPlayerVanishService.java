@@ -4,7 +4,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.onelitefeather.stardust.StardustPlugin;
 import net.onelitefeather.stardust.api.PlayerVanishService;
-import net.onelitefeather.stardust.user.UserPropertyType;
+import net.onelitefeather.stardust.api.StardustPlayerService;
+import net.onelitefeather.stardust.api.player.setting.SettingKey;
+import net.onelitefeather.stardust.api.registry.SettingRegistry;
 import net.onelitefeather.stardust.util.Constants;
 import net.onelitefeather.stardust.util.PlayerUtil;
 import org.bukkit.NamespacedKey;
@@ -17,15 +19,14 @@ import java.util.function.Predicate;
 
 public final class BukkitPlayerVanishService implements PlayerVanishService {
 
-    private static final String VANISH_PERMISSION = "stardust.command.vanish";
     private final StardustPlugin plugin;
-    private final UserService userService;
+    private final StardustPlayerService playerService;
     private final NamespacedKey vanishedKey;
     private static final String VANISH_SEE_OTHERS_PERMISSION = "stardust.vanish.others";
 
-    public BukkitPlayerVanishService(UserService userService, StardustPlugin plugin) {
+    public BukkitPlayerVanishService(StardustPlayerService playerService, StardustPlugin plugin) {
         this.plugin = plugin;
-        this.userService = userService;
+        this.playerService = playerService;
         this.vanishedKey = new NamespacedKey(plugin, "vanished");
     }
 
@@ -81,22 +82,21 @@ public final class BukkitPlayerVanishService implements PlayerVanishService {
     @Override
     public boolean isVanished(UUID playerId) {
 
-        var user = userService.getUser(playerId);
-        if (user == null) return false;
+        var stardustPlayer = this.playerService.findById(playerId);
+        if (stardustPlayer == null) return false;
 
         Player player = plugin.getServer().getPlayer(playerId);
         var vanished = player != null && Boolean.TRUE.equals(player.getPersistentDataContainer().get(vanishedKey, PersistentDataType.BOOLEAN));
-        return Boolean.logicalAnd(user.isVanished(), vanished);
+        return Boolean.logicalAnd(stardustPlayer.isVanished(), vanished);
     }
 
     @Override
     public void setVanished(UUID playerId, boolean vanished) {
 
-        var user = userService.getUser(playerId);
-        if (user == null) return;
+        var stardustPlayer = this.playerService.findById(playerId);
+        if (stardustPlayer == null) return;
 
-        this.userService.setUserProperty(user, UserPropertyType.VANISHED, vanished);
-
+        this.playerService.saveOrUpdate(stardustPlayer.withVanished(vanished).withAllowFlight(vanished));
         Player player = plugin.getServer().getPlayer(playerId);
         if (player != null) {
             player.getPersistentDataContainer().set(vanishedKey, PersistentDataType.BOOLEAN, vanished);
@@ -115,7 +115,7 @@ public final class BukkitPlayerVanishService implements PlayerVanishService {
 
         if (isVanished(playerId)) {
 
-            if (!player.hasPermission("stardust.command.vanish")) {
+            if (!isVanishPermitted(playerId)) {
                 setVanished(playerId, false);
                 showPlayer(playerId);
                 togglePlayerProperties(player, false);
@@ -158,7 +158,7 @@ public final class BukkitPlayerVanishService implements PlayerVanishService {
     @Override
     public boolean isVanishPermitted(UUID playerId) {
         Player player = plugin.getServer().getPlayer(playerId);
-        return player != null && player.hasPermission(VANISH_PERMISSION);
+        return player != null && player.hasPermission(SettingRegistry.getSettingKey("vanished").permission());
     }
 
     private void sendReappearedMessage(Player player) {
@@ -174,7 +174,8 @@ public final class BukkitPlayerVanishService implements PlayerVanishService {
 
     private void togglePlayerProperties(Player player, boolean vanished) {
         if (vanished) {
-            player.setInvulnerable(true);
+            player.setInvulnerable(false);
+
             PlayerUtil.removeEnemies(player, Constants.RADIUS_REMOVE_ENEMIES);
             player.setAllowFlight(true);
             player.setSleepingIgnored(true);
