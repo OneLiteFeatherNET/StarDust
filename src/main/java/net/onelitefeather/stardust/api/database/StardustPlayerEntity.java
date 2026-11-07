@@ -118,14 +118,26 @@ public class StardustPlayerEntity {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof StardustPlayerEntity other)) return false;
-        return uuid != null && uuid.equals(other.uuid);
+    public final boolean equals(Object o) {
+        if (!(o instanceof StardustPlayerEntity that)) return false;
+
+        return version == that.version &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(uuid, that.uuid) &&
+                Objects.equals(name, that.name) && Objects.equals(settings, that.settings) &&
+                Objects.equals(createdAt, that.createdAt) &&
+                Objects.equals(updatedAt, that.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return uuid != null ? uuid.hashCode() : 0;
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(uuid);
+        result = 31 * result + Objects.hashCode(name);
+        result = 31 * result + Objects.hashCode(settings);
+        result = 31 * result + Long.hashCode(version);
+        result = 31 * result + Objects.hashCode(createdAt);
+        result = 31 * result + Objects.hashCode(updatedAt);
+        return result;
     }
 }

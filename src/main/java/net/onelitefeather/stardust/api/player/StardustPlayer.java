@@ -4,6 +4,10 @@ import net.onelitefeather.stardust.api.player.setting.PlayerSetting;
 import net.onelitefeather.stardust.api.player.setting.SettingKey;
 import net.onelitefeather.stardust.api.player.setting.SettingValueCodec;
 import net.onelitefeather.stardust.api.registry.SettingRegistry;
+import org.bukkit.Bukkit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MarkerFactory;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -16,7 +20,8 @@ import java.util.*;
 
 public class StardustPlayer {
 
-    public static final StardustPlayer DUMMY = StardustPlayer.create(UUID.randomUUID(), "Dummy", Collections.emptyMap());
+    private static final Logger LOGGER = LoggerFactory.getLogger(StardustPlayer.class);
+    public static final StardustPlayer DUMMY = create(UUID.randomUUID(), "Dummy", Collections.emptyMap());
 
     private final UUID id;
     private UUID uniqueId;
@@ -178,6 +183,8 @@ public class StardustPlayer {
         try {
             return SettingValueCodec.decode(key.type(), stored.value());
         } catch (IllegalArgumentException e) {
+            LOGGER.error("Failed to decode setting {} for player {}", key.key(), this.name);
+
             return key.defaultValue();
         }
     }
@@ -218,14 +225,25 @@ public class StardustPlayer {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof StardustPlayer other)) return false;
-        return uniqueId != null && uniqueId.equals(other.uniqueId);
+    public final boolean equals(Object o) {
+        if (!(o instanceof StardustPlayer that)) return false;
+
+        return Objects.equals(id, that.id) &&
+                Objects.equals(uniqueId, that.uniqueId) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(settings, that.settings) &&
+                Objects.equals(createdAt, that.createdAt) &&
+                Objects.equals(updatedAt, that.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return uniqueId != null ? uniqueId.hashCode() : 0;
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(uniqueId);
+        result = 31 * result + Objects.hashCode(name);
+        result = 31 * result + Objects.hashCode(settings);
+        result = 31 * result + Objects.hashCode(createdAt);
+        result = 31 * result + Objects.hashCode(updatedAt);
+        return result;
     }
 }
