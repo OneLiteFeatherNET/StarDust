@@ -55,8 +55,7 @@ public class DefaultStardustPlayerService implements StardustPlayerService {
             var result = query.uniqueResult();
             return result == null ? null : mapToModel(result);
         } catch (Exception e) {
-            LOGGER.warn("Failed to retrieve user with UUID: {}", playerUuid);
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.atError().setMessage("Failed to retrieve user with UUID: {}").addArgument(playerUuid).setCause(e).log();
             return null;
         }
     }
@@ -80,7 +79,7 @@ public class DefaultStardustPlayerService implements StardustPlayerService {
 
             transaction.commit();
         } catch (Exception e) {
-            LOGGER.error("Failed to open a session to save or update player: {}", player.getName(), e);
+            LOGGER.atError().setMessage("Failed to open a session to save or update player: {}").addArgument(player.getName()).setCause(e).log();
         }
     }
 
@@ -95,7 +94,7 @@ public class DefaultStardustPlayerService implements StardustPlayerService {
             session.remove(query.uniqueResult());
             transaction.commit();
         } catch (Exception e) {
-            LOGGER.error("Failed to open a session to delete player: {}", player.getName(), e);
+            LOGGER.atError().setMessage("Failed to open a session to delete player: {}").addArgument(player.getName()).setCause(e).log();
         }
     }
 
@@ -106,7 +105,7 @@ public class DefaultStardustPlayerService implements StardustPlayerService {
             query.setParameter("uuid", playerUuid);
             return query.uniqueResult() != null;
         } catch (Exception e) {
-            LOGGER.warn("Failed to check player data for {}", playerUuid, e);
+            LOGGER.atError().setMessage("Failed to open a session to check if player exists: {}").addArgument(playerUuid).setCause(e).log();
             return false;
         }
     }

@@ -1,5 +1,7 @@
 package net.onelitefeather.stardust.api.player.setting;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 
 /**
@@ -10,8 +12,8 @@ public final class SettingValueCodec {
     private SettingValueCodec() {
     }
 
-    public static String encode(Object value) {
-        return String.valueOf(Objects.requireNonNull(value, "value"));
+    public static String encode(@NotNull Object value) {
+        return String.valueOf(value);
     }
 
     /**

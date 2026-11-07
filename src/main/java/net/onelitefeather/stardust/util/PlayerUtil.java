@@ -8,8 +8,8 @@ import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PlayerUtil {
 
@@ -18,19 +18,13 @@ public class PlayerUtil {
     }
 
     public static Map<String, PlayerSetting> findSettingsForPlayer(Player player) {
-        Map<String, PlayerSetting> playerSettings = new HashMap<>();
-        SettingRegistry.getDefaults().forEach((key, settingKey) -> {
-            if (settingKey.isPermissionSet()) {
-                if (player.hasPermission(settingKey.permission())) {
-                    playerSettings.put(key, SettingRegistry.fromKey(settingKey));
-                }
-            } else {
-                playerSettings.put(key, SettingRegistry.fromKey(settingKey));
-            }
-        });
-
-        return playerSettings;
-
+        return SettingRegistry.getDefaults().entrySet().stream()
+                .filter(entry -> !entry.getValue().isPermissionSet()
+                        || player.hasPermission(entry.getValue().permission()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> SettingRegistry.fromKey(entry.getValue())
+                ));
     }
 
     public static boolean canEnterFlyMode(Player player) {

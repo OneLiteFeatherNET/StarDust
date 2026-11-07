@@ -77,6 +77,9 @@ public class StardustPlugin extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveConfig();
 
+        this.settingRegistry = new SettingRegistry();
+        this.settingRegistry.registerDefaults();
+
         this.pluginConfiguration = new PluginConfiguration(getConfig());
 
         this.translationStore = MiniMessageTranslationStore.create(Key.key("stardust", "translations"));
@@ -103,9 +106,6 @@ public class StardustPlugin extends JavaPlugin {
         this.userService = new UserService(this);
 
         this.playerService = new DefaultStardustPlayerService(this.databaseService.getSessionFactory().orElse(null));
-        this.settingRegistry = new SettingRegistry();
-        this.settingRegistry.registerDefaults();
-
         this.vanishService = loadVanishService(this.playerService);
         this.pluginTask = getServer().getScheduler().runTaskTimerAsynchronously(this, new StardustPluginTask(this), 20L, 20L);
 
