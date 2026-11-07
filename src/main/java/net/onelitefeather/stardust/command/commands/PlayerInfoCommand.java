@@ -42,7 +42,9 @@ public final class PlayerInfoCommand {
     public void handleInfoCommand(CommandSender sender, @Argument(value = "player", parserName = "stardust_player_parser") StardustPlayer stardustPlayer) {
 
         if (!this.plugin.getPlayerService().playerExists(stardustPlayer.getUniqueId())) {
-            sender.sendRichMessage("<red>No player with name %s could be found!</red>".formatted(stardustPlayer.getName()));
+            sender.sendMessage(Component.translatable("no-player-found").arguments(
+                    Component.translatable("plugin.prefix"),
+                    Component.text(stardustPlayer.getName())));
             return;
         }
 
