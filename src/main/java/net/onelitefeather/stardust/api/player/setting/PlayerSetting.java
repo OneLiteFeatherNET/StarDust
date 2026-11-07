@@ -12,7 +12,7 @@ import java.util.Objects;
  *
  */
 public final class PlayerSetting {
-    private final String value;
+    private String value;
     private final int schema;
     private Instant updatedAt;
 
@@ -37,6 +37,11 @@ public final class PlayerSetting {
 
     public Instant updatedAt() {
         return updatedAt;
+    }
+
+    public PlayerSetting withValue(Object value) {
+        this.value = SettingValueCodec.encode(value);
+        return this;
     }
 
     public PlayerSetting withUpdatedAt(Instant updatedAt) {
@@ -66,5 +71,4 @@ public final class PlayerSetting {
                 "schema=" + schema + ", " +
                 "updatedAt=" + updatedAt + ']';
     }
-
 }

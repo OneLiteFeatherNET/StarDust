@@ -189,13 +189,14 @@ public class StardustPlayer {
     public <T> void setSetting(SettingKey<T> key, T value) {
 
         var now = Clock.systemUTC().instant();
+
         PlayerSetting stored = settings.get(key.key());
-        if (stored == null) {
-            settings.put(key.key(), new PlayerSetting(SettingValueCodec.encode(value), key.schemaVersion(), now));
+        if (stored != null) {
+            settings.put(key.key(), stored.withValue(value).withUpdatedAt(now));
             return;
         }
 
-        this.settings.put(key.key(), new PlayerSetting(SettingValueCodec.encode(value), key.schemaVersion(), now));
+        this.settings.putIfAbsent(key.key(), new PlayerSetting(SettingValueCodec.encode(value), key.schemaVersion(), now));
     }
 
     private <T> PlayerSetting migrate(SettingKey<T> key, PlayerSetting stored) {
