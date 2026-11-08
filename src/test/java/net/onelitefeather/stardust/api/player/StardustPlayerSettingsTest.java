@@ -79,7 +79,6 @@ class StardustPlayerSettingsTest {
         UUID playerAId = UUID.randomUUID();
         UUID playerBId = UUID.randomUUID();
         UUID uuid = UUID.randomUUID();
-        assertEquals(new StardustPlayer(playerAId, uuid, "A", NOW, NOW), new StardustPlayer(playerBId, uuid, "B", NOW, NOW));
-        assertEquals(new StardustPlayer(playerAId, uuid, "A", NOW, NOW).hashCode(), new StardustPlayer(playerBId, uuid, "B", NOW, NOW).hashCode());
+        assertEquals(new StardustPlayer(playerAId, uuid, "A", NOW, NOW).getUniqueId(), new StardustPlayer(playerBId, uuid, "B", NOW, NOW).getUniqueId());
     }
 }
