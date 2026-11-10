@@ -47,8 +47,8 @@ public class VanishNoPacketListener implements PacketListener {
     private boolean isVanished(WrapperPlayServerPlayerInfo.PlayerData data) {
         UserProfile userProfile = data.getUserProfile();
         if (userProfile == null) return false;
-        var user = this.stardustPlugin.getUserService().getUser(userProfile.getUUID());
+        var user = this.stardustPlugin.getPlayerService().findById(userProfile.getUUID());
         if (user == null) return false;
-        return this.stardustPlugin.getUserService().getVanishService().isVanished(user.getUniqueId());
+        return this.stardustPlugin.getVanishService().isVanished(user.getUniqueId());
     }
 }

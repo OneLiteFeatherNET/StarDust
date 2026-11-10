@@ -8,14 +8,20 @@ import net.kyori.adventure.text.minimessage.translation.MiniMessageTranslationSt
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.onelitefeather.stardust.api.CommandCooldownService;
 import net.onelitefeather.stardust.api.ItemSignService;
+import net.onelitefeather.stardust.api.PlayerVanishService;
+import net.onelitefeather.stardust.api.StardustPlayerService;
+import net.onelitefeather.stardust.api.registry.SettingRegistry;
 import net.onelitefeather.stardust.configuration.PluginConfiguration;
 import net.onelitefeather.stardust.listener.*;
 import net.onelitefeather.stardust.service.*;
+import net.onelitefeather.stardust.task.StardustPluginTask;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.util.List;
@@ -32,19 +38,25 @@ public class StardustPlugin extends JavaPlugin {
         super(loader, description, dataFolder, file);
     }
 
+    private static final String PLUGIN_BLUEMAP_ENABLED = "BlueMap";
     private final List<Locale> supportedLocals = List.of(Locale.US, Locale.GERMANY);
 
     private SyncFrogService syncFrogService;
     private DatabaseConnectionService databaseService;
     private UserService userService;
     private CommandCooldownService cooldownService;
+    private PlayerVanishService vanishService;
+    private StardustPlayerService playerService;
     private LuckPermsService luckPermsService;
     private PaperCommandService commandService;
+    private SettingRegistry settingRegistry;
 
     private ItemSignService<ItemStack, Player> itemSignService;
     private VanishNoPacketListener packetListener;
     private PluginConfiguration pluginConfiguration;
     private MiniMessageTranslationStore translationStore;
+
+    private BukkitTask pluginTask;
 
     @Override
     public void onLoad() {
@@ -54,12 +66,19 @@ public class StardustPlugin extends JavaPlugin {
         this.packetListener.register();
     }
 
+    public MiniMessageTranslationStore getTranslationStore() {
+        return translationStore;
+    }
+
     @Override
     public void onEnable() {
 
         saveDefaultConfig();
         getConfig().options().copyDefaults(true);
         saveConfig();
+
+        this.settingRegistry = new SettingRegistry();
+        this.settingRegistry.registerDefaults();
 
         this.pluginConfiguration = new PluginConfiguration(getConfig());
 
@@ -80,11 +99,15 @@ public class StardustPlugin extends JavaPlugin {
         this.luckPermsService = new LuckPermsService(this);
         this.luckPermsService.init();
 
-        this.databaseService = new DatabaseConnectionService(this);
+        this.databaseService = new DatabaseConnectionService(getDataFolder().toPath().resolve("hibernate.cfg.xml"));
         this.cooldownService = new BukkitCommandCooldownService(this, this.databaseService);
-
         this.itemSignService = new BukkitItemSignService(this);
+
         this.userService = new UserService(this);
+
+        this.playerService = new DefaultStardustPlayerService(this.databaseService.getSessionFactory().orElse(null));
+        this.vanishService = loadVanishService(this.playerService);
+        this.pluginTask = getServer().getScheduler().runTaskTimerAsynchronously(this, new StardustPluginTask(this), 20L, 20L);
 
         PacketEvents.getAPI().init();
         registerListeners();
@@ -92,7 +115,7 @@ public class StardustPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.userService.stopUserTask();
+        stopPluginTask();
         this.luckPermsService.unsubscribeEvents();
         this.databaseService.close();
 
@@ -129,12 +152,29 @@ public class StardustPlugin extends JavaPlugin {
         return databaseService;
     }
 
+    public StardustPlayerService getPlayerService() {
+        return playerService;
+    }
+
+    public PlayerVanishService getVanishService() {
+        return vanishService;
+    }
+
     public ItemSignService<ItemStack, Player> getItemSignService() {
         return itemSignService;
     }
 
     public Component getPrefix() {
         return Component.translatable("plugin.prefix");
+    }
+
+    public SettingRegistry getSettingRegistry() {
+        return settingRegistry;
+    }
+
+    private void stopPluginTask() {
+        if (this.pluginTask == null) return;
+        this.pluginTask.cancel();
     }
 
     private void registerListeners() {
@@ -144,6 +184,14 @@ public class StardustPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerConnectionListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerVanishListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerAdvancementListener(this), this);
+    }
+
+    private PlayerVanishService loadVanishService(StardustPlayerService playerService) {
+        if (Bukkit.getPluginManager().isPluginEnabled(PLUGIN_BLUEMAP_ENABLED)) {
+            return new DelegatedBlueMapVanishService(new BukkitPlayerVanishService(playerService, this));
+        } else {
+            return new BukkitPlayerVanishService(playerService, this);
+        }
     }
 
 }
