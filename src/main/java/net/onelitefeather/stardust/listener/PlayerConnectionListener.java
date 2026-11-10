@@ -32,7 +32,7 @@ public class PlayerConnectionListener implements Listener {
         if (!stardustPlugin.getPlayerService().playerExists(player.getUniqueId())) {
             var stardustPlayer = StardustPlayer.create(player.getUniqueId(), player.getName(), PlayerUtil.findSettingsForPlayer(player));
             stardustPlugin.getPlayerService().saveOrUpdate(stardustPlayer);
-            player.sendMessage(Component.translatable("plugin.new-player").arguments(Component.translatable("prefix"), player.displayName()));
+            player.sendMessage(Component.translatable("plugin.new-player").arguments(Component.translatable("plugin.prefix"), player.displayName()));
             joinMessage(event);
             return;
         }
