@@ -14,6 +14,13 @@
 
 * **ci:** trigger build ([bca9519](https://github.com/OneLiteFeatherNET/StarDust/commit/bca95190f00b4fac178ea6cb2316a1ad9f21741d))
 
+## [1.16.1](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.16.0...v1.16.1) (2026-11-10)
+
+
+### Bug Fixes
+
+* **translation:** correct translation key for new player message ([#262](https://github.com/OneLiteFeatherNET/StarDust/issues/262)) ([e5881a4](https://github.com/OneLiteFeatherNET/StarDust/commit/e5881a466db0cc82bb958f51ea4cc76649b332d8))
+
 ## [1.16.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.15.4...v1.16.0) (2026-11-10)
 
 
