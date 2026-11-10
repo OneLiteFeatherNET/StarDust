@@ -14,6 +14,13 @@
 
 * **ci:** trigger build ([bca9519](https://github.com/OneLiteFeatherNET/StarDust/commit/bca95190f00b4fac178ea6cb2316a1ad9f21741d))
 
+## [1.16.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.15.4...v1.16.0) (2026-11-10)
+
+
+### Features
+
+* **new-player-system:** rework of the user system. ([#260](https://github.com/OneLiteFeatherNET/StarDust/issues/260)) ([95ad625](https://github.com/OneLiteFeatherNET/StarDust/commit/95ad62534702a193bdc2570b8995acc6de24acac))
+
 ## [1.15.4](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.15.3...v1.15.4) (2026-10-17)
 
 
