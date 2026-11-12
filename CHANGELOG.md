@@ -14,6 +14,13 @@
 
 * **ci:** trigger build ([bca9519](https://github.com/OneLiteFeatherNET/StarDust/commit/bca95190f00b4fac178ea6cb2316a1ad9f21741d))
 
+## [1.16.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.16.1...v1.16.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.commons:commons-lang3 to v3.22.0 ([#264](https://github.com/OneLiteFeatherNET/StarDust/issues/264)) ([6c80341](https://github.com/OneLiteFeatherNET/StarDust/commit/6c803414ed8f912ef4ff2de0ea2c797cb59cbe14))
+
 ## [1.16.1](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.16.0...v1.16.1) (2026-11-10)
 
 
