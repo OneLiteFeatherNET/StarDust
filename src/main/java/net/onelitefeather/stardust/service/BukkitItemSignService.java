@@ -4,8 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.onelitefeather.stardust.StardustPlugin;
 import net.onelitefeather.stardust.api.ItemSignService;
-import net.onelitefeather.stardust.user.User;
-import org.apache.commons.lang3.ArrayUtils;
+import net.onelitefeather.stardust.util.UUIDTagType;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -15,33 +14,23 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class BukkitItemSignService implements ItemSignService<ItemStack, Player> {
 
-    private final StardustPlugin stardustPlugin;
     private final NamespacedKey signedNameSpacedKey;
 
     public BukkitItemSignService(StardustPlugin stardustPlugin) {
-        this.stardustPlugin = stardustPlugin;
         this.signedNameSpacedKey = new NamespacedKey(stardustPlugin, "signed");
     }
 
     @Override
     public boolean hasSigned(ItemStack itemStack, Player player) {
-
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) return false;
-
-        PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-        if (!container.has(signedNameSpacedKey, PersistentDataType.LONG_ARRAY)) return false;
-
-        long[] array = container.get(signedNameSpacedKey, PersistentDataType.LONG_ARRAY);
-        User user = stardustPlugin.getUserService().getUser(player.getUniqueId());
-
-        if (user == null || array == null) return false;
-        return Arrays.stream(array).anyMatch(id -> id == user.getId());
+        return getSignedPlayers(itemStack).contains(player.getUniqueId());
     }
 
     @Override
@@ -68,28 +57,33 @@ public class BukkitItemSignService implements ItemSignService<ItemStack, Player>
         ItemStack item = base.clone();
         if (!isInCreative) item.setAmount(1);
 
-        User user = stardustPlugin.getUserService().getUser(player.getUniqueId());
-        if (user == null) return item;
-
-        ItemStack itemStack = buildSignedUsers(player, item, sign, user);
+        ItemStack itemStack = buildSignedPlayers(player, item, sign);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.lore(buildLore(player, itemStack, sign, lore));
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
 
-    private ItemStack buildSignedUsers(Player player, ItemStack itemStack, boolean sign, User user) {
+    private ItemStack buildSignedPlayers(Player player, ItemStack itemStack, boolean sign) {
+
         ItemMeta itemMeta = itemStack.getItemMeta();
         PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
+        var uuidList = PersistentDataType.LIST.listTypeFrom(UUIDTagType.UUID);
+        var players = new ArrayList<>(getSignedPlayers(itemStack));
+
+        boolean hasNotSigned = !hasSigned(itemStack, player);
         if (sign) {
-            if (!hasSigned(itemStack, player)) {
-                container.set(signedNameSpacedKey, PersistentDataType.LONG_ARRAY, addPlayerSign(itemStack, user));
-            }
+
+            //The if statement has to be separated to the one above,
+            // because of players who can sign the same item multiple times
+            if (hasNotSigned) players.add(player.getUniqueId());
+
         } else {
-            container.set(signedNameSpacedKey, PersistentDataType.LONG_ARRAY, removePlayerSign(itemStack, user));
+            players.remove(player.getUniqueId());
         }
 
+        container.set(signedNameSpacedKey, uuidList, players);
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
@@ -122,25 +116,17 @@ public class BukkitItemSignService implements ItemSignService<ItemStack, Player>
         return filtered;
     }
 
-    private long[] removePlayerSign(ItemStack itemStack, User user) {
-        long[] players = getSignedPlayers(itemStack);
-        if (players == null) return new long[]{user.getId()};
-        return Arrays.stream(players)
-                .filter(id -> id != user.getId())
-                .toArray();
-    }
+    private List<UUID> getSignedPlayers(ItemStack itemStack) {
 
-    private long[] addPlayerSign(ItemStack itemStack, User user) {
-        long[] players = getSignedPlayers(itemStack);
-        if (players == null) return new long[]{user.getId()};
-        return ArrayUtils.add(players, user.getId());
-    }
-
-    private long[] getSignedPlayers(ItemStack itemStack) {
+        var uuidList = PersistentDataType.LIST.listTypeFrom(UUIDTagType.UUID);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta == null) return new long[0];
+        if (itemMeta == null) return Collections.emptyList();
+
         PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-        if (!container.has(signedNameSpacedKey, PersistentDataType.LONG_ARRAY)) return new long[0];
-        return container.get(signedNameSpacedKey, PersistentDataType.LONG_ARRAY);
+        if (!container.has(signedNameSpacedKey, uuidList)) return new ArrayList<>();
+
+        var signedPlayers = container.get(signedNameSpacedKey, uuidList);
+        if (signedPlayers == null) return new ArrayList<>();
+        return signedPlayers;
     }
 }

@@ -33,24 +33,24 @@ dependencyResolutionManagement {
         create("libs") {
 
             version("hibernate", "7.3.13.Final")
-            version("paper", "26.1.2.build.+")
+            version("paper", "26.3.build.+")
             version("luckperms", "5.5")
             version("protocolLib", "5.3.0")
-            version("bluemapApi", "2.8.0")
+            version("bluemapApi", "2.8.2")
             version("jaxbRuntime", "4.0.9")
-            version("postgresql", "42.7.13")
-            version("apacheCommons", "3.20.0")
+            version("postgresql", "42.7.14")
+            version("apacheCommons", "3.22.0")
             version("junitApi", "5.11.0")
-            version("bom", "1.8.3")
+            version("bom", "1.8.9")
             version("mockbukit", "4.116.3")
-            version("caffeine", "3.2.4")
+            version("caffeine", "3.3.1")
             version("mariadb", "3.5.10")
 
 
 
             plugin("pluginYaml", "net.minecrell.plugin-yml.paper").version("0.6.0")
             plugin("shadow", "com.gradleup.shadow").version("9.6.1")
-            plugin("runServer", "xyz.jpenilla.run-paper").version("3.0.2")
+            plugin("runServer", "xyz.jpenilla.run-paper").version("3.1.0")
 
 
             library("mycelium.bom", "net.onelitefeather", "mycelium-bom").versionRef("bom")
@@ -59,11 +59,11 @@ dependencyResolutionManagement {
             library("protocolLib", "com.comphenix.protocol", "ProtocolLib").versionRef("protocolLib")
             library("bluemapApi", "de.bluecolored", "bluemap-api").versionRef("bluemapApi")
 
-            library("packetEvents", "com.github.retrooper", "packetevents-spigot").version("2.13.0")
+            library("packetEvents", "com.github.retrooper", "packetevents-spigot").version("2.14.0")
 
-            library("cloudPaper", "org.incendo", "cloud-paper").version("2.0.0")
+            library("cloudPaper", "org.incendo", "cloud-paper").version("2.0.1")
             library("cloudAnnotations", "org.incendo", "cloud-annotations").version("2.1.0")
-            library("cloudExtras", "org.incendo", "cloud-minecraft-extras").version("2.0.0")
+            library("cloudExtras", "org.incendo", "cloud-minecraft-extras").version("2.0.1")
 
             //Database
             library("hibernateCore", "org.hibernate", "hibernate-core").versionRef("hibernate")

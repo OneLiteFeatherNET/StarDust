@@ -14,6 +14,69 @@
 
 * **ci:** trigger build ([bca9519](https://github.com/OneLiteFeatherNET/StarDust/commit/bca95190f00b4fac178ea6cb2316a1ad9f21741d))
 
+## [1.16.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.16.1...v1.16.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.apache.commons:commons-lang3 to v3.22.0 ([#264](https://github.com/OneLiteFeatherNET/StarDust/issues/264)) ([6c80341](https://github.com/OneLiteFeatherNET/StarDust/commit/6c803414ed8f912ef4ff2de0ea2c797cb59cbe14))
+
+## [1.16.1](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.16.0...v1.16.1) (2026-11-10)
+
+
+### Bug Fixes
+
+* **translation:** correct translation key for new player message ([#262](https://github.com/OneLiteFeatherNET/StarDust/issues/262)) ([e5881a4](https://github.com/OneLiteFeatherNET/StarDust/commit/e5881a466db0cc82bb958f51ea4cc76649b332d8))
+
+## [1.16.0](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.15.4...v1.16.0) (2026-11-10)
+
+
+### Features
+
+* **new-player-system:** rework of the user system. ([#260](https://github.com/OneLiteFeatherNET/StarDust/issues/260)) ([95ad625](https://github.com/OneLiteFeatherNET/StarDust/commit/95ad62534702a193bdc2570b8995acc6de24acac))
+
+## [1.15.4](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.15.3...v1.15.4) (2026-10-17)
+
+
+### Bug Fixes
+
+* **deps:** update caffeine to v3.3.0 ([#244](https://github.com/OneLiteFeatherNET/StarDust/issues/244)) ([1797121](https://github.com/OneLiteFeatherNET/StarDust/commit/17971217351517963082a9faa045ab9510636d54))
+* **deps:** update caffeine to v3.3.1 ([#255](https://github.com/OneLiteFeatherNET/StarDust/issues/255)) ([493df14](https://github.com/OneLiteFeatherNET/StarDust/commit/493df1459a589017e2900b03394e2e5e52da00b2))
+* **deps:** update dependency com.github.retrooper:packetevents-spigot to v2.14.0 ([#246](https://github.com/OneLiteFeatherNET/StarDust/issues/246)) ([4ec8d97](https://github.com/OneLiteFeatherNET/StarDust/commit/4ec8d9785a9fe84532ebcb7695720e23c778c62a))
+* **deps:** update dependency de.bluecolored:bluemap-api to v2.8.0-6 ([#243](https://github.com/OneLiteFeatherNET/StarDust/issues/243)) ([686aebf](https://github.com/OneLiteFeatherNET/StarDust/commit/686aebffcca4cf63bba971d4cd58c4091ea7f715))
+* **deps:** update dependency de.bluecolored:bluemap-api to v2.8.1 ([#248](https://github.com/OneLiteFeatherNET/StarDust/issues/248)) ([1c9b85d](https://github.com/OneLiteFeatherNET/StarDust/commit/1c9b85d5ea93115b3ff98dd2de7448a29a6cbeb5))
+* **deps:** update dependency de.bluecolored:bluemap-api to v2.8.2 ([#254](https://github.com/OneLiteFeatherNET/StarDust/issues/254)) ([1fa8abf](https://github.com/OneLiteFeatherNET/StarDust/commit/1fa8abf366f08b2395153ee50a11192194687238))
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.8.6 ([#245](https://github.com/OneLiteFeatherNET/StarDust/issues/245)) ([288040b](https://github.com/OneLiteFeatherNET/StarDust/commit/288040bca154b2637801420a3a886134de915179))
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.8.7 ([#250](https://github.com/OneLiteFeatherNET/StarDust/issues/250)) ([54fca2e](https://github.com/OneLiteFeatherNET/StarDust/commit/54fca2ef9d94073cc8ed5ba5acbf7415168893c0))
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.8.8 ([#251](https://github.com/OneLiteFeatherNET/StarDust/issues/251)) ([169aa29](https://github.com/OneLiteFeatherNET/StarDust/commit/169aa29563bd05c4a841a81cf1312356a75a6654))
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.8.9 ([#253](https://github.com/OneLiteFeatherNET/StarDust/issues/253)) ([af160a3](https://github.com/OneLiteFeatherNET/StarDust/commit/af160a3bc81798b6f3df72fdbaae492c9ff6ed09))
+* **deps:** update dependency org.apache.commons:commons-lang3 to v3.21.0 ([#249](https://github.com/OneLiteFeatherNET/StarDust/issues/249)) ([b703b5a](https://github.com/OneLiteFeatherNET/StarDust/commit/b703b5a3a3762f1d3afbef726e572b0ba644ada2))
+* **deps:** update dependency org.incendo:cloud-minecraft-extras to v2.0.1 ([#240](https://github.com/OneLiteFeatherNET/StarDust/issues/240)) ([d96c551](https://github.com/OneLiteFeatherNET/StarDust/commit/d96c551b9dab03dc8d3f71a73c76e335821b4686))
+* **deps:** update dependency org.incendo:cloud-paper to v2.0.1 ([#241](https://github.com/OneLiteFeatherNET/StarDust/issues/241)) ([3abb8ae](https://github.com/OneLiteFeatherNET/StarDust/commit/3abb8aecb3146bea90300f999ccf289da4f1df22))
+* **deps:** update dependency org.postgresql:postgresql to v42.7.14 ([#252](https://github.com/OneLiteFeatherNET/StarDust/issues/252)) ([b8dabc6](https://github.com/OneLiteFeatherNET/StarDust/commit/b8dabc660eb068de7f6dcca9e316fb93227b75bf))
+* **deps:** update Minecraft version to 26.3 and remove unused translation registry ([6d75976](https://github.com/OneLiteFeatherNET/StarDust/commit/6d75976c94792e004c13de32e7d4b53431d7d3ae))
+* **deps:** Update Paper Dependency to 26.3 ([#256](https://github.com/OneLiteFeatherNET/StarDust/issues/256)) ([6d75976](https://github.com/OneLiteFeatherNET/StarDust/commit/6d75976c94792e004c13de32e7d4b53431d7d3ae))
+
+## [1.15.3](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.15.2...v1.15.3) (2026-09-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.github.retrooper:packetevents-spigot to v2.13.0 ([#203](https://github.com/OneLiteFeatherNET/StarDust/issues/203)) ([b1ae1fe](https://github.com/OneLiteFeatherNET/StarDust/commit/b1ae1fe1f88fc7abf2ae959b9f3776293f4102d6))
+* **deps:** update dependency de.bluecolored:bluemap-api to v2.8.0 ([#196](https://github.com/OneLiteFeatherNET/StarDust/issues/196)) ([aa183a0](https://github.com/OneLiteFeatherNET/StarDust/commit/aa183a089f2c756846120809bd7506373fcb4c3d))
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.8.1 ([#216](https://github.com/OneLiteFeatherNET/StarDust/issues/216)) ([2779c99](https://github.com/OneLiteFeatherNET/StarDust/commit/2779c99996047ed1b339f7f6e57b851c1eb604f9))
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.8.2 ([#221](https://github.com/OneLiteFeatherNET/StarDust/issues/221)) ([9605a16](https://github.com/OneLiteFeatherNET/StarDust/commit/9605a16e5a483c5c8ba6e068e30a0df12138619a))
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.8.3 ([#225](https://github.com/OneLiteFeatherNET/StarDust/issues/225)) ([c76298c](https://github.com/OneLiteFeatherNET/StarDust/commit/c76298ce14a39f23761dafc50c8c93541bcdbfaf))
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.8.4 ([#235](https://github.com/OneLiteFeatherNET/StarDust/issues/235)) ([04b1f5b](https://github.com/OneLiteFeatherNET/StarDust/commit/04b1f5b5383ec803d5022f1e00b7f94ff110fab9))
+* **deps:** update dependency net.onelitefeather:mycelium-bom to v1.8.5 ([#236](https://github.com/OneLiteFeatherNET/StarDust/issues/236)) ([0e710aa](https://github.com/OneLiteFeatherNET/StarDust/commit/0e710aa466829e212183d5980369e1e343a4aca5))
+* **deps:** update dependency org.hibernate.orm:hibernate-jcache to v7.3.13.final ([#218](https://github.com/OneLiteFeatherNET/StarDust/issues/218)) ([ce069c5](https://github.com/OneLiteFeatherNET/StarDust/commit/ce069c5b4698b3aead979128ca0ca86193d2b835))
+* **deps:** update dependency org.incendo:cloud-annotations to v2.1.0 ([#217](https://github.com/OneLiteFeatherNET/StarDust/issues/217)) ([141ae95](https://github.com/OneLiteFeatherNET/StarDust/commit/141ae956978f67d07387141a5facda2b5307a211))
+* **deps:** update dependency org.incendo:cloud-minecraft-extras to v2.0.0 ([#213](https://github.com/OneLiteFeatherNET/StarDust/issues/213)) ([f769f0a](https://github.com/OneLiteFeatherNET/StarDust/commit/f769f0a688d559d49c3ed38dab30f47030542e01))
+* **deps:** update dependency org.incendo:cloud-paper to v2.0.0 ([#214](https://github.com/OneLiteFeatherNET/StarDust/issues/214)) ([98fbebc](https://github.com/OneLiteFeatherNET/StarDust/commit/98fbebc802213c75388f7ad5fd3f3ec9d3cfbe0b))
+* **deps:** update dependency org.mariadb.jdbc:mariadb-java-client to v3.5.10 ([#219](https://github.com/OneLiteFeatherNET/StarDust/issues/219)) ([4631b68](https://github.com/OneLiteFeatherNET/StarDust/commit/4631b687e7992fb3260ba84e5d7b4fed20648305))
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.116.2 ([#231](https://github.com/OneLiteFeatherNET/StarDust/issues/231)) ([52c7756](https://github.com/OneLiteFeatherNET/StarDust/commit/52c7756aea3e4f97c7341c109bf409872b38d7d3))
+* **deps:** update dependency org.mockbukkit.mockbukkit:mockbukkit-v1.21 to v4.116.3 ([#233](https://github.com/OneLiteFeatherNET/StarDust/issues/233)) ([cd7b22d](https://github.com/OneLiteFeatherNET/StarDust/commit/cd7b22d91ab8dcb7dfe2a6ba0d3221482edbb9ad))
+
 ## [1.15.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.15.1...v1.15.2) (2026-07-14)
 
 

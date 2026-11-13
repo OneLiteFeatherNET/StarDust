@@ -14,17 +14,29 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
+      # GITHUB_TOKEN-opened release PRs leave their checks in "action_required"
+      # until GitHub fails them after 30 days; the release bot app avoids that.
+      - name: Create release bot token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.RELEASE_PLEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_PLEASE_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
       - name: Run release-please
         id: release
         uses: googleapis/release-please-action@v5
         with:
+          token: ${{ steps.app-token.outputs.token }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
   publish:
     needs: release-please
     if: needs.release-please.outputs.release_created == 'true'
-    uses: OneLiteFeatherNET/workflows/.github/workflows/gradle-publish.yml@v2.8.1
+    uses: OneLiteFeatherNET/workflows/.github/workflows/gradle-publish.yml@v2.9.1
     with:
       java-version: "25.0.3"
       java-distribution: "temurin"

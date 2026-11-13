@@ -1,6 +1,7 @@
 package net.onelitefeather.stardust.command.mapper;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
@@ -10,9 +11,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.incendo.cloud.SenderMapper;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 
-@SuppressWarnings("UnstableApiUsage")
 public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, CommandSender> {
     private final ConsoleSenderMapper consoleSenderMapper = new ConsoleSenderMapper();
 
@@ -33,7 +34,7 @@ public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, Comm
         return new BlockSenderMapper((BlockCommandSender) mapped);
     }
 
-    @SuppressWarnings({"UnstableApiUsage", "NonExtendableApiUsage"})
+    @SuppressWarnings({"NonExtendableApiUsage"})
     private record BlockSenderMapper(BlockCommandSender blockCommandSender) implements CommandSourceStack {
 
         @Override
@@ -52,6 +53,25 @@ public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, Comm
         }
 
         @Override
+        public @NonNull Player getPlayerOrThrow() {
+            return getLocation().getNearbyEntitiesByType(Player.class, 16)
+                    .stream()
+                    .filter(player -> player.getLocation().distance(getLocation()) <= 1.0D)
+                    .findFirst()
+                    .orElseThrow();
+        }
+
+        @Override
+        public @NonNull Entity getEntityOrThrow() {
+            return getLocation().getNearbyEntitiesByType(Entity.class, 16)
+                    .stream()
+                    .filter(entity -> entity.getLocation().distance(getLocation()) <= 1.0D)
+                    .findFirst()
+                    .orElseThrow();
+        }
+
+
+        @Override
         public @NotNull CommandSourceStack withLocation(@NotNull Location location) {
             return this;
         }
@@ -60,9 +80,24 @@ public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, Comm
         public @NotNull CommandSourceStack withExecutor(@NotNull Entity entity) {
             return this;
         }
+
+        @Override
+        public void sendReply(@NonNull ComponentLike message) {
+            getPlayerOrThrow().sendMessage(message);
+        }
+
+        @Override
+        public void sendSuccess(@NonNull ComponentLike message, boolean allowInformingAdmins) {
+            getPlayerOrThrow().sendMessage(message);
+        }
+
+        @Override
+        public void sendFailure(@NonNull ComponentLike message) {
+            getPlayerOrThrow().sendMessage(message);
+        }
     }
 
-    @SuppressWarnings({"UnstableApiUsage", "NonExtendableApiUsage"})
+    @SuppressWarnings({"NonExtendableApiUsage"})
     private static class ConsoleSenderMapper implements CommandSourceStack {
         @Override
         public @NotNull Location getLocation() {
@@ -80,6 +115,16 @@ public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, Comm
         }
 
         @Override
+        public @NonNull Player getPlayerOrThrow() {
+            throw new IllegalCallerException("A Console cannot be an Player.");
+        }
+
+        @Override
+        public @NonNull Entity getEntityOrThrow() {
+            throw new IllegalCallerException("A Console cannot be an Entity.");
+        }
+
+        @Override
         public @NotNull CommandSourceStack withLocation(@NotNull Location location) {
             return this;
         }
@@ -88,9 +133,24 @@ public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, Comm
         public @NotNull CommandSourceStack withExecutor(@NotNull Entity entity) {
             return this;
         }
+
+        @Override
+        public void sendReply(@NonNull ComponentLike message) {
+            Bukkit.getConsoleSender().sendMessage(message);
+        }
+
+        @Override
+        public void sendSuccess(@NonNull ComponentLike message, boolean allowInformingAdmins) {
+            Bukkit.getConsoleSender().sendMessage(message);
+        }
+
+        @Override
+        public void sendFailure(@NonNull ComponentLike message) {
+            Bukkit.getConsoleSender().sendMessage(message);
+        }
     }
 
-    @SuppressWarnings({"UnstableApiUsage", "NonExtendableApiUsage"})
+    @SuppressWarnings({"NonExtendableApiUsage"})
     private record PlayerSenderMapper(Player player) implements CommandSourceStack {
 
         @Override
@@ -109,6 +169,16 @@ public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, Comm
         }
 
         @Override
+        public @NonNull Player getPlayerOrThrow() {
+            return this.player();
+        }
+
+        @Override
+        public @NonNull Entity getEntityOrThrow() {
+            return this.player();
+        }
+
+        @Override
         public @NotNull CommandSourceStack withLocation(@NotNull Location location) {
             return this;
         }
@@ -116,6 +186,21 @@ public class BukkitSenderMapper implements SenderMapper<CommandSourceStack, Comm
         @Override
         public @NotNull CommandSourceStack withExecutor(@NotNull Entity entity) {
             return this;
+        }
+
+        @Override
+        public void sendReply(@NonNull ComponentLike message) {
+            this.player.sendMessage(message);
+        }
+
+        @Override
+        public void sendSuccess(@NonNull ComponentLike message, boolean allowInformingAdmins) {
+            this.player.sendMessage(message);
+        }
+
+        @Override
+        public void sendFailure(@NonNull ComponentLike message) {
+            this.player.sendMessage(message);
         }
     }
 }

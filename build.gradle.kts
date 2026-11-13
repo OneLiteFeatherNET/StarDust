@@ -9,7 +9,8 @@ plugins {
     jacoco
 }
 
-version = "1.15.2" // x-release-please-version
+version = "1.16.2" // x-release-please-version
+group = "net.onelitefeather"
 
 dependencies {
 
@@ -29,6 +30,7 @@ dependencies {
     // Testing
     testImplementation(platform(libs.mycelium.bom))
     testImplementation(libs.paper)
+    testImplementation("com.h2database:h2:2.5.252")
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.platform.launcher)
     testRuntimeOnly(libs.junit.jupiter.engine)
@@ -49,9 +51,11 @@ tasks {
         dependsOn(shadowJar)
     }
     shadowJar {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
         archiveClassifier.set("")
-        archiveFileName.set("stardust.jar")
+        archiveFileName.set("${rootProject.name}-${rootProject.version}.${archiveExtension.getOrElse("jar")}")
         mergeServiceFiles()
+
     }
     test {
         useJUnitPlatform()
@@ -62,7 +66,7 @@ tasks {
         finalizedBy(rootProject.tasks.jacocoTestReport)
     }
     runServer {
-        minecraftVersion("26.1.2")
+        minecraftVersion("26.3")
         jvmArgs("-Dcom.mojang.eula.agree=true")
     }
     jacocoTestReport {
