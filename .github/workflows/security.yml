@@ -17,7 +17,7 @@ permissions:
 jobs:
   trivy:
     name: Trivy scan
-    uses: OneLiteFeatherNET/workflows/.github/workflows/security-scan.yml@v2.8.1
+    uses: OneLiteFeatherNET/workflows/.github/workflows/security-scan.yml@v2.8.2
     with:
       scan-type: "fs"
       scanners: "vuln,secret"
