@@ -13,5 +13,5 @@ permissions:
 
 jobs:
   lint:
-    uses: OneLiteFeatherNET/workflows/.github/workflows/pr-lint.yml@v2.8.1
+    uses: OneLiteFeatherNET/workflows/.github/workflows/pr-lint.yml@v2.8.2
     secrets: inherit
