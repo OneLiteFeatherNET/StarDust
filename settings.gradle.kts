@@ -32,7 +32,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
 
-            version("hibernate", "7.3.13.Final")
+            version("hibernate", "7.4.15.Final")
             version("paper", "26.3.build.+")
             version("luckperms", "5.5")
             version("protocolLib", "5.3.0")
@@ -66,8 +66,8 @@ dependencyResolutionManagement {
             library("cloudExtras", "org.incendo", "cloud-minecraft-extras").version("2.0.1")
 
             //Database
-            library("hibernateCore", "org.hibernate", "hibernate-core").versionRef("hibernate")
-            library("hibernateHikariCP", "org.hibernate", "hibernate-hikaricp").versionRef("hibernate")
+            library("hibernateCore", "org.hibernate.orm", "hibernate-core").versionRef("hibernate")
+            library("hibernateHikariCP", "org.hibernate.orm", "hibernate-hikaricp").versionRef("hibernate")
             library("jaxbRuntime", "org.glassfish.jaxb", "jaxb-runtime").versionRef("jaxbRuntime")
             library("postgresql", "org.postgresql", "postgresql").versionRef("postgresql")
             library("hibernateJcache", "org.hibernate.orm", "hibernate-jcache").versionRef("hibernate")
