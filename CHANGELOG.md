@@ -14,6 +14,14 @@
 
 * **ci:** trigger build ([bca9519](https://github.com/OneLiteFeatherNET/StarDust/commit/bca95190f00b4fac178ea6cb2316a1ad9f21741d))
 
+## [1.16.3](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.16.2...v1.16.3) (2026-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update hibernate to v7.4.16.final ([#274](https://github.com/OneLiteFeatherNET/StarDust/issues/274)) ([b98bc02](https://github.com/OneLiteFeatherNET/StarDust/commit/b98bc02ec7a3dc85c707736c0b10b4446f14d38c))
+* **deps:** update hibernate to v7.4.17.final ([#276](https://github.com/OneLiteFeatherNET/StarDust/issues/276)) ([0d3f510](https://github.com/OneLiteFeatherNET/StarDust/commit/0d3f5106ba3b5031a8f3bbf3f2f7833b0562eb8c))
+
 ## [1.16.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.16.1...v1.16.2) (2026-11-12)
 
 
