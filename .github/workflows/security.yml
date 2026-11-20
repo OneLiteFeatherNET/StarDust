@@ -47,7 +47,7 @@ jobs:
           exit-code: '0'
 
       - name: Upload SBOM
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: sbom-cyclonedx
           path: bom.json
