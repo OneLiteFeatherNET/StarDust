@@ -1,0 +1,30 @@
+schema: spec-driven
+
+context: |
+  StarDust is a Paper plugin (plugin.yml) for OneLiteFeather servers. It provides vanish, flight,
+  godmode, player settings and command cooldowns.
+  Persistence uses Hibernate 7 with HikariCP to MariaDB or PostgreSQL. The connection is configured
+  in the server's plugins/Stardust/hibernate.cfg.xml. The database can be about 50 ms away over the
+  network, so no blocking I/O may run on the server thread (Bukkit main thread).
+  Player data: online players are served from memory; the persistent data container (PDC) is a
+  fast per-server copy of hot flags; the database is the source of truth across servers.
+  Conventional Commits are enforced; Release Please handles versioning; PRs are squash-merged, so
+  the PR title is the commit on main.
+  Tests use JUnit 5 and MockBukkit and run without a real server or database. Every test follows
+  F.I.R.S.T.: no sleeps, no system time (inject java.time.Clock), no shared static state, injected
+  executors. Tests are written before the production code.
+  The public package net.onelitefeather.stardust.api is consumed by other plugins; changes to it are
+  breaking.
+  Write all OpenSpec artifacts in English.
+
+rules:
+  proposal:
+    - State what is out of scope.
+    - Name the Conventional Commits type and scope the change ships under, and the exact title of the code pull request.
+    - Mark changes that need a server owner to act (hibernate.cfg.xml or config.yml keys, database schema, new infrastructure such as an additional service to operate) as needing server owner action.
+    - Mark changes that break the public net.onelitefeather.stardust.api package as BREAKING, with a BREAKING CHANGE footer and a migration note.
+    - List dependencies on other changes in this directory.
+  tasks:
+    - Write tests before production code (red, green, refactor).
+    - The last task opens the code pull request under the proposal's title.
+    - Every group that changes a config key, command, permission or the public API updates the matching documentation page.
