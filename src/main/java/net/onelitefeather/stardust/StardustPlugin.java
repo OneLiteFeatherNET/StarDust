@@ -27,6 +27,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @SuppressWarnings("removal")
 public class StardustPlugin extends JavaPlugin {
@@ -47,6 +50,7 @@ public class StardustPlugin extends JavaPlugin {
     private CommandCooldownService cooldownService;
     private PlayerVanishService vanishService;
     private StardustPlayerService playerService;
+    private CachingStardustPlayerService cachingPlayerService;
     private LuckPermsService luckPermsService;
     private PaperCommandService commandService;
     private SettingRegistry settingRegistry;
@@ -105,7 +109,15 @@ public class StardustPlugin extends JavaPlugin {
 
         this.userService = new UserService(this);
 
-        this.playerService = new DefaultStardustPlayerService(this.databaseService.getSessionFactory().orElse(null));
+        ExecutorService playerWriter = Executors.newSingleThreadExecutor(Thread.ofPlatform().name("stardust-db-writer").daemon(false).factory());
+        this.cachingPlayerService = new CachingStardustPlayerService(
+                new DefaultStardustPlayerService(this.databaseService.getSessionFactory().orElse(null)),
+                playerWriter,
+                uuid -> getServer().getPlayer(uuid) != null,
+                () -> getServer().getOnlinePlayers().stream().map(Player::getUniqueId).toList());
+        this.playerService = this.cachingPlayerService;
+        List<UUID> alreadyOnline = getServer().getOnlinePlayers().stream().map(Player::getUniqueId).toList();
+        getServer().getScheduler().runTaskAsynchronously(this, () -> alreadyOnline.forEach(this.cachingPlayerService::load));
         this.vanishService = loadVanishService(this.playerService);
         this.pluginTask = getServer().getScheduler().runTaskTimerAsynchronously(this, new StardustPluginTask(this), 20L, 20L);
 
@@ -117,6 +129,7 @@ public class StardustPlugin extends JavaPlugin {
     public void onDisable() {
         stopPluginTask();
         this.luckPermsService.unsubscribeEvents();
+        if (this.cachingPlayerService != null) this.cachingPlayerService.close();
         this.databaseService.close();
 
         GlobalTranslator.translator().removeSource(this.translationStore);
@@ -154,6 +167,10 @@ public class StardustPlugin extends JavaPlugin {
 
     public StardustPlayerService getPlayerService() {
         return playerService;
+    }
+
+    public CachingStardustPlayerService getCachingPlayerService() {
+        return cachingPlayerService;
     }
 
     public PlayerVanishService getVanishService() {
