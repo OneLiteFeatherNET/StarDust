@@ -5,12 +5,15 @@ import net.onelitefeather.stardust.api.database.StardustPlayerEntity;
 import net.onelitefeather.stardust.api.player.StardustPlayer;
 import net.onelitefeather.stardust.user.User;
 import net.onelitefeather.stardust.util.PlayerUtil;
+import jakarta.persistence.OptimisticLockException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +63,11 @@ public class DefaultStardustPlayerService implements StardustPlayerService {
         }
     }
 
+    /**
+     * Inserts a new player, or updates an existing one only if the stored version equals the version of the given copy.
+     *
+     * @throws StalePlayerDataException if the stored player was changed after the copy was loaded
+     */
     @Override
     public void saveOrUpdate(StardustPlayer player) {
         Transaction transaction;
@@ -70,17 +78,44 @@ public class DefaultStardustPlayerService implements StardustPlayerService {
             var entity = query.uniqueResult();
 
             if (player.getId() == null) {
+                if (entity != null) {
+                    transaction.rollback();
+                    LOGGER.warn("Player {} already exists, keeping the stored data", player.getUniqueId());
+                    return;
+                }
                 session.persist(mapToEntity(player));
             } else {
+                if (entity.getVersion() != player.getVersion()) {
+                    transaction.rollback();
+                    throw new StalePlayerDataException(player.getUniqueId(), player.getVersion(), entity.getVersion());
+                }
                 keepPlayerNameUpdated(player, entity);
                 entity.setSettings(player.getSettings());
                 session.merge(entity);
             }
 
             transaction.commit();
+            if (player.getId() != null) {
+                player.setVersion(entity.getVersion());
+            }
+        } catch (StalePlayerDataException e) {
+            throw e;
+        } catch (OptimisticLockException | StaleObjectStateException e) {
+            throw new StalePlayerDataException(player.getUniqueId(), player.getVersion(), -1L);
         } catch (Exception e) {
+            if (player.getId() == null && hasCause(e, ConstraintViolationException.class) && playerExists(player.getUniqueId())) {
+                LOGGER.warn("Player {} was inserted concurrently, keeping the stored data", player.getUniqueId());
+                return;
+            }
             LOGGER.atError().setMessage("Failed to open a session to save or update player: {}").addArgument(player.getName()).setCause(e).log();
         }
+    }
+
+    private static boolean hasCause(Throwable throwable, Class<? extends Throwable> type) {
+        for (Throwable current = throwable; current != null; current = current.getCause()) {
+            if (type.isInstance(current)) return true;
+        }
+        return false;
     }
 
     @Override
@@ -139,7 +174,8 @@ public class DefaultStardustPlayerService implements StardustPlayerService {
                 entity.getName(),
                 entity.getSettings(),
                 entity.getCreatedAt(),
-                entity.getUpdatedAt());
+                entity.getUpdatedAt(),
+                entity.getVersion());
     }
 
     private StardustPlayerEntity mapToEntity(StardustPlayer model) {

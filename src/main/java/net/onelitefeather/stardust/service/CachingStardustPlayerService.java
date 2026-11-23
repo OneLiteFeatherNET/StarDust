@@ -149,6 +149,11 @@ public class CachingStardustPlayerService implements StardustPlayerService, Auto
                     cache.computeIfPresent(uuid, (key, value) -> Optional.of(persisted));
                 }
             }
+        } catch (StalePlayerDataException e) {
+            LOGGER.warn("Dropped stale write of player {}: copy version {}, stored version {}",
+                    uuid, e.getModelVersion(), e.getStoredVersion());
+            StardustPlayer current = delegate.findById(uuid);
+            cache.computeIfPresent(uuid, (key, value) -> Optional.ofNullable(current));
         } catch (RuntimeException e) {
             LOGGER.error("Failed to persist player {}", uuid, e);
         }
