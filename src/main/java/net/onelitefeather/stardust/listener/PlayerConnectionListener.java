@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -21,29 +22,45 @@ public class PlayerConnectionListener implements Listener {
         this.stardustPlugin = stardustPlugin;
     }
 
+    /**
+     * Loads the player data asynchronously before the join, so the main thread finds it in the cache.
+     */
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPreLogin(AsyncPlayerPreLoginEvent event) {
+        if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) return;
+
+        try {
+            var cachingService = this.stardustPlugin.getCachingPlayerService();
+            var stardustPlayer = cachingService.load(event.getUniqueId()).orElse(null);
+            if (stardustPlayer != null && !stardustPlayer.getName().equalsIgnoreCase(event.getName())) {
+                stardustPlugin.getLogger().log(Level.INFO, String.format("Updating Username from %s to %s", stardustPlayer.getName(), event.getName()));
+                cachingService.saveOrUpdate(stardustPlayer.withName(event.getName()));
+            }
+        } catch (Exception e) {
+            stardustPlugin.getLogger().log(Level.SEVERE, "Failed to load player data before join", e);
+        }
+    }
+
     @EventHandler
     public void handlePlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
         var userService = this.stardustPlugin.getUserService();
         var user = userService.getUser(player.getUniqueId());
-        if(user != null) this.stardustPlugin.getPlayerService().migrateUser(user, userService);
+        if (user != null) this.stardustPlugin.getPlayerService().migrateUser(user, userService);
 
-        if (!stardustPlugin.getPlayerService().playerExists(player.getUniqueId())) {
+        if (stardustPlugin.getPlayerService().findById(player.getUniqueId()) == null) {
             var stardustPlayer = StardustPlayer.create(player.getUniqueId(), player.getName(), PlayerUtil.findSettingsForPlayer(player));
             stardustPlugin.getPlayerService().saveOrUpdate(stardustPlayer);
             player.sendMessage(Component.translatable("plugin.new-player").arguments(Component.translatable("plugin.prefix"), player.displayName()));
-            joinMessage(event);
-            return;
-        }
-
-        var stardustPlayer = stardustPlugin.getPlayerService().findById(player.getUniqueId());
-        if (!player.getName().equalsIgnoreCase(stardustPlayer.getName())) {
-            stardustPlugin.getLogger().log(Level.INFO, String.format("Updating Username from %s to %s", stardustPlayer.getName(), player.getName()));
-            stardustPlugin.getPlayerService().saveOrUpdate(stardustPlayer.withName(player.getName()));
         }
 
         joinMessage(event);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onQuitInvalidate(PlayerQuitEvent event) {
+        this.stardustPlugin.getCachingPlayerService().invalidate(event.getPlayer().getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
