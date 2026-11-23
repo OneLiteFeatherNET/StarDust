@@ -30,6 +30,7 @@ public class StardustPlayer {
     private final Map<String, PlayerSetting> settings;
     private Instant createdAt;
     private Instant updatedAt;
+    private long version;
 
     public StardustPlayer(UUID id, UUID uniqueId, String name, Instant createdAt, Instant updatedAt) {
         this(id, uniqueId, name, new HashMap<>(), createdAt, updatedAt);
@@ -46,16 +47,41 @@ public class StardustPlayer {
                           Map<String, PlayerSetting> settings,
                           Instant createdAt,
                           Instant updatedAt) {
+        this(id, uniqueId, name, settings, createdAt, updatedAt, 0L);
+    }
+
+    public StardustPlayer(UUID id,
+                          UUID uniqueId,
+                          String name,
+                          Map<String, PlayerSetting> settings,
+                          Instant createdAt,
+                          Instant updatedAt,
+                          long version) {
         this.id = id;
         this.uniqueId = Objects.requireNonNull(uniqueId, "uuid");
         this.name = Objects.requireNonNull(name, "name");
         this.settings = Objects.requireNonNull(settings, "settings");
         this.createdAt = Objects.requireNonNull(createdAt, "createdAt");
         this.updatedAt = Objects.requireNonNull(updatedAt, "updatedAt");
+        this.version = version;
     }
 
     public UUID getId() {
         return id;
+    }
+
+    /**
+     * The database version this copy was loaded with or last written as. Writes are only accepted
+     * while it matches the stored version.
+     *
+     * @return the version of the stored player data
+     */
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
     }
 
     public void setUniqueId(UUID uniqueId) {
