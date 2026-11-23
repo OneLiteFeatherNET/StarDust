@@ -41,13 +41,19 @@ class CachingStardustPlayerServiceTest {
         service = new CachingStardustPlayerService(delegate, writer, online::contains, () -> List.copyOf(online));
     }
 
+    /** Like givenService, but the write executor runs each task as soon as it is submitted. */
+    private void givenLoadingService() {
+        givenService();
+        writer.runOnExecute = true;
+    }
+
     private static StardustPlayer player(UUID uuid, String name, UUID id) {
         return new StardustPlayer(id, uuid, name, new HashMap<>(), FIXED_TIME, FIXED_TIME);
     }
 
     @Test
     void cacheHitAfterLoadDoesNotQueryDelegateAgain() {
-        givenService();
+        givenLoadingService();
         delegate.store(player(PLAYER_ID, "Steve", UUID.randomUUID()));
 
         service.load(PLAYER_ID);
@@ -91,7 +97,7 @@ class CachingStardustPlayerServiceTest {
 
     @Test
     void loadedPlayerIsServedFromCacheWhileOffline() {
-        givenService();
+        givenLoadingService();
         delegate.store(player(PLAYER_ID, "Steve", UUID.randomUUID()));
 
         service.load(PLAYER_ID);
@@ -154,7 +160,7 @@ class CachingStardustPlayerServiceTest {
 
     @Test
     void invalidateForcesNextLookupToQueryDelegate() {
-        givenService();
+        givenLoadingService();
         delegate.store(player(PLAYER_ID, "Steve", UUID.randomUUID()));
         service.load(PLAYER_ID);
 
@@ -242,7 +248,7 @@ class CachingStardustPlayerServiceTest {
 
     @Test
     void migrateUserInvalidatesCachedEntry() {
-        givenService();
+        givenLoadingService();
         delegate.store(player(PLAYER_ID, "Steve", UUID.randomUUID()));
         service.load(PLAYER_ID);
         int callsBeforeMigration = delegate.findByIdCalls;
@@ -265,6 +271,32 @@ class CachingStardustPlayerServiceTest {
 
         assertEquals(1, players.size(), "online players must be resolved");
         assertEquals(1, delegate.findByIdCalls, "online players must be served from the cache on repeated calls");
+    }
+
+    @Test
+    void loadObservesWriteQueuedBeforeIt() {
+        givenService();
+        online.add(PLAYER_ID);
+        delegate.store(player(PLAYER_ID, "Steve", UUID.randomUUID()));
+        service.saveOrUpdate(player(PLAYER_ID, "Alex", UUID.randomUUID()));
+
+        writer.runOnExecute = true;
+        var loaded = service.load(PLAYER_ID);
+
+        assertTrue(loaded.isPresent(), "loaded player must be present");
+        assertEquals("Alex", loaded.get().getName(), "load must read after the queued write so a fast rejoin sees the new name");
+        assertEquals(1, delegate.saveCalls, "the queued write must have run before the read");
+    }
+
+    @Test
+    void loadReadsDirectlyWhenExecutorIsClosed() {
+        givenService();
+        delegate.store(player(PLAYER_ID, "Steve", UUID.randomUUID()));
+        service.close();
+
+        var loaded = service.load(PLAYER_ID);
+
+        assertTrue(loaded.isPresent(), "load must still read from the delegate when the executor is closed");
     }
 
     /** Hand-written delegate backed by a map; counts calls. */
@@ -329,11 +361,13 @@ class CachingStardustPlayerServiceTest {
     static final class ManualExecutor extends AbstractExecutorService {
         private final Deque<Runnable> queue = new ArrayDeque<>();
         private boolean shutdown;
+        boolean runOnExecute;
 
         @Override
         public void execute(Runnable command) {
             if (shutdown) throw new RejectedExecutionException("executor is shut down");
             queue.add(command);
+            if (runOnExecute) runAll();
         }
 
         void runAll() {

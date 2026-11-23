@@ -25,7 +25,7 @@ public class PlayerConnectionListener implements Listener {
     /**
      * Loads the player data asynchronously before the join, so the main thread finds it in the cache.
      */
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPreLogin(AsyncPlayerPreLoginEvent event) {
         if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) return;
 

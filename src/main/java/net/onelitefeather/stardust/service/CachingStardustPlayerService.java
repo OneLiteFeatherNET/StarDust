@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
@@ -45,14 +46,23 @@ public class CachingStardustPlayerService implements StardustPlayerService, Auto
 
     /**
      * Loads the player from the delegate and stores the result, including absence. Intended for async threads.
+     * The read runs on the write executor, so it is ordered after writes that are still queued for this player.
      *
      * @param playerUuid the player to load
      * @return the loaded player, or empty if the delegate has none
      */
     public Optional<StardustPlayer> load(UUID playerUuid) {
-        Optional<StardustPlayer> value = Optional.ofNullable(delegate.findById(playerUuid));
+        Optional<StardustPlayer> value = Optional.ofNullable(readAfterPendingWrites(playerUuid));
         cache.put(playerUuid, value);
         return value;
+    }
+
+    private StardustPlayer readAfterPendingWrites(UUID playerUuid) {
+        try {
+            return CompletableFuture.supplyAsync(() -> delegate.findById(playerUuid), writeExecutor).join();
+        } catch (RejectedExecutionException e) {
+            return delegate.findById(playerUuid);
+        }
     }
 
     /**
