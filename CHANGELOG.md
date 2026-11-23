@@ -14,6 +14,21 @@
 
 * **ci:** trigger build ([bca9519](https://github.com/OneLiteFeatherNET/StarDust/commit/bca95190f00b4fac178ea6cb2316a1ad9f21741d))
 
+## [1.16.3](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.16.2...v1.16.3) (2026-11-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.postgresql:postgresql to v42.7.15 ([#277](https://github.com/OneLiteFeatherNET/StarDust/issues/277)) ([1dc7520](https://github.com/OneLiteFeatherNET/StarDust/commit/1dc752073fb1f15fabddfa88c01a884d1553c4c4))
+* **deps:** update hibernate to v7.4.16.final ([#274](https://github.com/OneLiteFeatherNET/StarDust/issues/274)) ([b98bc02](https://github.com/OneLiteFeatherNET/StarDust/commit/b98bc02ec7a3dc85c707736c0b10b4446f14d38c))
+* **deps:** update hibernate to v7.4.17.final ([#276](https://github.com/OneLiteFeatherNET/StarDust/issues/276)) ([0d3f510](https://github.com/OneLiteFeatherNET/StarDust/commit/0d3f5106ba3b5031a8f3bbf3f2f7833b0562eb8c))
+* **player:** detect stale player data writes across servers ([#281](https://github.com/OneLiteFeatherNET/StarDust/issues/281)) ([037987c](https://github.com/OneLiteFeatherNET/StarDust/commit/037987c1c34befe7b95ab35c05b4ec3c945c01f9))
+
+
+### Performance Improvements
+
+* **player:** cache player data and keep database access off the main thread ([#279](https://github.com/OneLiteFeatherNET/StarDust/issues/279)) ([ab28150](https://github.com/OneLiteFeatherNET/StarDust/commit/ab2815027de6ebe779e4d890122e6d8f69b90fa9))
+
 ## [1.16.2](https://github.com/OneLiteFeatherNET/StarDust/compare/v1.16.1...v1.16.2) (2026-11-12)
 
 
