@@ -28,4 +28,4 @@ Commit type and scope: `perf(vanish)`. Not breaking. No server owner action is n
 
 - Changing the set of flags or the database schema.
 - Writing flags to the database in batches (`batch-player-writes`).
-- Propagating changes to other running servers (`cross-server-player-invalidation`).
+- Propagating changes to other running servers. Stale writes are rejected by `guard-player-data-handoff`.

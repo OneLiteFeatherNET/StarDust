@@ -21,7 +21,7 @@ rules:
   proposal:
     - State what is out of scope.
     - Name the Conventional Commits type and scope the change ships under, and the exact title of the code pull request.
-    - Mark changes that need a server owner to act (hibernate.cfg.xml or config.yml keys, database schema, new infrastructure such as a message broker) as needing server owner action.
+    - Mark changes that need a server owner to act (hibernate.cfg.xml or config.yml keys, database schema, new infrastructure such as an additional service to operate) as needing server owner action.
     - Mark changes that break the public net.onelitefeather.stardust.api package as BREAKING, with a BREAKING CHANGE footer and a migration note.
     - List dependencies on other changes in this directory.
   tasks:

@@ -27,5 +27,5 @@ BREAKING CHANGE footer: "`StardustPlayerService` is replaced by `PlayerSessions`
 ## Out of scope
 
 - Changing the database schema or the setting keys.
-- Cross-server invalidation (`cross-server-player-invalidation`).
+- Cross-server handoff guard (`guard-player-data-handoff`).
 - Migrating commands that do not touch player data.

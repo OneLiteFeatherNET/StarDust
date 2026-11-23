@@ -18,11 +18,11 @@ Non-goals:
 1. Dirty map. `ConcurrentHashMap<UUID, StardustPlayer>` of players whose state changed since the last successful flush. A second change replaces the first, so coalescing is automatic.
 2. Periodic flush. A scheduled task on the writer executor flushes the dirty map every `persistence.flush-interval` (default `5s`, proposed key name). The interval is read once at startup, and the server owner can change it in `config.yml`.
 3. Single transaction per flush. One session, one transaction, JDBC batching with `hibernate.jdbc.batch_size` (proposed value 100). Alternatively, a native upsert (`INSERT ... ON DUPLICATE KEY UPDATE` for MariaDB, `ON CONFLICT` for PostgreSQL). The batching option is preferred because it works for both databases through Hibernate without SQL dialect code; the upsert is kept as a fallback if batching does not reach the target throughput.
-4. Immediate flush on quit. `PlayerQuitEvent` removes the player from the dirty map and writes that player at once. This is the hand-off point for a server switch.
+4. Immediate flush on quit. `PlayerQuitEvent` removes the player from the dirty map and writes that player at once, as a single write outside the periodic batch. This is the hand-off point for a server switch: Velocity may connect the player to the next server before the old server has finished, so the pending changes must not wait for the next flush interval.
 5. Flush on disable. `onDisable` flushes the whole dirty map before the writer closes.
 6. Bounded queue. The dirty map is bounded by the number of online players, plus the quit-time entries. Quit-time entries that fail are kept in a bounded retry queue (proposed size 1000); when it is full, the oldest entry for the same player is merged, not dropped.
 7. Retry. Failed flushes are retried with exponential backoff (proposed 1 s, 2 s, 4 s ... capped at 60 s). Each failure is logged once per backoff step with the player count and exported as a counter `stardust.persistence.failures` with an OpenTelemetry meter.
-8. Optimistic version. Each write increments the `version` column. A write whose version does not match the stored version is treated as a conflict and reported (see `cross-server-player-invalidation`).
+8. Optimistic version. Each write increments the `version` column. A write whose version does not match the stored version is treated as a conflict and reported (see `guard-player-data-handoff`).
 
 ## Throughput reasoning
 

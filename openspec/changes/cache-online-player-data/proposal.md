@@ -24,12 +24,12 @@ Commit type and scope: `perf(player)`. Not breaking. No server owner action is n
 
 - Affected code: `DefaultStardustPlayerService`, the new caching decorator, `PlayerConnectionListener`, the plugin's `onDisable`.
 - Affected players: the server thread no longer waits on the database for online players.
-- Dependencies: none. This is the base change for `store-player-flags-in-pdc`, `batch-player-writes`, `async-player-repository-api` and `cross-server-player-invalidation`.
+- Dependencies: none. This is the base change for `store-player-flags-in-pdc`, `batch-player-writes`, `async-player-repository-api` and `guard-player-data-handoff`.
 
 ## Out of scope
 
 - Moving hot flags into the PDC (`store-player-flags-in-pdc`).
 - Batching writes or changing the write schedule (`batch-player-writes`).
 - Changing the public API (`async-player-repository-api`).
-- Synchronising caches between servers (`cross-server-player-invalidation`).
+- Pushing cache updates between servers. Stale writes are rejected by `guard-player-data-handoff` instead.
 - Changing the database schema or configuration files.

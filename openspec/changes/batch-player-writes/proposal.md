@@ -9,7 +9,7 @@ Batching 100 rows per round trip gives thousands of rows per second on the same 
 - Track dirty state per player. Multiple changes to the same player are coalesced into one pending write.
 - Flush dirty players periodically, by default every 5 seconds. The interval is a configuration key the server owner can change.
 - Each flush runs in one transaction, using JDBC batching (`hibernate.jdbc.batch_size`) or an upsert.
-- Flush a player immediately on quit, so that a server switch hands off the latest data. Flush all players on disable.
+- Flush a player immediately on quit, not with the periodic batch, so that the latest data is in the database before the next server loads the player. The next server may already be loading the player while the old one is still shutting down. Flush all players on disable.
 - Use a bounded queue. When the queue is full, the oldest pending entry for a player is merged, not dropped.
 - Retry failed writes with exponential backoff. Log each failure and export it as a metric (OpenTelemetry is attached on the servers). Failures are no longer swallowed.
 
@@ -26,5 +26,5 @@ Commit type and scope: `perf(persistence)`. Not breaking. Server owner action: o
 ## Out of scope
 
 - Changing the database schema.
-- Cross-server invalidation (`cross-server-player-invalidation`).
+- Cross-server handoff guard (`guard-player-data-handoff`).
 - Changing the public API (`async-player-repository-api`).

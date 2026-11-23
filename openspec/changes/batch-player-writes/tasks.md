@@ -2,7 +2,7 @@
 
 - [ ] 1.1 Write a failing test: three changes to one player produce one pending write.
 - [ ] 1.2 Write a failing test: a manual `flush()` writes all dirty players in one transaction.
-- [ ] 1.3 Write a failing test: quit flushes that player immediately and removes it from the dirty map.
+- [ ] 1.3 Write a failing test: quit flushes that player immediately, without waiting for the periodic flush, and removes it from the dirty map.
 - [ ] 1.4 Write a failing test: disable flushes everything before the writer closes.
 - [ ] 1.5 Write a failing test: a failing write is retried with the expected backoff sequence from an injected clock.
 - [ ] 1.6 Write a failing test: a failed write increments the failure metric and logs (asserted through a captured appender).

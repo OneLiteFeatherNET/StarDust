@@ -13,7 +13,7 @@ Goals:
 
 Non-goals:
 - Making offline lookups fast (they stay synchronous and are used only by commands that run off the server thread, see `async-player-repository-api`).
-- Cross-server consistency (see `cross-server-player-invalidation`).
+- Cross-server consistency beyond the versioned handoff guard (see `guard-player-data-handoff`).
 
 ## Decisions
 
@@ -27,7 +27,7 @@ Non-goals:
 
 ## Risks / Trade-offs
 
-- Stale data on a second server. A player who moves between servers can read data cached on the old server until the cache is refreshed. Mitigated by `cross-server-player-invalidation` (optional) and by quit-time flush.
+- Stale data on a second server. A player who moves between servers can read data cached on the old server until the cache is refreshed. Mitigated by the versioned handoff guard in `guard-player-data-handoff`, which rejects a stale write instead of overwriting, and by the quit-time flush.
 - Memory. The map holds only online players, so its size is bounded by the number of online players.
 - Lost writes on crash. A crash before the queued write runs loses that write. `batch-player-writes` narrows this window with a bounded, periodic flush and retry.
 

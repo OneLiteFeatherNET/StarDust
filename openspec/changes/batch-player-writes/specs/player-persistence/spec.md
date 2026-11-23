@@ -25,7 +25,7 @@ The plugin SHALL flush dirty players periodically at the interval set by `persis
 
 ### Requirement: Immediate flush on quit
 
-The plugin SHALL write a player's pending changes immediately when the player quits, so that the latest data is available to the next server.
+The plugin SHALL write a player's pending changes immediately when the player quits, as a single write that is not held back for the periodic flush, so that the latest data is available to the next server, which may already be loading the player.
 
 #### Scenario: Server switch
 
