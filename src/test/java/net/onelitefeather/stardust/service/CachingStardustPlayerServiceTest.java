@@ -299,6 +299,24 @@ class CachingStardustPlayerServiceTest {
         assertTrue(loaded.isPresent(), "load must still read from the delegate when the executor is closed");
     }
 
+    @Test
+    void staleWriteReplacesCachedEntryWithDatabaseStateAndLaterWritesStillRun() {
+        givenService();
+        online.add(PLAYER_ID);
+        online.add(OTHER_ID);
+        delegate.store(player(PLAYER_ID, "Database", UUID.randomUUID()));
+        delegate.staleNextSave = true;
+
+        service.saveOrUpdate(player(PLAYER_ID, "Stale", UUID.randomUUID()));
+        service.saveOrUpdate(player(OTHER_ID, "Alex", UUID.randomUUID()));
+        writer.runAll();
+
+        assertEquals("Database", service.findById(PLAYER_ID).getName(),
+                "a conflict must replace the cached entry with the database state");
+        assertEquals(2, delegate.saveCalls, "the write of another player must still run after a conflict");
+        assertEquals("Alex", delegate.stored.get(OTHER_ID).getName(), "the other player's write must be persisted");
+    }
+
     /** Hand-written delegate backed by a map; counts calls. */
     static final class FakeDelegate implements StardustPlayerService {
         final Map<UUID, StardustPlayer> stored = new HashMap<>();
@@ -307,6 +325,7 @@ class CachingStardustPlayerServiceTest {
         int deleteCalls;
         int migrateCalls;
         boolean failNextSave;
+        boolean staleNextSave;
 
         void store(StardustPlayer player) {
             stored.put(player.getUniqueId(), player);
@@ -334,6 +353,10 @@ class CachingStardustPlayerServiceTest {
             if (failNextSave) {
                 failNextSave = false;
                 throw new IllegalStateException("simulated database failure");
+            }
+            if (staleNextSave) {
+                staleNextSave = false;
+                throw new StalePlayerDataException(player.getUniqueId(), player.getVersion(), 1L);
             }
             var id = player.getId() == null ? UUID.randomUUID() : player.getId();
             stored.put(player.getUniqueId(), new StardustPlayer(id, player.getUniqueId(), player.getName(),
